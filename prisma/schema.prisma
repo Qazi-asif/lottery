@@ -1,0 +1,263 @@
+// MUST match instructions/02_DATABASE_SCHEMA.md exactly
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum SubscriptionStatus {
+  active
+  past_due
+  canceled
+  trialing
+}
+
+enum UserRole {
+  tenant_owner
+  location_manager
+  cashier
+}
+
+enum PackStatus {
+  received
+  activated
+  closed
+}
+
+enum TicketStatus {
+  in_stock
+  sold
+}
+
+enum DisplayLayout {
+  landscape
+  portrait
+}
+
+model Plan {
+  id                   String   @id @default(uuid()) @db.Uuid
+  name                 String
+  priceMonthlyCents    Int      @map("price_monthly_cents")
+  priceAnnualCents     Int      @map("price_annual_cents")
+  stripePriceIdMonthly String   @map("stripe_price_id_monthly")
+  stripePriceIdAnnual  String   @map("stripe_price_id_annual")
+  features             Json
+  active               Boolean
+  createdAt            DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  subscriptions Subscription[]
+
+  @@map("plans")
+}
+
+model Tenant {
+  id                     String   @id @default(uuid()) @db.Uuid
+  businessName           String   @map("business_name")
+  ownerName              String   @map("owner_name")
+  ownerEmail             String   @unique @map("owner_email")
+  ownerPhone             String   @map("owner_phone")
+  stripeCustomerId       String   @map("stripe_customer_id")
+  artworkLicenseApproved Boolean  @default(false) @map("artwork_license_approved")
+  createdAt              DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  subscriptions Subscription[]
+  users         User[]
+  locations     Location[]
+  packs         Pack[]
+  sales         Sale[]
+  prizePayouts  PrizePayout[]
+  settings      Settings?
+
+  @@map("tenants")
+}
+
+model Subscription {
+  id                   String             @id @default(uuid()) @db.Uuid
+  tenantId             String             @map("tenant_id") @db.Uuid
+  planId               String             @map("plan_id") @db.Uuid
+  stripeSubscriptionId String             @map("stripe_subscription_id")
+  status               SubscriptionStatus
+  currentPeriodEnd     DateTime           @map("current_period_end") @db.Timestamptz(6)
+  createdAt            DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  plan   Plan   @relation(fields: [planId], references: [id])
+
+  @@map("subscriptions")
+}
+
+model User {
+  id                      String    @id @default(uuid()) @db.Uuid
+  tenantId                String    @map("tenant_id") @db.Uuid
+  email                   String    @unique
+  passwordHash            String?   @map("password_hash")
+  name                    String
+  role                    UserRole
+  passwordSetToken        String?   @map("password_set_token")
+  passwordSetTokenExpires DateTime? @map("password_set_token_expires") @db.Timestamptz(6)
+  createdAt               DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant        Tenant         @relation(fields: [tenantId], references: [id])
+  userLocations UserLocation[]
+  soldTickets   Ticket[]       @relation("SoldByUser")
+  sales         Sale[]
+  prizePayouts  PrizePayout[]
+
+  @@map("users")
+}
+
+model UserLocation {
+  userId     String @map("user_id") @db.Uuid
+  locationId String @map("location_id") @db.Uuid
+
+  user     User     @relation(fields: [userId], references: [id])
+  location Location @relation(fields: [locationId], references: [id])
+
+  @@id([userId, locationId])
+  @@map("user_locations")
+}
+
+model Location {
+  id        String   @id @default(uuid()) @db.Uuid
+  tenantId  String   @map("tenant_id") @db.Uuid
+  name      String
+  address   String
+  city      String
+  state     String   @default("TX")
+  zip       String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant         Tenant          @relation(fields: [tenantId], references: [id])
+  userLocations  UserLocation[]
+  packs          Pack[]
+  sales          Sale[]
+  prizePayouts   PrizePayout[]
+  displayConfigs DisplayConfig[]
+
+  @@map("locations")
+}
+
+model Game {
+  id                  String   @id @default(uuid()) @db.Uuid
+  gameNumber          String   @unique @map("game_number")
+  name                String
+  priceCents          Int      @map("price_cents")
+  ticketsPerPack      Int      @map("tickets_per_pack")
+  active              Boolean
+  prizesRemainingData Json?    @map("prizes_remaining_data")
+  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt           DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  packs Pack[]
+  sales Sale[]
+
+  @@map("games")
+}
+
+model Pack {
+  id           String     @id @default(uuid()) @db.Uuid
+  tenantId     String     @map("tenant_id") @db.Uuid
+  locationId   String     @map("location_id") @db.Uuid
+  gameId       String     @map("game_id") @db.Uuid
+  packNumber   String     @map("pack_number")
+  ticketCount  Int        @map("ticket_count")
+  status       PackStatus
+  receivedAt   DateTime   @map("received_at") @db.Timestamptz(6)
+  activatedAt  DateTime?  @map("activated_at") @db.Timestamptz(6)
+  closedAt     DateTime?  @map("closed_at") @db.Timestamptz(6)
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id])
+  location Location @relation(fields: [locationId], references: [id])
+  game     Game     @relation(fields: [gameId], references: [id])
+  tickets  Ticket[]
+
+  @@map("packs")
+}
+
+model Ticket {
+  id           String       @id @default(uuid()) @db.Uuid
+  packId       String       @map("pack_id") @db.Uuid
+  ticketNumber Int          @map("ticket_number")
+  barcodeValue String       @unique @map("barcode_value")
+  status       TicketStatus
+  soldAt       DateTime?    @map("sold_at") @db.Timestamptz(6)
+  soldByUserId String?      @map("sold_by_user_id") @db.Uuid
+
+  pack         Pack          @relation(fields: [packId], references: [id])
+  soldByUser   User?         @relation("SoldByUser", fields: [soldByUserId], references: [id])
+  sales        Sale[]
+  prizePayouts PrizePayout[]
+
+  @@map("tickets")
+}
+
+model Sale {
+  id                    String   @id @default(uuid()) @db.Uuid
+  tenantId              String   @map("tenant_id") @db.Uuid
+  locationId            String   @map("location_id") @db.Uuid
+  ticketId              String   @map("ticket_id") @db.Uuid
+  gameId                String   @map("game_id") @db.Uuid
+  priceCents            Int      @map("price_cents")
+  commissionRate        Decimal  @map("commission_rate") @db.Decimal
+  commissionEarnedCents Int      @map("commission_earned_cents")
+  soldByUserId          String   @map("sold_by_user_id") @db.Uuid
+  soldAt                DateTime @map("sold_at") @db.Timestamptz(6)
+
+  tenant     Tenant   @relation(fields: [tenantId], references: [id])
+  location   Location @relation(fields: [locationId], references: [id])
+  ticket     Ticket   @relation(fields: [ticketId], references: [id])
+  game       Game     @relation(fields: [gameId], references: [id])
+  soldByUser User     @relation(fields: [soldByUserId], references: [id])
+
+  @@map("sales")
+}
+
+model PrizePayout {
+  id                      String   @id @default(uuid()) @db.Uuid
+  tenantId                String   @map("tenant_id") @db.Uuid
+  locationId              String   @map("location_id") @db.Uuid
+  ticketId                String?  @map("ticket_id") @db.Uuid
+  amountPaidCents         Int      @map("amount_paid_cents")
+  cashingBonusRate        Decimal  @map("cashing_bonus_rate") @db.Decimal
+  cashingBonusEarnedCents Int      @map("cashing_bonus_earned_cents")
+  paidByUserId            String   @map("paid_by_user_id") @db.Uuid
+  paidAt                  DateTime @map("paid_at") @db.Timestamptz(6)
+
+  tenant     Tenant   @relation(fields: [tenantId], references: [id])
+  location   Location @relation(fields: [locationId], references: [id])
+  ticket     Ticket?  @relation(fields: [ticketId], references: [id])
+  paidByUser User     @relation(fields: [paidByUserId], references: [id])
+
+  @@map("prize_payouts")
+}
+
+model Settings {
+  tenantId          String  @id @map("tenant_id") @db.Uuid
+  commissionRate    Decimal @default(0.05) @map("commission_rate") @db.Decimal
+  cashingBonusRate  Decimal @default(0) @map("cashing_bonus_rate") @db.Decimal
+  lowStockThreshold Int     @default(10) @map("low_stock_threshold")
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@map("settings")
+}
+
+model DisplayConfig {
+  id             String        @id @default(uuid()) @db.Uuid
+  locationId     String        @map("location_id") @db.Uuid
+  layout         DisplayLayout
+  theme          String
+  binAssignments Json          @map("bin_assignments")
+  showWinners    Boolean       @default(true) @map("show_winners")
+  updatedAt      DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  location Location @relation(fields: [locationId], references: [id])
+
+  @@map("display_configs")
+}

@@ -1,0 +1,50 @@
+# Cursor Rules for This Project
+
+Before writing or modifying any code, check `/instructions/` for the relevant spec
+file. These files are the source of truth — do not invent table names, field
+names, API routes, or business rules that contradict them.
+
+1. **Database**: `prisma/schema.prisma` must always match
+   `instructions/02_DATABASE_SCHEMA.md`. If a new field is needed, update the
+   markdown file first, then the Prisma schema, then run a migration. Never
+   add a field to Prisma that isn't documented there.
+
+2. **Multi-tenancy**: every query touching `locations`, `packs`, `tickets`,
+   `sales`, `prize_payouts`, or `users` must filter by `tenant_id` derived
+   from the authenticated session (`lib/permissions.ts`). Never trust a
+   `tenantId` passed from the client.
+
+3. **Money**: always store and compute money as integer cents
+   (`price_cents`, `commission_earned_cents`). Never use floats for currency.
+
+4. **Auth**: never implement or suggest emailing a plaintext password.
+   Password creation always goes through the signed one-time token flow in
+   `instructions/04_AUTH_AND_BILLING.md`.
+
+5. **Payments**: never write code that receives or stores a raw card number.
+   All payment collection goes through Stripe Checkout/Elements.
+
+6. **Plan gating**: check `plan.features.<flag>` from the database — never
+   hardcode a plan name (`if (plan === 'Smart')`) to gate a feature.
+
+7. **API contracts**: match `instructions/03_API_SPEC.md` exactly — same route
+   paths, same request/response field names. If a route needs to change,
+   update that file in the same commit as the code.
+
+8. **Naming**: `snake_case` for database tables/columns, `camelCase` for
+   TypeScript variables and JSON API fields (Prisma handles this mapping
+   automatically — configure it, don't hand-convert).
+
+9. **Lottery display content**: default all in-store display rendering to
+   generic/plain-text mode. Only render official Texas Lottery artwork/logos
+   if `tenant.artwork_license_approved === true` in the database.
+
+10. If a request conflicts with anything in `/instructions/`, flag the conflict
+    instead of silently picking one interpretation — ask, or note the
+    discrepancy in code comments, rather than guessing.
+
+11. **Design**: the marketing site and dashboard must follow
+    `instructions/06_DESIGN_SYSTEM.md` exactly — the color tokens, font
+    pairing, and the "gold as accent only, never a large fill" rule. Do not
+    default to generic Tailwind starter-template styling. The in-store
+    `/display` route is exempt from this file (see that file's note).
