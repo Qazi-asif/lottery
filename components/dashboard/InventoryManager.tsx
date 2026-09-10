@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 type PackRow = {
@@ -137,12 +138,13 @@ export function InventoryManager({
                       Activate
                     </button>
                   ) : (
-                    <a
+                    <Link
                       href={`/dashboard/inventory/packs/${pack.id}`}
+                      prefetch
                       className="text-small text-ink underline decoration-gold underline-offset-4"
                     >
                       View
-                    </a>
+                    </Link>
                   )}
                 </td>
               </tr>

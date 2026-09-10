@@ -12,7 +12,7 @@ export default async function BillingPage() {
   const subscription = await db.subscription.findFirst({
     where: { tenantId: ctx.tenantId },
     orderBy: { createdAt: "desc" },
-    include: { plan: true },
+    include: { plan: { select: { name: true } } },
   });
 
   return (

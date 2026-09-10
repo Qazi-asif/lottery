@@ -1,8 +1,8 @@
+import { cache } from "react";
+import { unstable_cache } from "next/cache";
 import { cookies } from "next/headers";
-import { getServerSession } from "next-auth";
 import { decode } from "next-auth/jwt";
 import type { UserRole } from "@prisma/client";
-import { authOptions } from "@/lib/auth";
 import { ApiError } from "@/lib/api-error";
 import { parsePlanFeatures, type PlanFeatures } from "@/lib/plan-features";
 import { requirePrisma } from "@/lib/prisma";
@@ -27,57 +27,68 @@ const ROLE_RANK: Record<UserRole, number> = {
   tenant_owner: 3,
 };
 
-async function readSessionUser() {
-  const session = await getServerSession(authOptions);
-  if (session?.user?.id && session.user.tenantId) {
-    return session.user;
+async function decodeSessionToken(raw: string, secret: string, salt: string) {
+  // Login/set-password encode with salt = cookie name (NextAuth v4.24+).
+  // Try that first; empty salt covers cookies issued by getServerSession.
+  for (const decodeSalt of [salt, ""]) {
+    try {
+      const token = await decode({ token: raw, secret, salt: decodeSalt });
+      if (token?.id && token.tenantId) {
+        return {
+          id: token.id,
+          email: token.email ?? "",
+          name: typeof token.name === "string" ? token.name : "",
+          tenantId: token.tenantId,
+          role: token.role,
+        };
+      }
+    } catch {
+      // Corrupt or mismatched JWT — treat as signed out.
+    }
   }
+  return null;
+}
 
+async function readSessionUser() {
   const secret = process.env.NEXTAUTH_SECRET;
   if (!secret) return null;
 
   const jar = await cookies();
-  const raw = jar.get(sessionCookieName())?.value;
+  const name = sessionCookieName();
+  const raw = jar.get(name)?.value;
   if (!raw) return null;
 
-  const token = await decode({
-    token: raw,
-    secret,
-    salt: sessionCookieName(),
-  });
-  if (!token?.id || !token.tenantId) return null;
-
-  return {
-    id: token.id,
-    email: token.email ?? "",
-    name: typeof token.name === "string" ? token.name : "",
-    tenantId: token.tenantId,
-    role: token.role,
-  };
+  return decodeSessionToken(raw, secret, name);
 }
 
-export async function getPermissionContext(): Promise<PermissionContext | null> {
-  const sessionUser = await readSessionUser();
-  if (!sessionUser?.id || !sessionUser.tenantId) return null;
-
+async function loadPermissionRow(userId: string): Promise<PermissionContext | null> {
   const db = requirePrisma();
   const user = await db.user.findUnique({
-    where: { id: sessionUser.id },
-    include: {
+    where: { id: userId },
+    select: {
+      id: true,
+      tenantId: true,
+      email: true,
+      name: true,
+      role: true,
       userLocations: { select: { locationId: true } },
       tenant: {
-        include: {
+        select: {
+          stripeCustomerId: true,
           subscriptions: {
             orderBy: { createdAt: "desc" },
             take: 1,
-            include: { plan: true },
+            select: {
+              status: true,
+              plan: { select: { features: true } },
+            },
           },
         },
       },
     },
   });
 
-  if (!user || user.tenantId !== sessionUser.tenantId) return null;
+  if (!user) return null;
 
   const subscription = user.tenant.subscriptions[0];
   const features = parsePlanFeatures(subscription?.plan.features);
@@ -100,6 +111,26 @@ export async function getPermissionContext(): Promise<PermissionContext | null> 
       subscriptionStatus === "past_due" || subscriptionStatus === "canceled",
   };
 }
+
+function getCachedPermissionRow(userId: string) {
+  return unstable_cache(
+    () => loadPermissionRow(userId),
+    ["permission-row", userId],
+    { revalidate: 60, tags: [`permission-${userId}`] },
+  )();
+}
+
+/** Deduped per RSC request so layout + page share one session/DB round-trip. */
+export const getPermissionContext = cache(
+  async (): Promise<PermissionContext | null> => {
+    const sessionUser = await readSessionUser();
+    if (!sessionUser?.id || !sessionUser.tenantId) return null;
+
+    const ctx = await getCachedPermissionRow(sessionUser.id);
+    if (!ctx || ctx.tenantId !== sessionUser.tenantId) return null;
+    return ctx;
+  },
+);
 
 export async function requireAuth(): Promise<PermissionContext> {
   const ctx = await getPermissionContext();

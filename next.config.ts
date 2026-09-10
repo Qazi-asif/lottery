@@ -2,6 +2,13 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ["@prisma/client", "bcryptjs"],
+  experimental: {
+    // Next 15 defaults dynamic staleTime to 0, so every sidebar click refetches RSC.
+    staleTimes: {
+      dynamic: 30,
+      static: 180,
+    },
+  },
   // Trailing "." is treated as a file extension, so middleware often never runs.
   async redirects() {
     return [

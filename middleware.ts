@@ -14,8 +14,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|api/).*)",
-    // Next skips dotted paths as static files unless they are listed explicitly.
     "/login.",
     "/signup.",
     "/features.",

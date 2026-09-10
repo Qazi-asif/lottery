@@ -12,6 +12,7 @@ export default async function DisplayManagerPage() {
   const db = requirePrisma();
   const locations = await db.location.findMany({
     where: locationWhere(ctx),
+    select: { id: true, name: true, city: true, state: true },
     orderBy: { name: "asc" },
   });
 

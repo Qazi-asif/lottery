@@ -74,6 +74,7 @@ export function DashboardSidebar({
             <Link
               key={item.href}
               href={item.href}
+              prefetch
               className={`block border-l-2 px-6 py-3 text-body transition-colors ${
                 active
                   ? "border-gold bg-white/5 text-bg"

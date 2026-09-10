@@ -11,6 +11,7 @@ export default async function ScanPage() {
   const db = requirePrisma();
   const locations = await db.location.findMany({
     where: locationWhere(ctx),
+    select: { id: true, name: true },
     orderBy: { name: "asc" },
   });
 

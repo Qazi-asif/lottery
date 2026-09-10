@@ -1,6 +1,8 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { getPermissionContext } from "@/lib/permissions";
+import DashboardLoading from "./loading";
 
 export default async function DashboardLayout({
   children,
@@ -27,7 +29,9 @@ export default async function DashboardLayout({
             until you reactivate.
           </div>
         ) : null}
-        <div className="px-8 py-10">{children}</div>
+        <div className="px-8 py-10">
+          <Suspense fallback={<DashboardLoading />}>{children}</Suspense>
+        </div>
       </div>
     </div>
   );

@@ -16,9 +16,13 @@ export default async function PackDetailPage({
   const pack = await db.pack.findFirst({
     where: { id: packId, tenantId: ctx.tenantId },
     include: {
-      game: true,
-      location: true,
-      tickets: { orderBy: { ticketNumber: "asc" }, take: 20 },
+      game: { select: { name: true } },
+      location: { select: { name: true } },
+      tickets: {
+        orderBy: { ticketNumber: "asc" },
+        take: 20,
+        select: { id: true, ticketNumber: true, barcodeValue: true, status: true },
+      },
       _count: { select: { tickets: { where: { status: "in_stock" } } } },
     },
   });

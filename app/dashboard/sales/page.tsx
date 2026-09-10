@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Prisma } from "@prisma/client";
 import { formatCents } from "@/lib/format";
@@ -79,9 +80,10 @@ export default async function SalesPage({
 
       <div className="mt-6 flex gap-3">
         {["day", "week", "month", "game", "location"].map((key) => (
-          <a
+          <Link
             key={key}
             href={`/dashboard/sales?groupBy=${key}`}
+            prefetch
             className={`text-small capitalize ${
               groupBy === key
                 ? "text-ink underline decoration-gold underline-offset-4"
@@ -89,7 +91,7 @@ export default async function SalesPage({
             }`}
           >
             {key}
-          </a>
+          </Link>
         ))}
       </div>
 

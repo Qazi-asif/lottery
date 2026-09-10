@@ -17,15 +17,27 @@ export default async function InventoryPage() {
         tenantId: ctx.tenantId,
         ...(ctx.locationIds ? { locationId: { in: ctx.locationIds } } : {}),
       },
-      include: {
-        game: true,
-        location: true,
+      select: {
+        id: true,
+        packNumber: true,
+        status: true,
+        ticketCount: true,
+        game: { select: { name: true, gameNumber: true } },
+        location: { select: { name: true } },
         _count: { select: { tickets: { where: { status: "in_stock" } } } },
       },
       orderBy: { receivedAt: "desc" },
     }),
-    db.game.findMany({ where: { active: true }, orderBy: { name: "asc" } }),
-    db.location.findMany({ where: locationWhere(ctx), orderBy: { name: "asc" } }),
+    db.game.findMany({
+      where: { active: true },
+      select: { id: true, name: true, gameNumber: true, ticketsPerPack: true },
+      orderBy: { name: "asc" },
+    }),
+    db.location.findMany({
+      where: locationWhere(ctx),
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
+    }),
   ]);
 
   return (
