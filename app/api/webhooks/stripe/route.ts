@@ -3,7 +3,7 @@ import type Stripe from "stripe";
 import { ApiError, apiErrorResponse, jsonOk } from "@/lib/api-error";
 import { sendDunningEmail, sendPasswordSetEmail } from "@/lib/email";
 import { createPasswordSetToken } from "@/lib/password-token";
-import { requirePrisma } from "@/lib/prisma";
+import { asAppDb, loose, requirePrisma } from "@/lib/prisma";
 import { createReferralCode } from "@/lib/referral-code";
 import { getStripe } from "@/lib/stripe";
 
@@ -70,8 +70,9 @@ async function onCheckoutCompleted(session: Stripe.Checkout.Session) {
   const token = createPasswordSetToken();
 
   await db.$transaction(async (tx) => {
-    const tenant = await tx.tenant.create({
-      data: {
+    const dbTx = asAppDb(tx);
+    const tenant = await dbTx.tenant.create({
+      data: loose({
         businessName: metadata.businessName ?? "New retailer",
         ownerName: metadata.ownerName ?? "Owner",
         ownerEmail: email,
@@ -79,10 +80,10 @@ async function onCheckoutCompleted(session: Stripe.Checkout.Session) {
         stripeCustomerId: customerId,
         artworkLicenseApproved: false,
         referralCode: createReferralCode(),
-      },
+      }),
     });
 
-    await tx.subscription.create({
+    await dbTx.subscription.create({
       data: {
         tenantId: tenant.id,
         planId,
@@ -92,11 +93,11 @@ async function onCheckoutCompleted(session: Stripe.Checkout.Session) {
       },
     });
 
-    await tx.settings.create({
+    await dbTx.settings.create({
       data: { tenantId: tenant.id },
     });
 
-    await tx.location.create({
+    await dbTx.location.create({
       data: {
         tenantId: tenant.id,
         name: "Main store",
@@ -107,7 +108,7 @@ async function onCheckoutCompleted(session: Stripe.Checkout.Session) {
       },
     });
 
-    await tx.user.create({
+    await dbTx.user.create({
       data: {
         tenantId: tenant.id,
         email,
@@ -121,11 +122,11 @@ async function onCheckoutCompleted(session: Stripe.Checkout.Session) {
 
     const referralCode = metadata.referralCode?.trim().toLowerCase();
     if (referralCode) {
-      const referrer = await tx.tenant.findFirst({
-        where: { referralCode: metadata.referralCode.trim() },
+      const referrer = await dbTx.tenant.findFirst({
+        where: loose({ referralCode: metadata.referralCode.trim() }),
       });
       if (referrer && referrer.id !== tenant.id) {
-        const pending = await tx.referral.findFirst({
+        const pending = await dbTx.referral.findFirst({
           where: {
             tenantId: referrer.id,
             referredEmail: email,
@@ -133,12 +134,12 @@ async function onCheckoutCompleted(session: Stripe.Checkout.Session) {
           },
         });
         if (pending) {
-          await tx.referral.update({
+          await dbTx.referral.update({
             where: { id: pending.id },
             data: { status: "completed", referredTenantId: tenant.id },
           });
         } else {
-          await tx.referral.create({
+          await dbTx.referral.create({
             data: {
               tenantId: referrer.id,
               referredEmail: email,

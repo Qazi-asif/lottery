@@ -7,10 +7,15 @@ import {
   requireFeature,
   requireRole,
 } from "@/lib/permissions";
-import { requirePrisma } from "@/lib/prisma";
+import { loose, requirePrisma } from "@/lib/prisma";
 
 const LANGUAGES = ["en", "es", "bilingual"] as const;
 const LAYOUTS = ["landscape", "portrait"] as const;
+
+function displayLanguage(value: unknown): (typeof LANGUAGES)[number] {
+  if (value === "es" || value === "bilingual") return value;
+  return "en";
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -67,18 +72,23 @@ export async function PUT(request: NextRequest) {
     const existing = await db.displayConfig.findFirst({
       where: { locationId },
     });
+    const existingLanguage =
+      existing && "language" in existing ? existing.language : undefined;
     const data = {
       layout: body.layout ?? existing?.layout ?? "landscape",
       theme: body.theme?.trim() || existing?.theme || "plain",
       binAssignments: body.binAssignments ?? existing?.binAssignments ?? {},
       showWinners: body.showWinners ?? existing?.showWinners ?? true,
-      language: body.language ?? existing?.language ?? "en",
+      language: displayLanguage(body.language ?? existingLanguage),
     };
 
     const config = existing
-      ? await db.displayConfig.update({ where: { id: existing.id }, data })
+      ? await db.displayConfig.update({
+          where: { id: existing.id },
+          data: loose(data),
+        })
       : await db.displayConfig.create({
-          data: { locationId, ...data },
+          data: loose({ locationId, ...data }),
         });
 
     return jsonOk({ config });

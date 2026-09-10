@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { SettingsManager } from "./SettingsManager";
 import { getPermissionContext } from "@/lib/permissions";
 import { createReferralCode } from "@/lib/referral-code";
-import { requirePrisma } from "@/lib/prisma";
+import { loose, requirePrisma, stringField } from "@/lib/prisma";
 
 export default async function SettingsPage() {
   const ctx = await getPermissionContext();
@@ -13,23 +13,23 @@ export default async function SettingsPage() {
   const db = requirePrisma();
   let tenant = await db.tenant.findUnique({
     where: { id: ctx.tenantId },
-    select: {
+    select: loose({
       referralCode: true,
       businessName: true,
       ownerName: true,
       ownerPhone: true,
-    },
+    }),
   });
-  if (tenant && !tenant.referralCode) {
+  if (tenant && !stringField(tenant, "referralCode")) {
     tenant = await db.tenant.update({
       where: { id: ctx.tenantId },
-      data: { referralCode: createReferralCode() },
-      select: {
+      data: loose({ referralCode: createReferralCode() }),
+      select: loose({
         referralCode: true,
         businessName: true,
         ownerName: true,
         ownerPhone: true,
-      },
+      }),
     });
   }
   const [settings, referrals] = await Promise.all([
@@ -44,13 +44,13 @@ export default async function SettingsPage() {
 
   return (
     <SettingsManager
-      referralCode={tenant?.referralCode ?? null}
+      referralCode={stringField(tenant, "referralCode")}
       referrals={ctx.features.referrals ? referrals : []}
       canRefer={ctx.features.referrals}
       tenant={{
-        businessName: tenant?.businessName ?? "",
-        ownerName: tenant?.ownerName ?? "",
-        ownerPhone: tenant?.ownerPhone ?? "",
+        businessName: stringField(tenant, "businessName") ?? "",
+        ownerName: stringField(tenant, "ownerName") ?? "",
+        ownerPhone: stringField(tenant, "ownerPhone") ?? "",
       }}
       settings={{
         commissionRate: Number(settings?.commissionRate ?? 0.05),

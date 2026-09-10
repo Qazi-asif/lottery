@@ -3,6 +3,18 @@ import { ShiftManager } from "@/components/dashboard/ShiftManager";
 import { getPermissionContext, locationWhere } from "@/lib/permissions";
 import { requirePrisma } from "@/lib/prisma";
 
+type ShiftRow = {
+  id: string;
+  status: string;
+  openedAt: Date;
+  closedAt: Date | null;
+  expectedCents: number;
+  actualCents: number | null;
+  varianceCents: number | null;
+  location: { name: string };
+  openedBy: { name: string };
+};
+
 export default async function ShiftsPage() {
   const ctx = await getPermissionContext();
   if (!ctx) redirect("/login");
@@ -34,8 +46,14 @@ export default async function ShiftsPage() {
   return (
     <ShiftManager
       locations={locations}
-      shifts={shifts.map((shift) => ({
-        ...shift,
+      shifts={(shifts as ShiftRow[]).map((shift) => ({
+        id: shift.id,
+        status: shift.status,
+        expectedCents: shift.expectedCents,
+        actualCents: shift.actualCents,
+        varianceCents: shift.varianceCents,
+        location: shift.location,
+        openedBy: shift.openedBy,
         openedAt: shift.openedAt.toISOString(),
         closedAt: shift.closedAt?.toISOString() ?? null,
       }))}

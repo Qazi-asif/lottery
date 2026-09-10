@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { DisplayManager } from "@/components/dashboard/DisplayManager";
 import { getPermissionContext, locationWhere } from "@/lib/permissions";
-import { requirePrisma } from "@/lib/prisma";
+import { loose, requirePrisma, stringField } from "@/lib/prisma";
 
 export default async function DisplayManagerPage() {
   const ctx = await getPermissionContext();
@@ -20,13 +20,13 @@ export default async function DisplayManagerPage() {
         state: true,
         displayConfigs: {
           take: 1,
-          select: {
+          select: loose({
             layout: true,
             theme: true,
             showWinners: true,
             language: true,
             binAssignments: true,
-          },
+          }),
         },
       },
       orderBy: { name: "asc" },
@@ -51,7 +51,7 @@ export default async function DisplayManagerPage() {
               layout: location.displayConfigs[0].layout,
               theme: location.displayConfigs[0].theme,
               showWinners: location.displayConfigs[0].showWinners,
-              language: location.displayConfigs[0].language,
+              language: stringField(location.displayConfigs[0], "language") ?? "en",
               binAssignments: (location.displayConfigs[0].binAssignments ??
                 {}) as Record<string, string>,
             }

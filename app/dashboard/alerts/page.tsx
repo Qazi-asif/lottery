@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getPermissionContext } from "@/lib/permissions";
-import { requirePrisma } from "@/lib/prisma";
+import { asDate, requirePrisma } from "@/lib/prisma";
 
 export default async function AlertsPage() {
   const ctx = await getPermissionContext();
@@ -22,7 +22,7 @@ export default async function AlertsPage() {
   const packs = await db.pack.findMany({
     where: { tenantId: ctx.tenantId, status: "activated", ...locationScope },
     include: {
-      game: { select: { name: true, gameNumber: true, officialCloseAt: true } },
+      game: true,
       location: { select: { name: true } },
       _count: { select: { tickets: { where: { status: "in_stock" } } } },
     },
@@ -52,18 +52,31 @@ export default async function AlertsPage() {
     });
 
   const overdue = packs
-    .filter(
-      (pack) =>
-        pack.game.officialCloseAt &&
-        pack.game.officialCloseAt.getTime() < Date.now() &&
-        pack._count.tickets > 0,
-    )
-    .map((pack) => ({
-      id: pack.id,
-      gameName: pack.game.name,
-      locationName: pack.location.name,
-      close: pack.game.officialCloseAt!.toLocaleDateString("en-US"),
-    }));
+    .filter((pack) => {
+      const officialCloseAt = asDate(
+        pack.game && "officialCloseAt" in pack.game
+          ? pack.game.officialCloseAt
+          : undefined,
+      );
+      return (
+        officialCloseAt !== null &&
+        officialCloseAt.getTime() < Date.now() &&
+        pack._count.tickets > 0
+      );
+    })
+    .map((pack) => {
+      const officialCloseAt = asDate(
+        pack.game && "officialCloseAt" in pack.game
+          ? pack.game.officialCloseAt
+          : undefined,
+      );
+      return {
+        id: pack.id,
+        gameName: pack.game.name,
+        locationName: pack.location.name,
+        close: officialCloseAt?.toLocaleDateString("en-US") ?? "",
+      };
+    });
 
   const employeeSales = await db.sale.groupBy({
     by: ["soldByUserId", "locationId"],

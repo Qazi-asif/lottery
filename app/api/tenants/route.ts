@@ -4,7 +4,7 @@ import {
   requireActiveBilling,
   requireRole,
 } from "@/lib/permissions";
-import { requirePrisma } from "@/lib/prisma";
+import { requirePrisma, loose, stringField } from "@/lib/prisma";
 
 export async function GET() {
   try {
@@ -12,7 +12,7 @@ export async function GET() {
     const db = requirePrisma();
     const tenant = await db.tenant.findUnique({
       where: { id: ctx.tenantId },
-      select: {
+      select: loose({
         id: true,
         businessName: true,
         ownerName: true,
@@ -20,12 +20,14 @@ export async function GET() {
         ownerPhone: true,
         referralCode: true,
         artworkLicenseApproved: true,
-      },
+      }),
     });
     if (!tenant) {
       throw new ApiError("NOT_FOUND", "Tenant not found", 404);
     }
-    return jsonOk({ tenant });
+    return jsonOk({
+      tenant: { ...tenant, referralCode: stringField(tenant, "referralCode") },
+    });
   } catch (error) {
     return apiErrorResponse(error);
   }
@@ -50,16 +52,18 @@ export async function PATCH(request: NextRequest) {
         ...(body.ownerName?.trim() ? { ownerName: body.ownerName.trim() } : {}),
         ...(body.ownerPhone?.trim() ? { ownerPhone: body.ownerPhone.trim() } : {}),
       },
-      select: {
+      select: loose({
         id: true,
         businessName: true,
         ownerName: true,
         ownerEmail: true,
         ownerPhone: true,
         referralCode: true,
-      },
+      }),
     });
-    return jsonOk({ tenant });
+    return jsonOk({
+      tenant: { ...tenant, referralCode: stringField(tenant, "referralCode") },
+    });
   } catch (error) {
     return apiErrorResponse(error);
   }

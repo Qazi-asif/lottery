@@ -5,7 +5,7 @@ import {
   requireFeature,
   requireRole,
 } from "@/lib/permissions";
-import { requirePrisma } from "@/lib/prisma";
+import { requirePrisma, stringField } from "@/lib/prisma";
 
 export async function GET() {
   try {
@@ -18,10 +18,9 @@ export async function GET() {
     });
     const tenant = await db.tenant.findUnique({
       where: { id: ctx.tenantId },
-      select: { referralCode: true },
     });
     return jsonOk({
-      referralCode: tenant?.referralCode,
+      referralCode: stringField(tenant, "referralCode"),
       referrals,
     });
   } catch (error) {

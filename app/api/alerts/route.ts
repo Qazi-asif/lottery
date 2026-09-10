@@ -5,7 +5,7 @@ import {
   requireFeature,
   requireRoleAtLeast,
 } from "@/lib/permissions";
-import { requirePrisma } from "@/lib/prisma";
+import { asDate, loose, requirePrisma } from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
   try {
@@ -41,11 +41,11 @@ export async function GET(request: NextRequest) {
         locationId: true,
         gameId: true,
         game: {
-          select: {
+          select: loose({
             name: true,
             gameNumber: true,
             officialCloseAt: true,
-          },
+          }),
         },
         location: { select: { name: true } },
         _count: { select: { tickets: { where: { status: "in_stock" } } } },
@@ -86,18 +86,20 @@ export async function GET(request: NextRequest) {
       });
 
     const overdueGames = packs
-      .filter(
-        (pack) =>
-          pack.game.officialCloseAt &&
-          pack.game.officialCloseAt.getTime() < Date.now() &&
-          pack._count.tickets > 0,
-      )
+      .filter((pack) => {
+        const officialCloseAt = asDate(pack.game.officialCloseAt);
+        return (
+          officialCloseAt !== null &&
+          officialCloseAt.getTime() < Date.now() &&
+          pack._count.tickets > 0
+        );
+      })
       .map((pack) => ({
         packId: pack.id,
         gameName: pack.game.name,
         gameNumber: pack.game.gameNumber,
         locationName: pack.location.name,
-        officialCloseAt: pack.game.officialCloseAt,
+        officialCloseAt: asDate(pack.game.officialCloseAt),
         remaining: pack._count.tickets,
       }));
 

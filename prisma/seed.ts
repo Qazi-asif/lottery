@@ -1,9 +1,10 @@
 import { PrismaClient, type Prisma } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { ticketBarcodeValue } from "../lib/barcode";
+import { asAppDb, loose, stringField } from "../lib/prisma";
 import { createReferralCode } from "../lib/referral-code";
 
-const prisma = new PrismaClient();
+const prisma = asAppDb(new PrismaClient());
 
 type PlanSeed = {
   name: string;
@@ -148,10 +149,10 @@ async function main() {
     if (existing) {
       await prisma.game.update({
         where: { id: existing.id },
-        data: { ...game, active: true },
+        data: loose({ ...game, active: true }),
       });
     } else {
-      await prisma.game.create({ data: { ...game, active: true } });
+      await prisma.game.create({ data: loose({ ...game, active: true }) });
     }
   }
   console.log(`Seeded ${GAMES.length} sample games`);
@@ -344,14 +345,14 @@ async function ensureDemoDashboard() {
 
   if (!tenantId) {
     const tenant = await prisma.tenant.create({
-      data: {
+      data: loose({
         businessName: "Demo Retailer",
         ownerName: "Demo Owner",
         ownerEmail: "owner@scratchcrest.local",
         ownerPhone: "5125550100",
         stripeCustomerId: "cus_demo",
         referralCode: createReferralCode(),
-      },
+      }),
     });
     tenantId = tenant.id;
     await prisma.subscription.create({
@@ -365,10 +366,10 @@ async function ensureDemoDashboard() {
     });
   } else {
     const tenant = await prisma.tenant.findUnique({ where: { id: tenantId } });
-    if (tenant && !tenant.referralCode) {
+    if (tenant && !stringField(tenant, "referralCode")) {
       await prisma.tenant.update({
         where: { id: tenantId },
-        data: { referralCode: createReferralCode() },
+        data: loose({ referralCode: createReferralCode() }),
       });
     }
   }
@@ -522,7 +523,7 @@ async function ensureDemoDashboard() {
   });
   if (!display) {
     await prisma.displayConfig.create({
-      data: {
+      data: loose({
         locationId: main.id,
         layout: "landscape",
         theme: "plain",
@@ -533,7 +534,7 @@ async function ensureDemoDashboard() {
           "2": classic.id,
           "3": high.id,
         },
-      },
+      }),
     });
   }
 

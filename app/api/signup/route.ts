@@ -76,6 +76,7 @@ export async function POST(request: NextRequest) {
         planId: plan.id,
         billing,
         ...(referralCode ? { referralCode } : {}),
+      },
       subscription_data: {
         metadata: {
           planId: plan.id,

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { DisplayPoller } from "@/components/display/DisplayPoller";
 import { formatCents } from "@/lib/format";
-import { getPrisma } from "@/lib/prisma";
+import { getPrisma, loose } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
@@ -44,13 +44,13 @@ export default async function InStoreDisplayPage({
       tenant: { select: { artworkLicenseApproved: true, businessName: true } },
       displayConfigs: {
         take: 1,
-        select: {
+        select: loose({
           layout: true,
           theme: true,
           binAssignments: true,
           showWinners: true,
           language: true,
-        },
+        }),
       },
     },
   });

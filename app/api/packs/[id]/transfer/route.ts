@@ -6,7 +6,7 @@ import {
   requireFeature,
   requireRole,
 } from "@/lib/permissions";
-import { requirePrisma } from "@/lib/prisma";
+import { asAppDb, requirePrisma } from "@/lib/prisma";
 
 export async function POST(
   request: NextRequest,
@@ -47,12 +47,12 @@ export async function POST(
     }
 
     const fromLocationId = pack.locationId;
-    const [updated] = await db.$transaction([
-      db.pack.update({
+    const updated = await db.$transaction(async (tx) => {
+      const next = await tx.pack.update({
         where: { id: pack.id },
         data: { locationId: toLocationId },
-      }),
-      db.packTransfer.create({
+      });
+      await asAppDb(tx).packTransfer.create({
         data: {
           tenantId: ctx.tenantId,
           packId: pack.id,
@@ -61,8 +61,9 @@ export async function POST(
           transferredByUserId: ctx.userId,
           transferredAt: new Date(),
         },
-      }),
-    ]);
+      });
+      return next;
+    });
 
     return jsonOk({ pack: updated });
   } catch (error) {
