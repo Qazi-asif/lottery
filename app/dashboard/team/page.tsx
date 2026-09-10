@@ -13,7 +13,15 @@ export default async function TeamPage() {
   const [locations, members] = await Promise.all([
     db.location.findMany({
       where: { tenantId: ctx.tenantId },
-      select: { id: true, name: true },
+      select: {
+        id: true,
+        name: true,
+        address: true,
+        city: true,
+        state: true,
+        zip: true,
+        active: true,
+      },
       orderBy: { name: "asc" },
     }),
     db.user.findMany({

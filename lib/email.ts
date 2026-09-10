@@ -30,7 +30,7 @@ export async function sendPasswordSetEmail(options: {
   to: string;
   name: string;
   token: string;
-  kind: "welcome" | "invite" | "dunning";
+  kind: "welcome" | "invite" | "dunning" | "reset";
 }) {
   const url = `${getAppUrl()}/set-password/${options.token}`;
   const subject =
@@ -38,12 +38,16 @@ export async function sendPasswordSetEmail(options: {
       ? "You're invited to ScratchCrest"
       : options.kind === "dunning"
         ? "Action needed on your ScratchCrest subscription"
-        : "Set up your ScratchCrest account";
+        : options.kind === "reset"
+          ? "Reset your ScratchCrest password"
+          : "Set up your ScratchCrest account";
 
   const intro =
     options.kind === "invite"
       ? `You've been invited to join a ScratchCrest team.`
-      : `Welcome to ScratchCrest, ${options.name}.`;
+      : options.kind === "reset"
+        ? `A password reset was requested for ${options.name}.`
+        : `Welcome to ScratchCrest, ${options.name}.`;
 
   await sendEmail(
     options.to,

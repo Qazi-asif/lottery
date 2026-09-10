@@ -58,6 +58,9 @@ export default function LoginPage() {
         <Button type="submit" disabled={pending} className="w-full">
           {pending ? "Signing in…" : "Sign in"}
         </Button>
+        <a href="/forgot-password" className="block text-center text-small text-ink-soft">
+          Forgot password
+        </a>
       </form>
     </div>
   );

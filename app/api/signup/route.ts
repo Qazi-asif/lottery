@@ -16,6 +16,7 @@ export async function POST(request: NextRequest) {
       zip?: string;
       plan?: string;
       billing?: string;
+      referralCode?: string;
     };
 
     const businessName = body.businessName?.trim();
@@ -28,6 +29,7 @@ export async function POST(request: NextRequest) {
     const zip = body.zip?.trim();
     const planName = body.plan?.trim();
     const billing = body.billing === "annual" ? "annual" : "monthly";
+    const referralCode = body.referralCode?.trim();
 
     if (
       !businessName ||
@@ -73,7 +75,7 @@ export async function POST(request: NextRequest) {
         zip,
         planId: plan.id,
         billing,
-      },
+        ...(referralCode ? { referralCode } : {}),
       subscription_data: {
         metadata: {
           planId: plan.id,

@@ -12,6 +12,10 @@ const PREVIEW_PLANS = [
       display: false,
       multi_location: false,
       commission_reports: false,
+      alerts: true,
+      cash_reconciliation: false,
+      pack_transfer: false,
+      referrals: false,
     } satisfies PlanFeatures,
   },
   {
@@ -24,6 +28,10 @@ const PREVIEW_PLANS = [
       display: false,
       multi_location: false,
       commission_reports: true,
+      alerts: true,
+      cash_reconciliation: false,
+      pack_transfer: false,
+      referrals: true,
     } satisfies PlanFeatures,
   },
   {
@@ -36,6 +44,10 @@ const PREVIEW_PLANS = [
       display: true,
       multi_location: true,
       commission_reports: true,
+      alerts: true,
+      cash_reconciliation: true,
+      pack_transfer: true,
+      referrals: true,
     } satisfies PlanFeatures,
   },
   {
@@ -48,6 +60,10 @@ const PREVIEW_PLANS = [
       display: true,
       multi_location: true,
       commission_reports: true,
+      alerts: true,
+      cash_reconciliation: true,
+      pack_transfer: true,
+      referrals: true,
     } satisfies PlanFeatures,
   },
 ];

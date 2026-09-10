@@ -22,6 +22,7 @@ export default async function InventoryPage() {
         packNumber: true,
         status: true,
         ticketCount: true,
+        locationId: true,
         game: { select: { name: true, gameNumber: true } },
         location: { select: { name: true } },
         _count: { select: { tickets: { where: { status: "in_stock" } } } },
@@ -48,6 +49,7 @@ export default async function InventoryPage() {
       }))}
       games={games}
       locations={locations}
+      canTransfer={ctx.features.pack_transfer}
     />
   );
 }

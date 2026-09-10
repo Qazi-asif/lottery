@@ -29,12 +29,31 @@ const ITEMS: NavItem[] = [
     feature: "commission_reports",
   },
   {
+    href: "/dashboard/alerts",
+    label: "Alerts",
+    roles: ["tenant_owner", "location_manager"],
+    feature: "alerts",
+  },
+  {
+    href: "/dashboard/shifts",
+    label: "Shifts",
+    roles: ["tenant_owner", "location_manager"],
+    feature: "cash_reconciliation",
+  },
+  {
+    href: "/dashboard/compare",
+    label: "Compare",
+    roles: ["tenant_owner"],
+    feature: "multi_location",
+  },
+  {
     href: "/dashboard/display",
     label: "Display",
     roles: ["tenant_owner", "location_manager"],
     feature: "display",
   },
   { href: "/dashboard/team", label: "Team", roles: ["tenant_owner"] },
+  { href: "/dashboard/settings", label: "Settings", roles: ["tenant_owner"] },
   { href: "/dashboard/billing", label: "Billing", roles: ["tenant_owner"] },
 ];
 

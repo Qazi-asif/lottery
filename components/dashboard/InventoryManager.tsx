@@ -10,6 +10,7 @@ type PackRow = {
   status: string;
   ticketCount: number;
   remainingTickets: number;
+  locationId: string;
   game: { name: string; gameNumber: string };
   location: { name: string };
 };
@@ -21,10 +22,12 @@ export function InventoryManager({
   packs,
   games,
   locations,
+  canTransfer,
 }: {
   packs: PackRow[];
   games: Game[];
   locations: Location[];
+  canTransfer: boolean;
 }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -56,6 +59,21 @@ export function InventoryManager({
     const data = await response.json();
     if (!response.ok) {
       setError(data.error?.message ?? "Could not activate pack");
+      return;
+    }
+    setError(null);
+    router.refresh();
+  }
+
+  async function transfer(packId: string, toLocationId: string) {
+    const response = await fetch(`/api/packs/${packId}/transfer`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ toLocationId }),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      setError(data.error?.message ?? "Could not transfer pack");
       return;
     }
     setError(null);
@@ -146,6 +164,27 @@ export function InventoryManager({
                       View
                     </Link>
                   )}
+                  {canTransfer && pack.status !== "closed" ? (
+                    <select
+                      className="mt-2 block rounded-lg border border-border bg-bg px-2 py-1 text-small"
+                      defaultValue=""
+                      onChange={(event) => {
+                        if (event.target.value) {
+                          void transfer(pack.id, event.target.value);
+                          event.target.value = "";
+                        }
+                      }}
+                    >
+                      <option value="">Transfer…</option>
+                      {locations
+                        .filter((location) => location.id !== pack.locationId)
+                        .map((location) => (
+                          <option key={location.id} value={location.id}>
+                            {location.name}
+                          </option>
+                        ))}
+                    </select>
+                  ) : null}
                 </td>
               </tr>
             ))}

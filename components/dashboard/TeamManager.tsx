@@ -3,7 +3,15 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
-type Location = { id: string; name: string };
+type Location = {
+  id: string;
+  name: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  active: boolean;
+};
 type Member = { id: string; email: string; name: string; role: string };
 
 export function TeamManager({
@@ -66,6 +74,21 @@ export function TeamManager({
     router.refresh();
   }
 
+  async function patchLocation(id: string, payload: Record<string, unknown>) {
+    const response = await fetch(`/api/locations/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      setError(data.error?.message ?? "Could not update location");
+      return;
+    }
+    setError(null);
+    router.refresh();
+  }
+
   return (
     <div>
       <h1 className="font-serif text-h2 font-semibold">Team & locations</h1>
@@ -125,6 +148,72 @@ export function TeamManager({
           Save location
         </button>
       </form>
+
+      <ul className="mt-8 space-y-4">
+        {locations.map((location) => (
+          <li
+            key={location.id}
+            className="rounded-lg border border-border bg-bg-secondary p-6"
+          >
+            <form
+              className="grid gap-3 md:grid-cols-2"
+              onSubmit={(event) => {
+                event.preventDefault();
+                const form = new FormData(event.currentTarget);
+                void patchLocation(location.id, {
+                  name: String(form.get("name") ?? ""),
+                  address: String(form.get("address") ?? ""),
+                  city: String(form.get("city") ?? ""),
+                  state: String(form.get("state") ?? "TX"),
+                  zip: String(form.get("zip") ?? ""),
+                });
+              }}
+            >
+              <input
+                name="name"
+                required
+                defaultValue={location.name}
+                className="rounded-lg border border-border bg-bg px-3 py-2"
+              />
+              <input
+                name="address"
+                required
+                defaultValue={location.address}
+                className="rounded-lg border border-border bg-bg px-3 py-2"
+              />
+              <input
+                name="city"
+                required
+                defaultValue={location.city}
+                className="rounded-lg border border-border bg-bg px-3 py-2"
+              />
+              <input
+                name="state"
+                defaultValue={location.state}
+                className="rounded-lg border border-border bg-bg px-3 py-2"
+              />
+              <input
+                name="zip"
+                required
+                defaultValue={location.zip}
+                className="rounded-lg border border-border bg-bg px-3 py-2"
+              />
+              <div className="flex flex-wrap gap-3">
+                <button type="submit" className="rounded-lg border-2 border-transparent bg-ink px-4 py-2 text-bg hover:border-gold">
+                  Save location
+                </button>
+                <button
+                  type="button"
+                  onClick={() => patchLocation(location.id, { active: !location.active })}
+                  className="rounded-lg border border-ink px-4 py-2 text-small"
+                >
+                  {location.active ? "Deactivate" : "Reactivate"}
+                </button>
+              </div>
+            </form>
+          </li>
+        ))}
+      </ul>
 
       <ul className="mt-8 divide-y divide-border rounded-lg border border-border">
         {members.map((member) => (

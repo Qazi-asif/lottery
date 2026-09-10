@@ -26,6 +26,7 @@ function SignupForm() {
       city: String(form.get("city") ?? ""),
       state: String(form.get("state") ?? "TX"),
       zip: String(form.get("zip") ?? ""),
+      referralCode: String(form.get("referralCode") ?? ""),
       plan,
       billing,
     };
@@ -70,13 +71,14 @@ function SignupForm() {
           ["city", "City", "text"],
           ["state", "State", "text"],
           ["zip", "ZIP", "text"],
+          ["referralCode", "Referral code (optional)", "text"],
         ].map(([name, label, type]) => (
           <label key={name} className="block text-small text-ink-soft">
             {label}
             <input
               name={name}
               type={type}
-              required
+              required={name !== "referralCode"}
               defaultValue={name === "state" ? "TX" : ""}
               className={fieldClass}
             />

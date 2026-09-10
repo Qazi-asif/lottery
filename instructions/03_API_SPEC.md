@@ -9,7 +9,7 @@
 
 ### `POST /api/signup`
 Public. Creates a lead record before payment.
-- Body: `{ businessName, ownerName, email, phone, storeAddress, city, state, zip }`
+- Body: `{ businessName, ownerName, email, phone, storeAddress, city, state, zip, referralCode? }`
 - Action: stores submission temporarily (or passes through to Stripe Checkout session
   metadata), does **not** create a `tenants` row yet — that happens on webhook confirmation.
 - Returns: `{ checkoutUrl }` — a Stripe Checkout session URL to redirect to.
@@ -39,6 +39,18 @@ Auth: `tenant_owner` only.
 - Body: `{ email, role, locationIds[] }`
 - Action: creates `users` row with token, sends invite email (same set-password flow).
 
+### `GET /api/users`
+Auth: `tenant_owner` only. Lists users for the session tenant (no password hashes).
+
+### `POST /api/forgot-password`
+Public. Body: `{ email }`. Always returns `{ ok: true }`. If the email exists, issues a set-password token and sends the same token-link email (never a plaintext password).
+
+### `GET /api/tenants`
+Auth: `tenant_owner`. Returns the session tenant (including `referralCode`).
+
+### `PATCH /api/tenants`
+Auth: `tenant_owner`. Body: `{ businessName?, ownerName?, ownerPhone? }`.
+
 ## Locations
 
 ### `GET /api/locations`
@@ -47,6 +59,9 @@ Auth: any role. Returns locations scoped to caller's tenant (and, for
 
 ### `POST /api/locations`
 Auth: `tenant_owner` only. Body: `{ name, address, city, state, zip }`.
+
+### `PATCH /api/locations/[id]`
+Auth: `tenant_owner` only. Body: `{ name?, address?, city?, state?, zip?, active? }`.
 
 ## Games (reference data — read-only for tenants)
 
@@ -67,6 +82,11 @@ Auth: `tenant_owner`, `location_manager`.
   `tickets` rows 1..ticket_count with computed `barcode_value` for each. This is the
   "no manual per-ticket entry" mechanism described in the product discussion — do not
   build a UI for entering individual tickets by hand.
+
+### `POST /api/packs/[id]/transfer`
+Auth: `tenant_owner`, `location_manager`. Gated by `plan.features.pack_transfer`.
+- Body: `{ toLocationId }`
+- Action: writes a `pack_transfers` row and updates `packs.location_id`. Rejects closed packs and cross-tenant locations.
 
 ### `GET /api/packs?locationId=&status=`
 Auth: any role scoped to that location. Returns packs with remaining ticket counts.
@@ -100,6 +120,25 @@ Returns aggregated sales/commission figures. `groupBy` options: `day`, `week`, `
 
 ### `GET /api/inventory/low-stock?locationId=`
 Returns packs where `in_stock` ticket count < `settings.low_stock_threshold`.
+
+### `GET /api/alerts`
+Auth: `location_manager` and above. Gated by `plan.features.alerts`.
+Returns low-stock with 7-day sell-through velocity, games still active past `games.official_close_at`, and per-employee scan counts that are far above the location average for the last 7 days. Does **not** suggest which games are "luckier."
+
+### `GET /api/settings` / `PATCH /api/settings`
+Auth: `tenant_owner`. Body: `{ commissionRate?, cashingBonusRate?, lowStockThreshold? }`.
+
+### `GET /api/display-configs?locationId=` / `PUT /api/display-configs`
+Auth: `tenant_owner`, `location_manager`. Gated by `display`.
+Body: `{ locationId, layout, theme, binAssignments, showWinners, language }`.
+
+### `GET /api/shifts` / `POST /api/shifts` / `POST /api/shifts/[id]/close`
+Auth: `location_manager` and above. Gated by `cash_reconciliation`.
+Open body: `{ locationId }`. Close body: `{ actualCents }`. Expected drawer = ticket sales minus prize payouts during the open window.
+
+### `GET /api/referrals` / `POST /api/referrals`
+Auth: `tenant_owner`. Gated by `referrals`.
+POST body: `{ email }`. Records a pending $50 (`5000` cents) referral.
 
 ## Display (public, read-only, no auth — rendered on in-store TV)
 

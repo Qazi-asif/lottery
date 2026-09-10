@@ -39,6 +39,16 @@ enum DisplayLayout {
   portrait
 }
 
+enum ShiftStatus {
+  open
+  closed
+}
+
+enum ReferralStatus {
+  pending
+  completed
+}
+
 model Plan {
   id                   String   @id @default(uuid()) @db.Uuid
   name                 String
@@ -63,15 +73,20 @@ model Tenant {
   ownerPhone             String   @map("owner_phone")
   stripeCustomerId       String   @map("stripe_customer_id")
   artworkLicenseApproved Boolean  @default(false) @map("artwork_license_approved")
+  referralCode           String?  @unique @map("referral_code")
   createdAt              DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
-  subscriptions Subscription[]
-  users         User[]
-  locations     Location[]
-  packs         Pack[]
-  sales         Sale[]
-  prizePayouts  PrizePayout[]
-  settings      Settings?
+  subscriptions        Subscription[]
+  users                User[]
+  locations            Location[]
+  packs                Pack[]
+  sales                Sale[]
+  prizePayouts         PrizePayout[]
+  settings             Settings?
+  shiftReconciliations ShiftReconciliation[]
+  packTransfers        PackTransfer[]
+  referralsMade        Referral[]          @relation("ReferrerTenant")
+  referralsReceived    Referral[]          @relation("ReferredTenant")
 
   @@map("tenants")
 }
@@ -107,6 +122,9 @@ model User {
   soldTickets   Ticket[]       @relation("SoldByUser")
   sales         Sale[]
   prizePayouts  PrizePayout[]
+  shiftsOpened  ShiftReconciliation[] @relation("ShiftOpenedBy")
+  shiftsClosed  ShiftReconciliation[] @relation("ShiftClosedBy")
+  packTransfers PackTransfer[]
 
   @@map("users")
 }
@@ -139,6 +157,9 @@ model Location {
   sales          Sale[]
   prizePayouts   PrizePayout[]
   displayConfigs DisplayConfig[]
+  shifts         ShiftReconciliation[]
+  transfersFrom  PackTransfer[] @relation("TransferFrom")
+  transfersTo    PackTransfer[] @relation("TransferTo")
 
   @@map("locations")
 }
@@ -151,6 +172,7 @@ model Game {
   ticketsPerPack      Int      @map("tickets_per_pack")
   active              Boolean
   prizesRemainingData Json?    @map("prizes_remaining_data")
+  officialCloseAt     DateTime? @map("official_close_at") @db.Timestamptz(6)
   createdAt           DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt           DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
@@ -176,6 +198,7 @@ model Pack {
   location Location @relation(fields: [locationId], references: [id])
   game     Game     @relation(fields: [gameId], references: [id])
   tickets  Ticket[]
+  transfers PackTransfer[]
 
   @@map("packs")
 }
@@ -255,9 +278,64 @@ model DisplayConfig {
   theme          String
   binAssignments Json          @map("bin_assignments")
   showWinners    Boolean       @default(true) @map("show_winners")
+  language       String       @default("en")
   updatedAt      DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   location Location @relation(fields: [locationId], references: [id])
 
   @@map("display_configs")
+}
+
+model ShiftReconciliation {
+  id             String      @id @default(uuid()) @db.Uuid
+  tenantId       String      @map("tenant_id") @db.Uuid
+  locationId     String      @map("location_id") @db.Uuid
+  openedByUserId String      @map("opened_by_user_id") @db.Uuid
+  closedByUserId String?     @map("closed_by_user_id") @db.Uuid
+  openedAt       DateTime    @map("opened_at") @db.Timestamptz(6)
+  closedAt       DateTime?   @map("closed_at") @db.Timestamptz(6)
+  expectedCents  Int         @default(0) @map("expected_cents")
+  actualCents    Int?        @map("actual_cents")
+  varianceCents  Int?        @map("variance_cents")
+  status         ShiftStatus
+
+  tenant     Tenant    @relation(fields: [tenantId], references: [id])
+  location   Location  @relation(fields: [locationId], references: [id])
+  openedBy   User      @relation("ShiftOpenedBy", fields: [openedByUserId], references: [id])
+  closedBy   User?     @relation("ShiftClosedBy", fields: [closedByUserId], references: [id])
+
+  @@map("shift_reconciliations")
+}
+
+model PackTransfer {
+  id                   String   @id @default(uuid()) @db.Uuid
+  tenantId             String   @map("tenant_id") @db.Uuid
+  packId               String   @map("pack_id") @db.Uuid
+  fromLocationId       String   @map("from_location_id") @db.Uuid
+  toLocationId         String   @map("to_location_id") @db.Uuid
+  transferredByUserId  String   @map("transferred_by_user_id") @db.Uuid
+  transferredAt        DateTime @map("transferred_at") @db.Timestamptz(6)
+
+  tenant         Tenant   @relation(fields: [tenantId], references: [id])
+  pack           Pack     @relation(fields: [packId], references: [id])
+  fromLocation   Location  @relation("TransferFrom", fields: [fromLocationId], references: [id])
+  toLocation     Location  @relation("TransferTo", fields: [toLocationId], references: [id])
+  transferredBy  User     @relation(fields: [transferredByUserId], references: [id])
+
+  @@map("pack_transfers")
+}
+
+model Referral {
+  id                String         @id @default(uuid()) @db.Uuid
+  tenantId          String         @map("tenant_id") @db.Uuid
+  referredEmail     String         @map("referred_email")
+  referredTenantId  String?        @map("referred_tenant_id") @db.Uuid
+  creditCents       Int            @default(5000) @map("credit_cents")
+  status            ReferralStatus
+  createdAt         DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant          Tenant  @relation("ReferrerTenant", fields: [tenantId], references: [id])
+  referredTenant Tenant? @relation("ReferredTenant", fields: [referredTenantId], references: [id])
+
+  @@map("referrals")
 }

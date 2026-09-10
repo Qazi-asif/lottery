@@ -6,29 +6,29 @@
 
 ## Phase 1 — MVP
 
-- [ ] Marketing site: home, pricing (pulled from `plans` table), features page
-- [ ] Signup form → Stripe Checkout → webhook → password-set email
-- [ ] Login / dashboard shell with role-based nav
-- [ ] Locations CRUD (`tenant_owner`)
-- [ ] Games reference table (seeded by platform admin, read-only to tenants)
-- [ ] Packs: receive + activate (auto-generates tickets)
-- [ ] Scan-to-sell screen (`cashier` role) with keyboard-wedge barcode listener
-- [ ] Sales log + basic commission dashboard (`location_manager`+)
-- [ ] Generic/plain-text in-store display (`/display/[locationId]`) — no official
+- [x] Marketing site: home, pricing (pulled from `plans` table), features page
+- [x] Signup form → Stripe Checkout → webhook → password-set email
+- [x] Login / dashboard shell with role-based nav
+- [x] Locations CRUD (`tenant_owner`)
+- [x] Games reference table (seeded by platform admin, read-only to tenants)
+- [x] Packs: receive + activate (auto-generates tickets)
+- [x] Scan-to-sell screen (`cashier` role) with keyboard-wedge barcode listener
+- [x] Sales log + basic commission dashboard (`location_manager`+)
+- [x] Generic/plain-text in-store display (`/display/[locationId]`) — no official
       artwork, respects `artwork_license_approved` flag defaulting to false
-- [ ] User invite flow for `location_manager` / `cashier`
-- [ ] Stripe Customer Portal link on Billing page
+- [x] User invite flow for `location_manager` / `cashier`
+- [x] Stripe Customer Portal link on Billing page
 
 ## Phase 2 — Differentiation (beat lotterydisplay.com's gaps)
 
-- [ ] Cash reconciliation per shift (expected vs. actual drawer count)
-- [ ] Low-stock / reorder alerts based on real sell-through velocity
-- [ ] Per-employee sold/scanned anomaly flags
-- [ ] Auto-alert when a game is still active past its official closing date
-- [ ] Multi-location comparison dashboard for `tenant_owner`
-- [ ] Pack transfer between locations
-- [ ] Bilingual (English/Spanish) display mode
-- [ ] Referral program (matches/beats competitor's $50 referral)
+- [x] Cash reconciliation per shift (expected vs. actual drawer count)
+- [x] Low-stock / reorder alerts based on real sell-through velocity
+- [x] Per-employee sold/scanned anomaly flags
+- [x] Auto-alert when a game is still active past its official closing date
+- [x] Multi-location comparison dashboard for `tenant_owner`
+- [x] Pack transfer between locations
+- [x] Bilingual (English/Spanish) display mode
+- [x] Referral program (matches/beats competitor's $50 referral)
 
 ## Phase 3 — Scale & platform maturity
 

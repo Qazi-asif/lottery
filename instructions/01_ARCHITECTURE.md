@@ -70,6 +70,7 @@
     signup/page.tsx
     set-password/[token]/page.tsx
     login/page.tsx
+    forgot-password/page.tsx
   /dashboard
     layout.tsx               # auth guard + role guard lives here
     page.tsx                 # overview
@@ -77,9 +78,13 @@
       page.tsx
       packs/[packId]/page.tsx
     sales/page.tsx
-    display/page.tsx         # display manager (theme, bin assignment)
+    display/page.tsx         # display manager (theme, bin assignment, language)
     team/page.tsx
     billing/page.tsx
+    alerts/page.tsx
+    shifts/page.tsx
+    compare/page.tsx
+    settings/page.tsx
   /display                   # PUBLIC read-only route rendered on in-store TV
     [locationId]/page.tsx
   /api
@@ -94,6 +99,15 @@
     /payouts/route.ts
     /users/route.ts
     /users/invite/route.ts
+    /forgot-password/route.ts
+    /settings/route.ts
+    /display-configs/route.ts
+    /alerts/route.ts
+    /shifts/route.ts
+    /shifts/[id]/close/route.ts
+    /packs/[id]/transfer/route.ts
+    /referrals/route.ts
+    /locations/[id]/route.ts
 
 /lib
   prisma.ts                  # Prisma client singleton

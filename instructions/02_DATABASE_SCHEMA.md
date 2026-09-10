@@ -13,6 +13,9 @@ Plan ──< Subscription >── Tenant ──< Location ──< Pack ──< T
                               ├──< Settings            └──< PrizePayout
                               └──< DisplayConfig
 Game ──< Pack   (Game is global reference data, not tenant-owned)
+Tenant ──< ShiftReconciliation
+Tenant ──< PackTransfer
+Tenant ──< Referral
 ```
 
 ## Tables
@@ -42,6 +45,7 @@ Game ──< Pack   (Game is global reference data, not tenant-owned)
 | owner_phone | text | |
 | stripe_customer_id | text | |
 | artwork_license_approved | boolean, default false | gates official-branding display mode — see `00_OVERVIEW.md` |
+| referral_code | text, unique, nullable | shareable code for the $50 referral program |
 | created_at | timestamptz | |
 
 ### `subscriptions`
@@ -105,6 +109,7 @@ does not need rows here.
 | tickets_per_pack | int | fixed count per game, used to auto-generate ticket rows |
 | active | boolean | |
 | prizes_remaining_data | jsonb, nullable | optional cache of publicly published prize-tier data |
+| official_close_at | timestamptz, nullable | official game closing date; used for overdue-active alerts |
 | created_at | timestamptz | |
 | updated_at | timestamptz | |
 
@@ -183,7 +188,50 @@ does not need rows here.
 | theme | text | theme identifier |
 | bin_assignments | jsonb | maps physical bin number → game_id |
 | show_winners | boolean, default true | |
+| language | text, default 'en' | `en`, `es`, or `bilingual` for in-store display copy |
 | updated_at | timestamptz | |
+
+### `shift_reconciliations`
+
+| Field | Type | Notes |
+|---|---|---|
+| id | uuid, PK | |
+| tenant_id | uuid, FK → tenants.id | |
+| location_id | uuid, FK → locations.id | |
+| opened_by_user_id | uuid, FK → users.id | |
+| closed_by_user_id | uuid, FK → users.id, nullable | |
+| opened_at | timestamptz | |
+| closed_at | timestamptz, nullable | |
+| expected_cents | int | sales minus prize payouts while the shift was open |
+| actual_cents | int, nullable | drawer count entered at close |
+| variance_cents | int, nullable | actual minus expected |
+| status | enum: `open`, `closed` | at most one `open` shift per location (enforced in API) |
+
+### `pack_transfers`
+
+| Field | Type | Notes |
+|---|---|---|
+| id | uuid, PK | |
+| tenant_id | uuid, FK → tenants.id | |
+| pack_id | uuid, FK → packs.id | |
+| from_location_id | uuid, FK → locations.id | |
+| to_location_id | uuid, FK → locations.id | |
+| transferred_by_user_id | uuid, FK → users.id | |
+| transferred_at | timestamptz | |
+
+Closed packs cannot be transferred. After transfer, `packs.location_id` is the destination.
+
+### `referrals`
+
+| Field | Type | Notes |
+|---|---|---|
+| id | uuid, PK | |
+| tenant_id | uuid, FK → tenants.id | referring tenant |
+| referred_email | text | |
+| referred_tenant_id | uuid, FK → tenants.id, nullable | set when the referred account is created |
+| credit_cents | int, default 5000 | $50 credit recorded in-app (Stripe keys not required) |
+| status | enum: `pending`, `completed` | |
+| created_at | timestamptz | |
 
 ## Naming conventions (apply consistently — do not mix styles)
 

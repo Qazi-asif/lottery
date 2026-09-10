@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
+import { DisplayManager } from "@/components/dashboard/DisplayManager";
 import { getPermissionContext, locationWhere } from "@/lib/permissions";
 import { requirePrisma } from "@/lib/prisma";
 
@@ -10,41 +10,53 @@ export default async function DisplayManagerPage() {
   if (!ctx.features.display) redirect("/dashboard");
 
   const db = requirePrisma();
-  const locations = await db.location.findMany({
-    where: locationWhere(ctx),
-    select: { id: true, name: true, city: true, state: true },
-    orderBy: { name: "asc" },
-  });
+  const [locations, games] = await Promise.all([
+    db.location.findMany({
+      where: locationWhere(ctx),
+      select: {
+        id: true,
+        name: true,
+        city: true,
+        state: true,
+        displayConfigs: {
+          take: 1,
+          select: {
+            layout: true,
+            theme: true,
+            showWinners: true,
+            language: true,
+            binAssignments: true,
+          },
+        },
+      },
+      orderBy: { name: "asc" },
+    }),
+    db.game.findMany({
+      where: { active: true },
+      select: { id: true, name: true, gameNumber: true },
+      orderBy: { name: "asc" },
+    }),
+  ]);
 
   return (
-    <div>
-      <h1 className="font-serif text-h2 font-semibold">In-store display</h1>
-      <p className="mt-2 max-w-2xl text-body text-ink-soft">
-        Open the public display on a TV browser. Rendering stays generic until
-        artwork licensing is approved for this account.
-      </p>
-      <ul className="mt-8 space-y-4">
-        {locations.map((location) => (
-          <li
-            key={location.id}
-            className="flex items-center justify-between rounded-lg border border-border bg-bg-secondary p-6"
-          >
-            <div>
-              <p className="font-serif text-h3">{location.name}</p>
-              <p className="text-small text-ink-soft">
-                {location.city}, {location.state}
-              </p>
-            </div>
-            <Link
-              href={`/display/${location.id}`}
-              target="_blank"
-              className="rounded-lg border border-ink px-4 py-2 text-small"
-            >
-              Open display
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <DisplayManager
+      games={games}
+      locations={locations.map((location) => ({
+        id: location.id,
+        name: location.name,
+        city: location.city,
+        state: location.state,
+        config: location.displayConfigs[0]
+          ? {
+              layout: location.displayConfigs[0].layout,
+              theme: location.displayConfigs[0].theme,
+              showWinners: location.displayConfigs[0].showWinners,
+              language: location.displayConfigs[0].language,
+              binAssignments: (location.displayConfigs[0].binAssignments ??
+                {}) as Record<string, string>,
+            }
+          : null,
+      }))}
+    />
   );
 }

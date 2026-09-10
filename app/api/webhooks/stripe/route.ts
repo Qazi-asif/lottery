@@ -4,6 +4,7 @@ import { ApiError, apiErrorResponse, jsonOk } from "@/lib/api-error";
 import { sendDunningEmail, sendPasswordSetEmail } from "@/lib/email";
 import { createPasswordSetToken } from "@/lib/password-token";
 import { requirePrisma } from "@/lib/prisma";
+import { createReferralCode } from "@/lib/referral-code";
 import { getStripe } from "@/lib/stripe";
 
 export const runtime = "nodejs";
@@ -77,6 +78,7 @@ async function onCheckoutCompleted(session: Stripe.Checkout.Session) {
         ownerPhone: metadata.phone ?? "",
         stripeCustomerId: customerId,
         artworkLicenseApproved: false,
+        referralCode: createReferralCode(),
       },
     });
 
@@ -116,6 +118,38 @@ async function onCheckoutCompleted(session: Stripe.Checkout.Session) {
         passwordSetTokenExpires: token.expires,
       },
     });
+
+    const referralCode = metadata.referralCode?.trim().toLowerCase();
+    if (referralCode) {
+      const referrer = await tx.tenant.findFirst({
+        where: { referralCode: metadata.referralCode.trim() },
+      });
+      if (referrer && referrer.id !== tenant.id) {
+        const pending = await tx.referral.findFirst({
+          where: {
+            tenantId: referrer.id,
+            referredEmail: email,
+            status: "pending",
+          },
+        });
+        if (pending) {
+          await tx.referral.update({
+            where: { id: pending.id },
+            data: { status: "completed", referredTenantId: tenant.id },
+          });
+        } else {
+          await tx.referral.create({
+            data: {
+              tenantId: referrer.id,
+              referredEmail: email,
+              referredTenantId: tenant.id,
+              status: "completed",
+              creditCents: 5000,
+            },
+          });
+        }
+      }
+    }
   });
 
   await sendPasswordSetEmail({

@@ -1,0 +1,2 @@
+-- Phase 2 additive schema. Prefer `npx prisma migrate deploy`.
+-- Canonical copy: prisma/migrations/20240911000000_phase2/migration.sql
