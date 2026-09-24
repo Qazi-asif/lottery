@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { BillingPortalButton } from "@/components/dashboard/BillingPortalButton";
+import { DashboardPage } from "@/components/dashboard/DashboardPage";
 import { getPermissionContext } from "@/lib/permissions";
 import { requirePrisma } from "@/lib/prisma";
 
@@ -16,26 +17,24 @@ export default async function BillingPage() {
   });
 
   return (
-    <div>
-      <h1 className="font-serif text-h2 font-semibold">Billing</h1>
-      <p className="mt-2 text-body text-ink-soft">
-        Plan changes and payment methods are handled in Stripe&apos;s customer portal.
-      </p>
-
-      <div className="mt-8 max-w-lg rounded-lg border border-border bg-bg-secondary p-6">
-        <p className="text-small uppercase tracking-wide text-gold">{subscription?.status}</p>
-        <p className="mt-2 font-serif text-h3">{subscription?.plan.name ?? "No plan"}</p>
+    <DashboardPage
+      title="Billing"
+      description="Plan changes and payment methods are handled in Stripe's customer portal."
+    >
+      <div className="max-w-lg rounded-lg border border-border bg-sheet px-5 py-5">
+        <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-faint">
+          {subscription?.status ?? "none"}
+        </p>
+        <p className="mt-2 font-display text-xl font-semibold">{subscription?.plan.name ?? "No plan"}</p>
         {subscription ? (
           <p className="mt-2 text-small text-ink-soft">
-            Current period ends{" "}
-            {subscription.currentPeriodEnd.toLocaleDateString("en-US")}
+            Current period ends {subscription.currentPeriodEnd.toLocaleDateString("en-US")}
           </p>
         ) : null}
+        <div className="mt-5">
+          <BillingPortalButton />
+        </div>
       </div>
-
-      <div className="mt-8">
-        <BillingPortalButton />
-      </div>
-    </div>
+    </DashboardPage>
   );
 }

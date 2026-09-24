@@ -1,45 +1,59 @@
 import Link from "next/link";
 
-function SealMark({ inverted = false }: { inverted?: boolean }) {
-  const stroke = inverted ? "#D9C48B" : "#B8912F";
-  const fill = inverted ? "#0B0B0C" : "#0B0B0C";
+/**
+ * Five-point star, computed rather than hand-written so the points are actually
+ * regular. Alternating outer and inner radius, starting at twelve o'clock.
+ */
+function starPoints(cx: number, cy: number, r: number) {
+  return Array.from({ length: 10 }, (_, i) => {
+    const radius = i % 2 ? r * 0.45 : r;
+    const angle = (Math.PI / 5) * i - Math.PI / 2;
+    return `${(cx + radius * Math.cos(angle)).toFixed(2)},${(
+      cy +
+      radius * Math.sin(angle)
+    ).toFixed(2)}`;
+  }).join(" ");
+}
 
+/** A scratch ticket: card, perforation, gold star where the prize is printed. */
+function TicketMark() {
   return (
     <svg
-      width="36"
-      height="36"
-      viewBox="0 0 36 36"
-      fill="none"
+      viewBox="0 0 32 32"
+      className="h-8 w-8 shrink-0 text-flag"
       aria-hidden
       xmlns="http://www.w3.org/2000/svg"
     >
-      <rect x="1" y="1" width="34" height="34" rx="8" fill={fill} stroke={stroke} />
+      <rect x="1" y="6" width="30" height="20" rx="3" fill="currentColor" />
       <path
-        d="M10 12.5h16v11H10z"
-        stroke={stroke}
-        strokeWidth="1.25"
+        d="M10 7.5v17"
+        stroke="rgb(255 255 255 / 0.5)"
+        strokeWidth="1.5"
+        strokeDasharray="2.5 3"
+        strokeLinecap="round"
       />
-      <path d="M10 16.5h16M14 12.5v11" stroke={stroke} strokeWidth="1.25" />
+      <polygon points={starPoints(20.5, 16, 6)} fill="#F2D08A" />
     </svg>
   );
 }
 
 export function Logo({
   className = "",
-  inverted = false,
+  tone = "ink",
 }: {
   className?: string;
-  inverted?: boolean;
+  /** `paper` for the ink footer and CTA blocks. */
+  tone?: "ink" | "paper";
 }) {
   return (
-    <Link href="/" className={`group flex items-center gap-3 ${className}`}>
-      <SealMark inverted={inverted} />
+    <Link href="/" className={`group flex items-center gap-2.5 ${className}`}>
+      <TicketMark />
       <span
-        className={`font-serif text-xl font-semibold tracking-tight ${
-          inverted ? "text-bg" : "text-ink"
+        className={`wonk font-display text-[19px] font-semibold tracking-tight ${
+          tone === "paper" ? "text-paper" : "text-ink"
         }`}
       >
-        ScratchCrest
+        Scratch<span className="text-flag">Crest</span>
       </span>
     </Link>
   );

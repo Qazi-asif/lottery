@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { DashboardNotice, DashboardPage } from "@/components/dashboard/DashboardPage";
 import { formatCents } from "@/lib/format";
 
 type Settings = {
@@ -104,50 +105,38 @@ export function SettingsManager({
   }
 
   return (
-    <div>
-      <h1 className="font-serif text-h2 font-semibold">Settings</h1>
-      <p className="mt-2 text-body text-ink-soft">
-        Commission snapshots on new sales use these rates. Existing sales stay as stored.
-      </p>
-      {error ? <p className="mt-4 text-small text-error">{error}</p> : null}
-      {message ? <p className="mt-4 text-small text-success">{message}</p> : null}
+    <DashboardPage
+      title="Settings"
+      description="Commission snapshots on new sales use these rates. Existing sales stay as stored."
+    >
+      {error ? <DashboardNotice>{error}</DashboardNotice> : null}
+      {message ? <DashboardNotice tone="ok">{message}</DashboardNotice> : null}
 
-      <form onSubmit={saveTenant} className="mt-8 grid max-w-lg gap-4 rounded-lg border border-border bg-bg-secondary p-6">
-        <h2 className="font-serif text-h3">Business</h2>
-        <label className="text-small text-ink-soft">
+      <form onSubmit={saveTenant} className="grid max-w-lg gap-4 rounded-lg border border-border bg-sheet p-5">
+        <h2 className="font-display text-base font-semibold">Business</h2>
+        <label>
           Business name
-          <input
-            name="businessName"
-            required
-            defaultValue={tenant.businessName}
-            className="mt-2 w-full rounded-lg border border-border bg-bg px-3 py-2"
-          />
+          <input name="businessName" required defaultValue={tenant.businessName} className="mt-1.5 w-full" />
         </label>
-        <label className="text-small text-ink-soft">
+        <label>
           Owner name
-          <input
-            name="ownerName"
-            required
-            defaultValue={tenant.ownerName}
-            className="mt-2 w-full rounded-lg border border-border bg-bg px-3 py-2"
-          />
+          <input name="ownerName" required defaultValue={tenant.ownerName} className="mt-1.5 w-full" />
         </label>
-        <label className="text-small text-ink-soft">
+        <label>
           Owner phone
-          <input
-            name="ownerPhone"
-            required
-            defaultValue={tenant.ownerPhone}
-            className="mt-2 w-full rounded-lg border border-border bg-bg px-3 py-2"
-          />
+          <input name="ownerPhone" required defaultValue={tenant.ownerPhone} className="mt-1.5 w-full" />
         </label>
-        <button type="submit" className="rounded-lg border-2 border-transparent bg-ink px-4 py-2 text-bg hover:border-gold">
+        <button
+          type="submit"
+          className="inline-flex h-10 w-fit items-center rounded-md bg-ink px-4 text-small font-medium text-paper hover:bg-ink-deep"
+        >
           Save profile
         </button>
       </form>
 
-      <form onSubmit={saveSettings} className="mt-8 grid max-w-lg gap-4 rounded-lg border border-border bg-bg-secondary p-6">
-        <label className="text-small text-ink-soft">
+      <form onSubmit={saveSettings} className="mt-6 grid max-w-lg gap-4 rounded-lg border border-border bg-sheet p-5">
+        <h2 className="font-display text-base font-semibold">Rates</h2>
+        <label>
           Commission %
           <input
             name="commissionRate"
@@ -156,10 +145,10 @@ export function SettingsManager({
             max="100"
             step="0.1"
             defaultValue={settings.commissionRate * 100}
-            className="mt-2 w-full rounded-lg border border-border bg-bg px-3 py-2"
+            className="mt-1.5 w-full"
           />
         </label>
-        <label className="text-small text-ink-soft">
+        <label>
           Cashing bonus %
           <input
             name="cashingBonusRate"
@@ -168,10 +157,10 @@ export function SettingsManager({
             max="100"
             step="0.1"
             defaultValue={settings.cashingBonusRate * 100}
-            className="mt-2 w-full rounded-lg border border-border bg-bg px-3 py-2"
+            className="mt-1.5 w-full"
           />
         </label>
-        <label className="text-small text-ink-soft">
+        <label>
           Low-stock threshold (tickets)
           <input
             name="lowStockThreshold"
@@ -179,45 +168,55 @@ export function SettingsManager({
             min="0"
             step="1"
             defaultValue={settings.lowStockThreshold}
-            className="mt-2 w-full rounded-lg border border-border bg-bg px-3 py-2"
+            className="mt-1.5 w-full"
           />
         </label>
-        <button type="submit" className="rounded-lg border-2 border-transparent bg-ink px-4 py-2 text-bg hover:border-gold">
+        <button
+          type="submit"
+          className="inline-flex h-10 w-fit items-center rounded-md bg-ink px-4 text-small font-medium text-paper hover:bg-ink-deep"
+        >
           Save rates
         </button>
       </form>
 
       {canRefer ? (
-      <section className="mt-10 max-w-lg">
-        <h2 className="font-serif text-h3">Referrals</h2>
-        <p className="mt-2 text-small text-ink-soft">
-          Your code: <span className="text-ink">{referralCode ?? "generating…"}</span>
-          . Credit is {formatCents(5000)} when a referred store completes signup.
-        </p>
-        <form onSubmit={refer} className="mt-4 flex gap-3">
-          <input
-            name="email"
-            type="email"
-            required
-            placeholder="Retailer email"
-            className="flex-1 rounded-lg border border-border bg-bg px-3 py-2"
-          />
-          <button type="submit" className="rounded-lg border border-ink px-4 py-2">
-            Record
-          </button>
-        </form>
-        <ul className="mt-4 divide-y divide-border rounded-lg border border-border">
-          {referrals.map((row) => (
-            <li key={row.id} className="flex justify-between px-4 py-3 text-small">
-              <span>{row.referredEmail}</span>
-              <span className="text-ink-soft">
-                {row.status} · {formatCents(row.creditCents)}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </section>
+        <section className="mt-6 max-w-lg">
+          <h2 className="font-display text-base font-semibold">Referrals</h2>
+          <p className="mt-2 text-small text-ink-soft">
+            Your code: <span className="font-mono text-ink">{referralCode ?? "generating…"}</span>
+            . Credit is {formatCents(5000)} when a referred store completes signup.
+          </p>
+          <form onSubmit={refer} className="mt-4 flex gap-3">
+            <input name="email" type="email" required placeholder="Retailer email" className="flex-1" />
+            <button
+              type="submit"
+              className="inline-flex h-10 items-center rounded-md border border-border px-4 text-small font-medium hover:bg-paper-2"
+            >
+              Record
+            </button>
+          </form>
+          <div className="mt-4 overflow-hidden rounded-lg border border-border bg-sheet">
+            <table>
+              <thead className="border-b border-border bg-paper-2/60">
+                <tr>
+                  <th>Email</th>
+                  <th>Status</th>
+                  <th className="num">Credit</th>
+                </tr>
+              </thead>
+              <tbody>
+                {referrals.map((row) => (
+                  <tr key={row.id} className="border-b border-border last:border-b-0">
+                    <td>{row.referredEmail}</td>
+                    <td>{row.status}</td>
+                    <td className="num">{formatCents(row.creditCents)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
       ) : null}
-    </div>
+    </DashboardPage>
   );
 }

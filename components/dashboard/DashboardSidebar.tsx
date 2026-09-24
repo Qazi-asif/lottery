@@ -2,111 +2,146 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { NavIcon } from "@/components/dashboard/NavIcon";
 import { SignOutButton } from "@/components/dashboard/SignOutButton";
+import {
+  NAV_GROUPS,
+  ROLE_LABEL,
+  isNavActive,
+  type NavItem,
+} from "@/components/dashboard/nav-items";
 import type { UserRole } from "@prisma/client";
 import type { PlanFeatures } from "@/lib/plan-features";
-
-type NavItem = {
-  href: string;
-  label: string;
-  roles: UserRole[];
-  feature?: keyof PlanFeatures;
-};
-
-const ITEMS: NavItem[] = [
-  { href: "/dashboard", label: "Overview", roles: ["tenant_owner", "location_manager"] },
-  { href: "/dashboard/scan", label: "Scan", roles: ["tenant_owner", "location_manager", "cashier"] },
-  {
-    href: "/dashboard/inventory",
-    label: "Inventory",
-    roles: ["tenant_owner", "location_manager"],
-    feature: "inventory",
-  },
-  {
-    href: "/dashboard/sales",
-    label: "Sales",
-    roles: ["tenant_owner", "location_manager"],
-    feature: "commission_reports",
-  },
-  {
-    href: "/dashboard/alerts",
-    label: "Alerts",
-    roles: ["tenant_owner", "location_manager"],
-    feature: "alerts",
-  },
-  {
-    href: "/dashboard/shifts",
-    label: "Shifts",
-    roles: ["tenant_owner", "location_manager"],
-    feature: "cash_reconciliation",
-  },
-  {
-    href: "/dashboard/compare",
-    label: "Compare",
-    roles: ["tenant_owner"],
-    feature: "multi_location",
-  },
-  {
-    href: "/dashboard/display",
-    label: "Display",
-    roles: ["tenant_owner", "location_manager"],
-    feature: "display",
-  },
-  { href: "/dashboard/team", label: "Team", roles: ["tenant_owner"] },
-  { href: "/dashboard/settings", label: "Settings", roles: ["tenant_owner"] },
-  { href: "/dashboard/billing", label: "Billing", roles: ["tenant_owner"] },
-];
 
 export function DashboardSidebar({
   role,
   features,
   billingRestricted,
   name,
+  open,
+  onToggle,
+  onNavigate,
 }: {
   role: UserRole;
   features: PlanFeatures;
   billingRestricted: boolean;
   name: string;
+  open: boolean;
+  onToggle: () => void;
+  onNavigate?: () => void;
 }) {
   const pathname = usePathname();
-  const items = billingRestricted
-    ? ITEMS.filter((item) => item.href === "/dashboard/billing")
-    : ITEMS.filter((item) => {
-        if (!item.roles.includes(role)) return false;
-        if (item.feature && !features[item.feature]) return false;
-        return true;
-      });
+
+  const visible = (item: NavItem) => {
+    if (billingRestricted) return item.href === "/dashboard/billing";
+    if (!item.roles.includes(role)) return false;
+    if (item.feature && !features[item.feature]) return false;
+    return true;
+  };
+
+  const groups = NAV_GROUPS.map((group) => ({
+    ...group,
+    items: group.items.filter(visible),
+  })).filter((group) => group.items.length > 0);
 
   return (
-    <aside className="flex w-[260px] shrink-0 flex-col bg-ink text-bg">
-      <div className="border-b border-white/10 px-6 py-6">
-        <p className="font-serif text-xl text-bg">ScratchCrest</p>
-        <p className="mt-2 text-small text-gold-soft">{name}</p>
+    <aside
+      className={`flex h-full shrink-0 flex-col border-r border-border bg-sheet text-ink transition-[width] duration-200 ease-out ${
+        open ? "w-60" : "w-[4.5rem]"
+      }`}
+    >
+      <div
+        className={`flex h-14 shrink-0 items-center border-b border-border ${
+          open ? "justify-between px-4" : "justify-center px-2"
+        }`}
+      >
+        {open ? (
+          <Link href="/dashboard" className="truncate font-display text-[1.05rem] font-semibold tracking-tight">
+            ScratchCrest
+          </Link>
+        ) : (
+          <span className="font-display text-base font-semibold" aria-hidden>
+            S
+          </span>
+        )}
+        <button
+          type="button"
+          onClick={onToggle}
+          className="hidden h-8 w-8 items-center justify-center rounded-md text-ink-soft hover:bg-paper-2 hover:text-ink lg:inline-flex"
+          aria-expanded={open}
+          aria-label={open ? "Collapse navigation" : "Open navigation"}
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+            <path
+              d={open ? "M10 3.5 5.5 8 10 12.5" : "M6 3.5 10.5 8 6 12.5"}
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
       </div>
-      <nav className="flex-1 py-4" aria-label="Dashboard">
-        {items.map((item) => {
-          const active =
-            item.href === "/dashboard"
-              ? pathname === "/dashboard"
-              : pathname.startsWith(item.href);
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              prefetch
-              className={`block border-l-2 px-6 py-3 text-body transition-colors ${
-                active
-                  ? "border-gold bg-white/5 text-bg"
-                  : "border-transparent text-white/70 hover:text-bg"
-              }`}
-            >
-              {item.label}
-            </Link>
-          );
-        })}
+
+      <nav className="flex-1 overflow-y-auto px-2 py-3" aria-label="Dashboard">
+        {groups.map((group) => (
+          <div key={group.id} className={open ? "mb-4" : "mb-2"}>
+            {open ? (
+              <p className="px-2 pb-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-faint">
+                {group.label}
+              </p>
+            ) : null}
+            <ul className="space-y-0.5">
+              {group.items.map((item) => {
+                const active = isNavActive(pathname, item.href);
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      prefetch
+                      title={open ? undefined : item.label}
+                      onClick={onNavigate}
+                      className={`flex items-center rounded-md text-small transition-colors duration-150 ${
+                        open ? "gap-3 px-2.5 py-2" : "justify-center px-0 py-2.5"
+                      } ${
+                        active
+                          ? "bg-paper-2 font-medium text-ink"
+                          : "text-ink-soft hover:bg-paper hover:text-ink"
+                      }`}
+                    >
+                      <span className={active ? "text-flag" : "text-ink-faint"}>
+                        <NavIcon name={item.icon} />
+                      </span>
+                      {open ? <span className="truncate">{item.label}</span> : null}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
       </nav>
-      <div className="border-t border-white/10 p-6">
-        <SignOutButton />
+
+      <div
+        className={`shrink-0 border-t border-border ${
+          open ? "px-4 py-3" : "px-2 py-3"
+        }`}
+      >
+        {open ? (
+          <>
+            <p className="truncate text-small font-medium text-ink">{name}</p>
+            <p className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-ink-faint">
+              {ROLE_LABEL[role]}
+            </p>
+            <div className="mt-3">
+              <SignOutButton />
+            </div>
+          </>
+        ) : (
+          <div className="flex justify-center">
+            <SignOutButton compact />
+          </div>
+        )}
       </div>
     </aside>
   );

@@ -46,38 +46,31 @@ export function PricingGrid({ plans }: PricingGridProps) {
 
   return (
     <div>
-      <div className="mb-12 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+      <div className="mb-12 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
         <div
-          className="inline-flex rounded-lg border border-border p-1"
+          className="inline-flex rounded-full border border-rule-strong bg-sheet p-1"
           role="group"
           aria-label="Billing period"
         >
-          <button
-            type="button"
-            onClick={() => setBilling("monthly")}
-            className={`rounded-md px-5 py-2 text-small font-medium transition-colors ${
-              billing === "monthly"
-                ? "bg-ink text-bg"
-                : "text-ink-soft hover:text-ink"
-            }`}
-          >
-            Monthly
-          </button>
-          <button
-            type="button"
-            onClick={() => setBilling("annual")}
-            className={`rounded-md px-5 py-2 text-small font-medium transition-colors ${
-              billing === "annual"
-                ? "bg-ink text-bg"
-                : "text-ink-soft hover:text-ink"
-            }`}
-          >
-            Annual
-          </button>
+          {(["monthly", "annual"] as const).map((option) => (
+            <button
+              key={option}
+              type="button"
+              onClick={() => setBilling(option)}
+              aria-pressed={billing === option}
+              className={`rounded-full px-6 py-2 text-[13.5px] font-medium capitalize transition-colors ${
+                billing === option
+                  ? "bg-ink text-paper"
+                  : "text-ink-soft hover:text-ink"
+              }`}
+            >
+              {option}
+            </button>
+          ))}
         </div>
         {maxSavings > 0 ? (
-          <p className="text-small text-ink-soft">
-            Save up to {maxSavings}% with annual billing
+          <p className="rounded-full bg-money-wash px-3 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] tabular-nums text-money">
+            Save up to {maxSavings}% annually
           </p>
         ) : null}
       </div>

@@ -35,67 +35,107 @@ export function PricingCard({
 
   return (
     <article
-      className={`flex h-full flex-col rounded-lg border p-8 ${
+      className={`lift flex h-full flex-col rounded-lg border-t-4 p-6 ${
         highlighted
-          ? "border-gold bg-bg"
-          : "border-border bg-bg-secondary"
+          ? "ticket -rotate-[0.4deg] border-t-flag bg-flag text-white lg:-translate-y-3"
+          : "sheet border-t-rule-strong"
       }`}
     >
-      {highlighted ? (
-        <p className="mb-4 text-small font-medium uppercase tracking-[0.15em] text-gold">
-          Most popular
-        </p>
-      ) : (
-        <div className="mb-4 h-5" aria-hidden />
-      )}
+      <div className="flex-1">
+        <div className="flex h-6 items-center">
+          {highlighted ? (
+            <span
+              className={`rounded-full px-2.5 py-1 font-mono text-[9px] font-semibold uppercase tracking-[0.16em] ${
+                highlighted
+                  ? "bg-white/20 text-white"
+                  : "bg-flag text-white"
+              }`}
+            >
+              Most popular
+            </span>
+          ) : null}
+        </div>
 
-      <h3 className="font-serif text-h3 font-semibold text-ink">{plan.name}</h3>
-      <p className="mt-2 min-h-[3rem] text-small leading-relaxed text-ink-soft">
-        {description}
-      </p>
-
-      <div className="mt-6 border-b border-border pb-6">
-        <p className="font-serif text-h2 font-semibold text-ink">
-          {formatCents(price)}
-          <span className="font-sans text-small font-normal text-ink-soft">
-            /mo
-          </span>
+        <h3
+          className={`wonk mt-4 font-display text-[22px] font-semibold tracking-tight ${
+            highlighted ? "text-white" : "text-ink"
+          }`}
+        >
+          {plan.name}
+        </h3>
+        <p
+          className={`mt-2 min-h-[3.5rem] text-[13.5px] leading-relaxed ${
+            highlighted ? "text-white/80" : "text-ink-soft"
+          }`}
+        >
+          {description}
         </p>
-        {billing === "annual" ? (
-          <p className="mt-1 text-small text-ink-soft">
-            {formatCents(plan.priceAnnualCents)} billed annually
+
+        <div
+          className={`mt-5 border-b border-dashed pb-5 ${
+            highlighted ? "border-white/25" : "border-rule-strong"
+          }`}
+        >
+          <p
+            className={`font-mono text-[2.5rem] font-bold leading-none tracking-[-0.04em] tabular-nums ${
+              highlighted ? "text-white" : "text-ink"
+            }`}
+          >
+            {formatCents(price)}
+            <span
+              className={`font-sans text-sm font-medium ${
+                highlighted ? "text-white/70" : "text-ink-faint"
+              }`}
+            >
+              /mo
+            </span>
           </p>
-        ) : null}
-      </div>
+          {billing === "annual" ? (
+            <p
+              className={`mt-2 font-mono text-[12.5px] tabular-nums ${
+                highlighted ? "text-white/65" : "text-ink-faint"
+              }`}
+            >
+              {formatCents(plan.priceAnnualCents)} billed annually
+            </p>
+          ) : null}
+        </div>
 
-      <ul className="mt-6 flex-1 space-y-3">
-        {features.map((key) => (
-          <li
-            key={key}
-            className="flex items-start gap-3 text-small text-ink-soft"
-          >
-            <span className="mt-0.5 text-gold" aria-hidden>
-              —
-            </span>
-            {FEATURE_LABELS[key]}
-          </li>
-        ))}
-        {extraBullets.map((bullet) => (
-          <li
-            key={bullet}
-            className="flex items-start gap-3 text-small text-ink-soft"
-          >
-            <span className="mt-0.5 text-gold" aria-hidden>
-              —
-            </span>
-            {bullet}
-          </li>
-        ))}
-      </ul>
+        <ul className="mt-5 space-y-3">
+          {[...features.map((key) => FEATURE_LABELS[key]), ...extraBullets].map(
+            (label) => (
+              <li
+                key={label}
+                className={`flex items-start gap-2.5 text-[13.5px] leading-relaxed ${
+                  highlighted ? "text-white/85" : "text-ink-soft"
+                }`}
+              >
+                <span
+                  className={`mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full ${
+                    highlighted ? "bg-white/20" : "bg-money"
+                  }`}
+                  aria-hidden
+                >
+                  <svg className="h-2 w-2 text-white" viewBox="0 0 12 12" fill="none">
+                    <path
+                      d="M1.5 6.5l3 3 6-6"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+                {label}
+              </li>
+            ),
+          )}
+        </ul>
+      </div>
 
       <Button
         href={`/signup?plan=${encodeURIComponent(plan.name.toLowerCase())}&billing=${billing}`}
-        variant={highlighted ? "primary" : "secondary"}
+        variant={highlighted ? "inverse" : "secondary"}
         className="mt-8 w-full"
       >
         Choose {plan.name}

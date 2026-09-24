@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { DashboardNotice, DashboardPage } from "@/components/dashboard/DashboardPage";
 
 type LocationRow = {
   id: string;
@@ -63,50 +64,60 @@ export function DisplayManager({
   }
 
   return (
-    <div>
-      <h1 className="font-serif text-h2 font-semibold">In-store display</h1>
-      <p className="mt-2 max-w-2xl text-body text-ink-soft">
-        Theme, language, and bin mapping for the TV screen. Official artwork stays
-        off until licensing is approved.
-      </p>
-      {error ? <p className="mt-4 text-small text-error">{error}</p> : null}
+    <DashboardPage
+      title="In-store display"
+      description="Theme, language, and bin mapping for the TV screen. Official artwork stays off until licensing is approved."
+    >
+      {error ? <DashboardNotice>{error}</DashboardNotice> : null}
 
-      <form onSubmit={save} className="mt-8 space-y-4 rounded-lg border border-border bg-bg-secondary p-6">
-        <select name="locationId" defaultValue={selected?.id} className="w-full rounded-lg border border-border bg-bg px-3 py-2">
-          {locations.map((location) => (
-            <option key={location.id} value={location.id}>
-              {location.name}
-            </option>
-          ))}
-        </select>
+      <form onSubmit={save} className="space-y-4 rounded-lg border border-border bg-sheet p-5">
+        <label>
+          Location
+          <select name="locationId" defaultValue={selected?.id} className="mt-1.5 w-full">
+            {locations.map((location) => (
+              <option key={location.id} value={location.id}>
+                {location.name}
+              </option>
+            ))}
+          </select>
+        </label>
         <div className="grid gap-4 md:grid-cols-3">
-          <select name="layout" defaultValue={selected?.config?.layout ?? "landscape"} className="rounded-lg border border-border bg-bg px-3 py-2">
-            <option value="landscape">Landscape</option>
-            <option value="portrait">Portrait</option>
-          </select>
-          <select name="theme" defaultValue={selected?.config?.theme ?? "plain"} className="rounded-lg border border-border bg-bg px-3 py-2">
-            <option value="plain">Plain</option>
-            <option value="high_contrast">High contrast</option>
-            <option value="night">Night</option>
-          </select>
-          <select name="language" defaultValue={selected?.config?.language ?? "en"} className="rounded-lg border border-border bg-bg px-3 py-2">
-            <option value="en">English</option>
-            <option value="es">Spanish</option>
-            <option value="bilingual">English / Spanish</option>
-          </select>
+          <label>
+            Layout
+            <select name="layout" defaultValue={selected?.config?.layout ?? "landscape"} className="mt-1.5 w-full">
+              <option value="landscape">Landscape</option>
+              <option value="portrait">Portrait</option>
+            </select>
+          </label>
+          <label>
+            Theme
+            <select name="theme" defaultValue={selected?.config?.theme ?? "plain"} className="mt-1.5 w-full">
+              <option value="plain">Plain</option>
+              <option value="high_contrast">High contrast</option>
+              <option value="night">Night</option>
+            </select>
+          </label>
+          <label>
+            Language
+            <select name="language" defaultValue={selected?.config?.language ?? "en"} className="mt-1.5 w-full">
+              <option value="en">English</option>
+              <option value="es">Spanish</option>
+              <option value="bilingual">English / Spanish</option>
+            </select>
+          </label>
         </div>
-        <label className="flex items-center gap-2 text-small">
+        <label className="flex items-center gap-2">
           <input type="checkbox" name="showWinners" defaultChecked={selected?.config?.showWinners ?? true} />
-          Show winners area
+          Show remaining ticket counts
         </label>
         <div className="grid gap-3 md:grid-cols-3">
           {[1, 2, 3, 4, 5, 6].map((bin) => (
-            <label key={bin} className="block text-small text-ink-soft">
+            <label key={bin}>
               Bin {bin}
               <select
                 name={`bin-${bin}`}
                 defaultValue={selected?.config?.binAssignments?.[String(bin)] ?? ""}
-                className="mt-2 w-full rounded-lg border border-border bg-bg px-3 py-2"
+                className="mt-1.5 w-full"
               >
                 <option value="">Unassigned</option>
                 {games.map((game) => (
@@ -118,19 +129,22 @@ export function DisplayManager({
             </label>
           ))}
         </div>
-        <button type="submit" className="rounded-lg border-2 border-transparent bg-ink px-4 py-2 text-bg hover:border-gold">
+        <button
+          type="submit"
+          className="inline-flex h-10 items-center rounded-md bg-ink px-4 text-small font-medium text-paper hover:bg-ink-deep"
+        >
           Save display
         </button>
       </form>
 
-      <ul className="mt-8 space-y-4">
+      <ul className="mt-8 space-y-3">
         {locations.map((location) => (
           <li
             key={location.id}
-            className="flex items-center justify-between rounded-lg border border-border bg-bg-secondary p-6"
+            className="flex items-center justify-between gap-4 rounded-lg border border-border bg-sheet px-5 py-4"
           >
-            <div>
-              <p className="font-serif text-h3">{location.name}</p>
+            <div className="min-w-0">
+              <p className="font-display text-base font-semibold">{location.name}</p>
               <p className="text-small text-ink-soft">
                 {location.city}, {location.state}
               </p>
@@ -138,13 +152,13 @@ export function DisplayManager({
             <Link
               href={`/display/${location.id}`}
               target="_blank"
-              className="rounded-lg border border-ink px-4 py-2 text-small"
+              className="inline-flex h-10 shrink-0 items-center rounded-md border border-border px-4 text-small font-medium hover:bg-paper-2"
             >
               Open display
             </Link>
           </li>
         ))}
       </ul>
-    </div>
+    </DashboardPage>
   );
 }

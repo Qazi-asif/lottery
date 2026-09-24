@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { DashboardNotice, DashboardPage } from "@/components/dashboard/DashboardPage";
 
 type Location = {
   id: string;
@@ -90,34 +91,30 @@ export function TeamManager({
   }
 
   return (
-    <div>
-      <h1 className="font-serif text-h2 font-semibold">Team & locations</h1>
-      <p className="mt-2 text-body text-ink-soft">
-        Invites use the same one-time set-password link as signup.
-      </p>
-      {error ? <p className="mt-4 text-small text-error">{error}</p> : null}
-      {message ? <p className="mt-4 text-small text-success">{message}</p> : null}
+    <DashboardPage
+      title="Team & locations"
+      description="Invites use the same one-time set-password link as signup."
+    >
+      {error ? <DashboardNotice>{error}</DashboardNotice> : null}
+      {message ? <DashboardNotice tone="ok">{message}</DashboardNotice> : null}
 
-      <form
-        onSubmit={invite}
-        className="mt-8 space-y-4 rounded-lg border border-border bg-bg-secondary p-6"
-      >
-        <h2 className="font-serif text-h3">Invite user</h2>
-        <input
-          name="email"
-          type="email"
-          required
-          placeholder="Email"
-          className="w-full rounded-lg border border-border bg-bg px-3 py-2"
-        />
-        <select name="role" className="w-full rounded-lg border border-border bg-bg px-3 py-2">
-          <option value="location_manager">Location manager</option>
-          <option value="cashier">Cashier</option>
-        </select>
+      <form onSubmit={invite} className="space-y-4 rounded-lg border border-border bg-sheet p-5">
+        <h2 className="font-display text-base font-semibold">Invite user</h2>
+        <label>
+          Email
+          <input name="email" type="email" required placeholder="Email" className="mt-1.5 w-full" />
+        </label>
+        <label>
+          Role
+          <select name="role" className="mt-1.5 w-full">
+            <option value="location_manager">Location manager</option>
+            <option value="cashier">Cashier</option>
+          </select>
+        </label>
         <fieldset className="space-y-2">
           <legend className="text-small text-ink-soft">Locations</legend>
           {locations.map((location) => (
-            <label key={location.id} className="flex items-center gap-2 text-small">
+            <label key={location.id} className="flex items-center gap-2">
               <input type="checkbox" name="locationIds" value={location.id} />
               {location.name}
             </label>
@@ -125,7 +122,7 @@ export function TeamManager({
         </fieldset>
         <button
           type="submit"
-          className="rounded-lg border-2 border-transparent bg-ink px-4 py-2 text-bg hover:border-gold"
+          className="inline-flex h-10 items-center rounded-md bg-ink px-4 text-small font-medium text-paper hover:bg-ink-deep"
         >
           Send invite
         </button>
@@ -133,28 +130,42 @@ export function TeamManager({
 
       <form
         onSubmit={addLocation}
-        className="mt-8 grid gap-3 rounded-lg border border-border bg-bg-secondary p-6 md:grid-cols-2"
+        className="mt-6 grid gap-3 rounded-lg border border-border bg-sheet p-5 md:grid-cols-2"
       >
-        <h2 className="font-serif text-h3 md:col-span-2">Add location</h2>
-        <input name="name" required placeholder="Name" className="rounded-lg border border-border bg-bg px-3 py-2" />
-        <input name="address" required placeholder="Address" className="rounded-lg border border-border bg-bg px-3 py-2" />
-        <input name="city" required placeholder="City" className="rounded-lg border border-border bg-bg px-3 py-2" />
-        <input name="state" defaultValue="TX" className="rounded-lg border border-border bg-bg px-3 py-2" />
-        <input name="zip" required placeholder="ZIP" className="rounded-lg border border-border bg-bg px-3 py-2" />
-        <button
-          type="submit"
-          className="rounded-lg border border-ink px-4 py-2"
-        >
-          Save location
-        </button>
+        <h2 className="font-display text-base font-semibold md:col-span-2">Add location</h2>
+        <label>
+          Name
+          <input name="name" required placeholder="Name" className="mt-1.5 w-full" />
+        </label>
+        <label>
+          Address
+          <input name="address" required placeholder="Address" className="mt-1.5 w-full" />
+        </label>
+        <label>
+          City
+          <input name="city" required placeholder="City" className="mt-1.5 w-full" />
+        </label>
+        <label>
+          State
+          <input name="state" defaultValue="TX" className="mt-1.5 w-full" />
+        </label>
+        <label>
+          ZIP
+          <input name="zip" required placeholder="ZIP" className="mt-1.5 w-full" />
+        </label>
+        <div className="flex items-end">
+          <button
+            type="submit"
+            className="inline-flex h-10 items-center rounded-md border border-border px-4 text-small font-medium hover:bg-paper-2"
+          >
+            Save location
+          </button>
+        </div>
       </form>
 
-      <ul className="mt-8 space-y-4">
+      <ul className="mt-6 space-y-3">
         {locations.map((location) => (
-          <li
-            key={location.id}
-            className="rounded-lg border border-border bg-bg-secondary p-6"
-          >
+          <li key={location.id} className="rounded-lg border border-border bg-sheet p-5">
             <form
               className="grid gap-3 md:grid-cols-2"
               onSubmit={(event) => {
@@ -169,43 +180,37 @@ export function TeamManager({
                 });
               }}
             >
-              <input
-                name="name"
-                required
-                defaultValue={location.name}
-                className="rounded-lg border border-border bg-bg px-3 py-2"
-              />
-              <input
-                name="address"
-                required
-                defaultValue={location.address}
-                className="rounded-lg border border-border bg-bg px-3 py-2"
-              />
-              <input
-                name="city"
-                required
-                defaultValue={location.city}
-                className="rounded-lg border border-border bg-bg px-3 py-2"
-              />
-              <input
-                name="state"
-                defaultValue={location.state}
-                className="rounded-lg border border-border bg-bg px-3 py-2"
-              />
-              <input
-                name="zip"
-                required
-                defaultValue={location.zip}
-                className="rounded-lg border border-border bg-bg px-3 py-2"
-              />
-              <div className="flex flex-wrap gap-3">
-                <button type="submit" className="rounded-lg border-2 border-transparent bg-ink px-4 py-2 text-bg hover:border-gold">
+              <label>
+                Name
+                <input name="name" required defaultValue={location.name} className="mt-1.5 w-full" />
+              </label>
+              <label>
+                Address
+                <input name="address" required defaultValue={location.address} className="mt-1.5 w-full" />
+              </label>
+              <label>
+                City
+                <input name="city" required defaultValue={location.city} className="mt-1.5 w-full" />
+              </label>
+              <label>
+                State
+                <input name="state" defaultValue={location.state} className="mt-1.5 w-full" />
+              </label>
+              <label>
+                ZIP
+                <input name="zip" required defaultValue={location.zip} className="mt-1.5 w-full" />
+              </label>
+              <div className="flex flex-wrap items-end gap-3">
+                <button
+                  type="submit"
+                  className="inline-flex h-10 items-center rounded-md bg-ink px-4 text-small font-medium text-paper hover:bg-ink-deep"
+                >
                   Save location
                 </button>
                 <button
                   type="button"
                   onClick={() => patchLocation(location.id, { active: !location.active })}
-                  className="rounded-lg border border-ink px-4 py-2 text-small"
+                  className="inline-flex h-10 items-center rounded-md border border-border px-4 text-small font-medium hover:bg-paper-2"
                 >
                   {location.active ? "Deactivate" : "Reactivate"}
                 </button>
@@ -215,14 +220,26 @@ export function TeamManager({
         ))}
       </ul>
 
-      <ul className="mt-8 divide-y divide-border rounded-lg border border-border">
-        {members.map((member) => (
-          <li key={member.id} className="flex justify-between px-4 py-3 text-body">
-            <span>{member.name} · {member.email}</span>
-            <span className="text-ink-soft">{member.role}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
+      <div className="mt-6 overflow-hidden rounded-lg border border-border bg-sheet">
+        <table>
+          <thead className="border-b border-border bg-paper-2/60">
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+            </tr>
+          </thead>
+          <tbody>
+            {members.map((member) => (
+              <tr key={member.id} className="border-b border-border last:border-b-0">
+                <td>{member.name}</td>
+                <td>{member.email}</td>
+                <td className="text-ink-soft">{member.role}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </DashboardPage>
   );
 }

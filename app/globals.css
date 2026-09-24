@@ -1,42 +1,89 @@
 @import "tailwindcss";
 
-/* Design tokens from instructions/06_DESIGN_SYSTEM.md */
-@theme inline {
-  --color-bg: #ffffff;
-  --color-bg-secondary: #f7f6f3;
-  --color-ink: #0b0b0c;
-  --color-ink-soft: #3a3a3c;
-  --color-gold: #b8912f;
-  --color-gold-soft: #d9c48b;
-  --color-border: #e5e3dd;
-  --color-success: #2f6b4f;
-  --color-error: #8c2f2f;
+/* Design tokens — see instructions/06_DESIGN_SYSTEM.md
+   ---------------------------------------------------------------------------
+   Two palettes, on purpose:
 
+   PAPER   the marketing site, dashboard, and auth screens. Warm uncoated stock,
+           ink type, one loud vermilion, gold on money.
+   SCREEN  the in-store TV board at /display and the dark blocks that quote it.
+           A television in a shop has to be dark; this half is unchanged.
+   --------------------------------------------------------------------------- */
+@theme inline {
+  /* ---------- Paper ---------- */
+  --color-paper: #fff8ee;
+  --color-paper-2: #f7ead4;
+  --color-paper-3: #ecd9b8;
+  --color-sheet: #ffffff;
+
+  --color-ink: #191510;
+  /* One step below ink, for the footer and the board bezel, so the two dark
+     blocks that close the page read as separate objects rather than one slab. */
+  --color-ink-deep: #100d0a;
+  --color-ink-soft: #5b5343;
+  --color-ink-faint: #8e8471;
+
+  --color-rule: #e8d8b8;
+  --color-rule-strong: #d4bc90;
+
+  /* The one loud colour. */
+  --color-flag: #f03d14;
+  --color-flag-deep: #c42d0a;
+  --color-flag-wash: #ffe8e0;
+
+  /* Money: gold for prizes, green for commission that exists. */
+  --color-foil: #c4920a;
+  --color-foil-light: #f0c14b;
+  --color-money: #0c8f5e;
+  --color-money-wash: #e4f6ee;
+
+  /* Ticket hues — the printed colours a real pack actually uses. */
+  --color-navy: #1b3a6b;
+  --color-violet: #5b2c8b;
+  --color-teal: #0e7c7b;
+  --color-bronze: #2c2214;
+
+  /* ---------- Screen: /display, board preview, ink blocks ---------- */
+  --color-app: #070a11;
+  --color-panel: #090d16;
+  --color-elevated: #111827;
+  --color-raised: #131c2e;
+  --color-accent: #10b981;
+  --color-accent-deep: #059669;
+  --color-highlight: #f59e0b;
+  --color-alert: #f43f5e;
+
+  /* ---------- Shared with /dashboard and the auth screens ----------
+     Same names as before so no dashboard file needs touching; the values are
+     retuned to the warm palette so those screens come along for the ride. */
+  --color-bg: #ffffff;
+  --color-surface: #f7f1e5;
+  --color-bg-secondary: #f7f1e5;
+  --color-border: #e6dbc4;
+  --color-card: #0f172a;
+  --color-gold: #a97c10;
+  --color-gold-soft: #e9ab35;
+  --color-success: #0b7a52;
+  --color-error: #c62d16;
+
+  /* ---------- Type ---------- */
+  --font-display: var(--font-fraunces);
   --font-serif: var(--font-fraunces);
   --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 
-  --text-h1: 2.5rem;
-  --text-h2: 2rem;
-  --text-h3: 1.5rem;
+  --text-hero: clamp(2.75rem, 6.5vw, 5.25rem);
+  --text-display: clamp(2.25rem, 4.5vw, 3.75rem);
+  --text-h1: clamp(2rem, 3.4vw, 3.25rem);
+  --text-h2: clamp(1.75rem, 2.6vw, 2.5rem);
+  --text-h3: 1.25rem;
   --text-body: 1rem;
   --text-small: 0.875rem;
 
-  --radius-card: 8px;
-  --shadow-modal: 0 4px 24px rgba(0, 0, 0, 0.08);
+  --radius-card: 12px;
+  --shadow-modal: 0 24px 64px -24px rgb(54 38 18 / 0.35);
 
-  --max-width-marketing: 1200px;
-}
-
-:root {
-  --color-bg: #ffffff;
-  --color-bg-secondary: #f7f6f3;
-  --color-ink: #0b0b0c;
-  --color-ink-soft: #3a3a3c;
-  --color-gold: #b8912f;
-  --color-gold-soft: #d9c48b;
-  --color-border: #e5e3dd;
-  --color-success: #2f6b4f;
-  --color-error: #8c2f2f;
+  --max-width-marketing: 80rem;
 }
 
 body {
@@ -54,19 +101,623 @@ h3,
 h4 {
   font-family: var(--font-fraunces), Georgia, serif;
   letter-spacing: -0.02em;
+  font-weight: 600;
 }
 
 h1 {
   font-size: var(--text-h1);
-  line-height: 1.2;
+  line-height: 1.04;
 }
 
 h2 {
   font-size: var(--text-h2);
-  line-height: 1.25;
+  line-height: 1.08;
 }
 
 h3 {
   font-size: var(--text-h3);
   line-height: 1.3;
+}
+
+/* Fraunces' WONK axis swaps in angled, slightly irregular terminals and SOFT
+   rounds the joins. This is the whole reason the headlines read as drawn rather
+   than defaulted, so every display-size line gets it. */
+.wonk {
+  font-variation-settings:
+    "opsz" 120,
+    "SOFT" 30,
+    "WONK" 1;
+}
+
+::selection {
+  background: var(--color-flag);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-flag);
+  outline-offset: 2px;
+}
+
+/* ---------- Numerics ----------
+   Any figure that updates in place must not jitter. Prefer Tailwind's
+   `font-mono tabular-nums` inline; this class is for wrappers. */
+.nums {
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* ===========================================================================
+   TEXTURE
+   Subtle enough to register as material rather than decoration.
+   =========================================================================== */
+
+/* Fractal noise over the canvas colour — the tooth of uncoated stock. Applied
+   once, on the marketing wrapper, as a background-image so it composes with
+   Tailwind's background-color utility instead of overlaying content. */
+.paper-grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  background-repeat: repeat;
+}
+
+/* Halftone dot screen. Kraft bands only — it fights body copy anywhere else. */
+.dots {
+  background-image: radial-gradient(
+    var(--color-rule-strong) 1px,
+    transparent 1.3px
+  );
+  background-size: 14px 14px;
+}
+
+/* 45° hairline hatch, for the ink CTA block. */
+.hatch {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgb(255 255 255 / 0.05) 0 1px,
+    transparent 1px 7px
+  );
+}
+
+/* ===========================================================================
+   SURFACES
+   Shadows are warm brown-black: paper sitting on paper, lit from above.
+   Borders stay in the markup — this file is unlayered, so a `border` shorthand
+   here would beat Tailwind's `border-t-2` accent utilities in the cascade.
+   =========================================================================== */
+
+.sheet {
+  background-color: var(--color-sheet);
+  box-shadow:
+    0 1px 2px rgb(58 40 16 / 0.05),
+    0 10px 28px -14px rgb(58 40 16 / 0.18);
+}
+
+.well {
+  background-color: var(--color-paper-3);
+  box-shadow: inset 0 2px 4px -2px rgb(58 40 16 / 0.16);
+}
+
+/* The dark bezel around the board. */
+.screen {
+  background-color: var(--color-ink-deep);
+  box-shadow:
+    0 2px 6px rgb(16 13 10 / 0.3),
+    0 36px 72px -28px rgb(16 13 10 / 0.5);
+}
+
+/* Thermal tape: white stock, toothed bottom supplied by <TearEdge>. */
+.receipt {
+  background-color: var(--color-sheet);
+  box-shadow:
+    0 1px 2px rgb(58 40 16 / 0.06),
+    0 14px 32px -16px rgb(58 40 16 / 0.22);
+}
+
+/* ---------- Ticket perforation ----------
+   A dashed rule inset from the left edge with punched half-circles top and
+   bottom. Set --notch to whatever colour sits behind the card, and --stub to
+   move the rule. */
+.stub {
+  position: relative;
+  --stub: 2.75rem;
+  --notch: var(--color-paper);
+}
+
+.stub::before {
+  content: "";
+  position: absolute;
+  top: 0.75rem;
+  bottom: 0.75rem;
+  left: var(--stub);
+  width: 1px;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--color-rule-strong) 0 4px,
+    transparent 4px 9px
+  );
+}
+
+.stub::after {
+  content: "";
+  position: absolute;
+  left: calc(var(--stub) - 6px);
+  top: -6px;
+  bottom: -6px;
+  width: 12px;
+  pointer-events: none;
+  background:
+    radial-gradient(circle 6px at 50% 6px, var(--notch) 98%, transparent 100%)
+      top center / 12px 12px no-repeat,
+    radial-gradient(
+        circle 6px at 50% calc(100% - 6px),
+        var(--notch) 98%,
+        transparent 100%
+      )
+      bottom center / 12px 12px no-repeat;
+}
+
+/* Perforation on a saturated ticket fill — the dashes go light so they read. */
+.stub-light::before {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgb(255 255 255 / 0.4) 0 4px,
+    transparent 4px 9px
+  );
+}
+
+/* Saturated ticket card: the printed pack, not a UI panel. */
+.ticket {
+  box-shadow:
+    0 1px 2px rgb(58 40 16 / 0.08),
+    0 14px 32px -16px rgb(58 40 16 / 0.28);
+}
+
+/* Hairline perforation across a small ticket face. */
+.ticket-perf {
+  height: 1px;
+  background-image: repeating-linear-gradient(
+    to right,
+    rgb(255 255 255 / 0.45) 0 4px,
+    transparent 4px 8px
+  );
+}
+
+.ticket-perf-ink {
+  background-image: repeating-linear-gradient(
+    to right,
+    rgb(0 0 0 / 0.35) 0 4px,
+    transparent 4px 8px
+  );
+}
+
+/* ---------- Screen-side utilities (unchanged: the board) ---------- */
+.led-panel {
+  background-color: #0a0f0a;
+  box-shadow:
+    inset 0 1px 2px rgb(0 0 0 / 0.6),
+    inset 0 0 0 1px rgb(245 158 11 / 0.12);
+}
+
+.panel {
+  background-color: var(--color-elevated);
+  box-shadow:
+    inset 0 1px 0 0 rgb(255 255 255 / 0.04),
+    0 2px 4px -2px rgb(0 0 0 / 0.7),
+    0 12px 28px -14px rgb(0 0 0 / 0.85);
+}
+
+.cabinet {
+  box-shadow:
+    inset 0 1px 0 0 rgb(255 255 255 / 0.05),
+    0 2px 4px -2px rgb(0 0 0 / 0.8),
+    0 28px 56px -28px rgb(0 0 0 / 0.95);
+}
+
+.stamp {
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.65);
+}
+
+.inset-block {
+  background-color: #070a11;
+  box-shadow:
+    inset 0 1px 2px rgb(0 0 0 / 0.55),
+    inset 0 0 0 1px rgb(255 255 255 / 0.03);
+}
+
+/* ===========================================================================
+   RANGE SLIDERS
+   Track fills to the thumb from --range-progress, set inline from component
+   state. Do not restyle per component.
+   =========================================================================== */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 5px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--color-flag) 0%,
+    var(--color-flag) var(--range-progress, 50%),
+    var(--color-rule-strong) var(--range-progress, 50%),
+    var(--color-rule-strong) 100%
+  );
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 20px;
+  width: 20px;
+  border-radius: 999px;
+  background: var(--color-ink);
+  border: 3px solid var(--color-sheet);
+  box-shadow: 0 2px 6px rgb(58 40 16 / 0.35);
+  transition: transform 0.14s ease;
+}
+
+input[type="range"]:active::-webkit-slider-thumb {
+  transform: scale(1.12);
+}
+
+input[type="range"]::-moz-range-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 999px;
+  background: var(--color-ink);
+  border: 3px solid var(--color-sheet);
+  box-shadow: 0 2px 6px rgb(58 40 16 / 0.35);
+}
+
+/* ===========================================================================
+   MOTION
+   Allowed to be charming — but never decorative on live data.
+   =========================================================================== */
+
+@keyframes live-pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes foil {
+  from {
+    background-position: -150% 0;
+  }
+  to {
+    background-position: 250% 0;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--tilt, -8deg));
+  }
+  50% {
+    transform: translateY(-10px) rotate(var(--tilt, -8deg));
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(22px) scale(0.94) rotate(-1.2deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.motion-live {
+  animation: live-pulse 2.6s ease-in-out infinite;
+}
+
+/* In-store TV wash. Landing vermilion plus sibling ember/amber shades
+   shift together so the board breathes without a hard cut. */
+@property --tv-spark {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #ff8c50;
+}
+
+@property --tv-hot {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #f03d14;
+}
+
+@property --tv-mid {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #c42d0a;
+}
+
+@property --tv-edge {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #2a100c;
+}
+
+.tv-glow {
+  --tv-spark: rgb(255 150 90 / 0.45);
+  --tv-hot: rgb(240 61 20 / 0.9);
+  --tv-mid: rgb(196 45 10 / 0.62);
+  --tv-edge: rgb(56 18 10 / 0.94);
+  background-color: #1a0a06;
+  background-image:
+    radial-gradient(ellipse 50% 40% at 50% 48%, var(--tv-spark), transparent 72%),
+    radial-gradient(
+      ellipse 92% 82% at 50% 50%,
+      var(--tv-hot) 0%,
+      var(--tv-mid) 38%,
+      var(--tv-edge) 68%,
+      #1a0a06 100%
+    );
+  animation: tv-glow 14s ease-in-out infinite;
+}
+
+@keyframes tv-glow {
+  0%,
+  100% {
+    --tv-spark: rgb(255 150 90 / 0.45);
+    --tv-hot: rgb(240 61 20 / 0.9);
+    --tv-mid: rgb(196 45 10 / 0.62);
+    --tv-edge: rgb(56 18 10 / 0.94);
+  }
+  25% {
+    --tv-spark: rgb(255 196 110 / 0.5);
+    --tv-hot: rgb(255 92 28 / 0.88);
+    --tv-mid: rgb(240 110 32 / 0.58);
+    --tv-edge: rgb(72 28 10 / 0.92);
+  }
+  50% {
+    --tv-spark: rgb(240 193 75 / 0.38);
+    --tv-hot: rgb(196 45 10 / 0.86);
+    --tv-mid: rgb(180 88 18 / 0.55);
+    --tv-edge: rgb(48 20 8 / 0.94);
+  }
+  75% {
+    --tv-spark: rgb(255 120 70 / 0.42);
+    --tv-hot: rgb(224 52 18 / 0.9);
+    --tv-mid: rgb(160 40 12 / 0.6);
+    --tv-edge: rgb(40 12 8 / 0.94);
+  }
+}
+
+.motion-marquee {
+  animation: marquee 22s linear infinite;
+}
+
+.tv-marquee {
+  animation: marquee 36s linear infinite;
+}
+
+.motion-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Hand-drawn underline. pathLength="1" on the path keeps the dash maths
+   trivial regardless of the curve's real length. */
+.motion-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 0.9s 0.45s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+/* Slow highlight sweep across gold prize figures. */
+.motion-foil {
+  background-image: linear-gradient(
+    100deg,
+    transparent 35%,
+    rgb(255 255 255 / 0.55) 50%,
+    transparent 65%
+  );
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  animation: foil 5.5s ease-in-out infinite;
+}
+
+/* ---------- Reveal on scroll ----------
+   Variants share one visible state so `is-visible` can be toggled generically. */
+.reveal {
+  opacity: 0;
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    clip-path 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-up {
+  transform: translateY(28px);
+}
+
+.reveal-pop {
+  transform: translateY(22px) scale(0.94) rotate(-1.2deg);
+}
+
+.reveal-left {
+  transform: translateX(-22px);
+}
+
+.reveal-scale {
+  transform: scale(0.96);
+}
+
+.reveal-mask {
+  opacity: 1;
+  clip-path: inset(0 100% 0 0);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+  clip-path: inset(0 0 0 0);
+}
+
+/* ---------- Hover ---------- */
+.lift {
+  transition:
+    transform 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.18s ease;
+}
+
+.lift:hover {
+  transform: translateY(-5px) rotate(0deg);
+  box-shadow:
+    0 2px 4px rgb(58 40 16 / 0.08),
+    0 24px 48px -16px rgb(58 40 16 / 0.32);
+}
+
+.motion-float {
+  animation: float 5.5s ease-in-out infinite;
+}
+
+.card-hover {
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease;
+}
+
+.card-hover:hover {
+  background-color: var(--color-raised);
+}
+
+/* ---------- Dashboard: quiet work surface ---------- */
+@keyframes dash-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.dash-enter {
+  animation: dash-enter 220ms ease-out;
+}
+
+.dash input[type="text"],
+.dash input[type="email"],
+.dash input[type="number"],
+.dash input[type="search"],
+.dash input:not([type]),
+.dash select,
+.dash textarea {
+  min-height: 2.5rem;
+  border-radius: 0.375rem;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-sheet);
+  padding: 0.4rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.3;
+  color: var(--color-ink);
+}
+
+.dash input:focus,
+.dash select:focus,
+.dash textarea:focus {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 1px;
+}
+
+.dash label {
+  font-size: 0.8125rem;
+  color: var(--color-ink-soft);
+}
+
+.dash table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.dash th {
+  padding: 0.7rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-faint);
+}
+
+.dash td {
+  padding: 0.85rem 1rem;
+  font-size: 0.875rem;
+  vertical-align: middle;
+}
+
+.dash .num,
+.dash td.num,
+.dash th.num {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+    transition: none;
+  }
+
+  .motion-live,
+  .motion-marquee,
+  .tv-marquee,
+  .motion-draw,
+  .motion-foil,
+  .motion-float,
+  .tv-glow {
+    animation: none !important;
+  }
+
+  .motion-draw {
+    stroke-dashoffset: 0;
+  }
+
+  .lift,
+  .card-hover {
+    transition: none;
+  }
+
+  .lift:hover {
+    transform: none;
+  }
+
+  .dash-enter {
+    animation: none;
+  }
 }

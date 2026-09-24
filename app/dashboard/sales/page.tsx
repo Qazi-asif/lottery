@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Prisma } from "@prisma/client";
+import { DashboardPage } from "@/components/dashboard/DashboardPage";
 import { formatCents } from "@/lib/format";
 import { getPermissionContext } from "@/lib/permissions";
 import { requirePrisma } from "@/lib/prisma";
@@ -72,22 +73,18 @@ export default async function SalesPage({
   );
 
   return (
-    <div>
-      <h1 className="font-serif text-h2 font-semibold">Sales & commission</h1>
-      <p className="mt-2 text-body text-ink-soft">
-        Figures are stored at sale time and not recalculated later.
-      </p>
-
-      <div className="mt-6 flex gap-3">
+    <DashboardPage
+      title="Sales & commission"
+      description="Figures are stored at sale time and not recalculated later."
+    >
+      <div className="inline-flex flex-wrap gap-1 rounded-md border border-border bg-sheet p-1">
         {["day", "week", "month", "game", "location"].map((key) => (
           <Link
             key={key}
             href={`/dashboard/sales?groupBy=${key}`}
             prefetch
-            className={`text-small capitalize ${
-              groupBy === key
-                ? "text-ink underline decoration-gold underline-offset-4"
-                : "text-ink-soft"
+            className={`rounded-sm px-3 py-1.5 text-small capitalize ${
+              groupBy === key ? "bg-paper-2 font-medium text-ink" : "text-ink-soft hover:text-ink"
             }`}
           >
             {key}
@@ -95,43 +92,43 @@ export default async function SalesPage({
         ))}
       </div>
 
-      <div className="mt-8 grid gap-6 md:grid-cols-3">
-        <div className="rounded-lg border border-border bg-bg-secondary p-6">
+      <div className="mt-6 grid gap-4 md:grid-cols-3">
+        <div className="rounded-lg border border-border bg-sheet px-5 py-4">
           <p className="text-small text-ink-soft">Tickets</p>
-          <p className="mt-2 font-serif text-h3">{totals.ticketCount}</p>
+          <p className="mt-2 font-mono text-[1.5rem] font-semibold tabular-nums">{totals.ticketCount}</p>
         </div>
-        <div className="rounded-lg border border-border bg-bg-secondary p-6">
+        <div className="rounded-lg border border-border bg-sheet px-5 py-4">
           <p className="text-small text-ink-soft">Sales</p>
-          <p className="mt-2 font-serif text-h3">{formatCents(totals.salesCents)}</p>
+          <p className="mt-2 font-mono text-[1.5rem] font-semibold tabular-nums">{formatCents(totals.salesCents)}</p>
         </div>
-        <div className="rounded-lg border border-border bg-bg-secondary p-6">
+        <div className="rounded-lg border border-border bg-sheet px-5 py-4">
           <p className="text-small text-ink-soft">Commission</p>
-          <p className="mt-2 font-serif text-h3">{formatCents(totals.commissionCents)}</p>
+          <p className="mt-2 font-mono text-[1.5rem] font-semibold tabular-nums">{formatCents(totals.commissionCents)}</p>
         </div>
       </div>
 
-      <div className="mt-10 overflow-hidden rounded-lg border border-border">
-        <table className="w-full text-left">
-          <thead className="border-b border-border bg-bg-secondary">
+      <div className="mt-8 overflow-hidden rounded-lg border border-border bg-sheet">
+        <table>
+          <thead className="border-b border-border bg-paper-2/60">
             <tr>
-              <th className="px-4 py-3 text-small font-medium text-ink-soft">{groupBy}</th>
-              <th className="px-4 py-3 text-small font-medium text-ink-soft">Tickets</th>
-              <th className="px-4 py-3 text-small font-medium text-ink-soft">Sales</th>
-              <th className="px-4 py-3 text-small font-medium text-ink-soft">Commission</th>
+              <th>{groupBy}</th>
+              <th className="num">Tickets</th>
+              <th className="num">Sales</th>
+              <th className="num">Commission</th>
             </tr>
           </thead>
           <tbody>
             {rows.map((row) => (
               <tr key={row.bucket} className="border-b border-border last:border-b-0">
-                <td className="px-4 py-3">{row.bucket}</td>
-                <td className="px-4 py-3">{Number(row.ticket_count)}</td>
-                <td className="px-4 py-3">{formatCents(Number(row.sales_cents))}</td>
-                <td className="px-4 py-3">{formatCents(Number(row.commission_cents))}</td>
+                <td>{row.bucket}</td>
+                <td className="num">{Number(row.ticket_count)}</td>
+                <td className="num">{formatCents(Number(row.sales_cents))}</td>
+                <td className="num">{formatCents(Number(row.commission_cents))}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-    </div>
+    </DashboardPage>
   );
 }

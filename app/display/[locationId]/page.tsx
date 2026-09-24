@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
+import { DisplayCatalog } from "@/components/display/DisplayCatalog";
 import { DisplayPoller } from "@/components/display/DisplayPoller";
-import { formatCents } from "@/lib/format";
+import { listArtworkTickets } from "@/lib/list-artwork";
 import { getPrisma, loose } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -12,22 +13,36 @@ function displayLanguage(value: unknown): "en" | "es" | "bilingual" {
 
 const COPY = {
   en: {
-    remaining: (n: number) => `${n} tickets remaining`,
     none: "No games available right now.",
-    plain: "Plain-text display",
-    licensed: "Licensed artwork mode",
     licenseNote:
       "Official lottery artwork is not shown. This screen lists available games in generic text until licensing is approved.",
   },
   es: {
-    remaining: (n: number) => `${n} boletos restantes`,
     none: "No hay juegos disponibles ahora.",
-    plain: "Pantalla de texto",
-    licensed: "Modo de arte con licencia",
     licenseNote:
       "No se muestra arte oficial de la lotería. Esta pantalla lista juegos en texto genérico hasta que se apruebe la licencia.",
   },
 };
+
+type CopyKey = keyof typeof COPY.en;
+
+function LicenseTrack({
+  text,
+  hidden,
+}: {
+  text: string;
+  hidden?: boolean;
+}) {
+  return (
+    <p
+      className="flex shrink-0 items-center gap-[2.4vw] px-[1.6vw] font-sans text-[clamp(0.95rem,1.55vw,1.55rem)] font-semibold leading-tight tracking-wide text-white"
+      aria-hidden={hidden || undefined}
+    >
+      <span className="whitespace-nowrap">{text}</span>
+      <span className="h-2 w-2 shrink-0 rotate-45 bg-foil-light" aria-hidden />
+    </p>
+  );
+}
 
 export default async function InStoreDisplayPage({
   params,
@@ -41,14 +56,12 @@ export default async function InStoreDisplayPage({
   const location = await db.location.findUnique({
     where: { id: locationId },
     include: {
-      tenant: { select: { artworkLicenseApproved: true, businessName: true } },
+      tenant: { select: { artworkLicenseApproved: true } },
       displayConfigs: {
         take: 1,
         select: loose({
           layout: true,
           theme: true,
-          binAssignments: true,
-          showWinners: true,
           language: true,
         }),
       },
@@ -61,101 +74,65 @@ export default async function InStoreDisplayPage({
   const language = displayLanguage(
     config && "language" in config ? config.language : undefined,
   );
-  const theme = config?.theme ?? "plain";
-  const layout = config?.layout ?? "landscape";
-
-  const packs = await db.pack.findMany({
-    where: { locationId, status: "activated" },
-    include: {
-      game: true,
-      _count: { select: { tickets: { where: { status: "in_stock" } } } },
-    },
-    orderBy: { game: { priceCents: "asc" } },
-  });
-
-  const available = packs.filter((pack) => pack._count.tickets > 0);
-  const bins = (config?.binAssignments ?? {}) as Record<string, string>;
-  const binEntries = Object.entries(bins)
-    .filter(([, gameId]) => gameId)
-    .sort((a, b) => Number(a[0]) - Number(b[0]));
-  const gameToBin = new Map(binEntries.map(([bin, gameId]) => [gameId, bin]));
-
-  const ordered = [...available].sort((a, b) => {
-    const binA = gameToBin.get(a.gameId);
-    const binB = gameToBin.get(b.gameId);
-    if (binA && binB) return Number(binA) - Number(binB);
-    if (binA) return -1;
-    if (binB) return 1;
-    return a.game.priceCents - b.game.priceCents;
-  });
-
   const licensed = location.tenant.artworkLicenseApproved;
-  const showWinners = config?.showWinners ?? true;
-  const themeClass =
-    theme === "night"
-      ? "min-h-screen bg-ink px-10 py-10 text-bg"
-      : theme === "high_contrast"
-        ? "min-h-screen bg-bg px-10 py-10 text-ink"
-        : "min-h-screen bg-bg px-10 py-10 text-ink";
+  const tickets = listArtworkTickets();
+  const licenseTicker = `${COPY.en.licenseNote}  /  ${COPY.es.licenseNote}`;
 
-  function line(key: "remaining" | "none" | "plain" | "licensed" | "licenseNote", n?: number) {
-    if (language === "es") {
-      return key === "remaining" ? COPY.es.remaining(n ?? 0) : COPY.es[key];
-    }
-    if (language === "bilingual") {
-      if (key === "remaining") {
-        return `${COPY.en.remaining(n ?? 0)} / ${COPY.es.remaining(n ?? 0)}`;
-      }
-      return `${COPY.en[key]} / ${COPY.es[key]}`;
-    }
-    return key === "remaining" ? COPY.en.remaining(n ?? 0) : COPY.en[key];
+  function line(key: CopyKey) {
+    if (language === "es") return COPY.es[key];
+    if (language === "bilingual") return `${COPY.en[key]} / ${COPY.es[key]}`;
+    return COPY.en[key];
   }
 
   return (
-    <div className={`${themeClass} ${layout === "portrait" ? "max-w-3xl mx-auto" : ""}`}>
+    <div className="tv-glow relative flex h-screen flex-col overflow-hidden text-white">
       <DisplayPoller />
-      <header className="flex items-end justify-between border-b border-border pb-6">
-        <div>
-          <p className="text-small uppercase tracking-[0.2em] text-gold">
-            {location.tenant.businessName}
+
+      <header className="relative z-10 flex shrink-0 items-center justify-between gap-[3vw] px-[3vw] pt-[1.6vh] pb-[1.1vh]">
+        <p className="min-w-0 font-display text-[clamp(1.15rem,2.1vw,2.15rem)] font-semibold tracking-tight text-white">
+          Scratch<span className="text-flag">Crest</span>
+        </p>
+        <div className="flex shrink-0 flex-col items-center gap-1">
+          <p className="font-mono text-[clamp(0.5rem,0.62vw,0.75rem)] font-semibold uppercase tracking-[0.34em] text-white/65">
+            {location.name}
           </p>
-          <h1 className="mt-2 font-serif text-h1">{location.name}</h1>
+          <span className="inline-flex items-center gap-1.5">
+            <span className="motion-live h-1.5 w-1.5 rounded-full bg-flag" aria-hidden />
+            <span className="font-mono text-[clamp(0.45rem,0.55vw,0.65rem)] font-bold uppercase tracking-[0.22em] text-flag">
+              Live
+            </span>
+          </span>
         </div>
-        <p className="text-small text-ink-soft">
-          {licensed ? line("licensed") : line("plain")}
+        <p className="min-w-0 text-right font-display text-[clamp(1.15rem,2.1vw,2.15rem)] font-semibold tracking-tight text-white">
+          Scratch<span className="text-flag">Crest</span>
         </p>
       </header>
 
-      {!licensed ? (
-        <p className="mt-6 max-w-3xl text-body text-ink-soft">{line("licenseNote")}</p>
-      ) : null}
+      <div className="relative z-10 min-h-0 flex-1 px-[1.2vw] pb-[0.6vh]">
+        {tickets.length > 0 ? (
+          <DisplayCatalog tickets={tickets} />
+        ) : (
+          <div className="flex h-full items-center justify-center">
+            <p className="font-display text-[clamp(1.25rem,2vw,2.5rem)] font-semibold text-white/70">
+              {line("none")}
+            </p>
+          </div>
+        )}
+      </div>
 
-      <ul className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {ordered.map((pack) => (
-          <li
-            key={pack.id}
-            className={`rounded-lg border p-6 ${
-              theme === "night"
-                ? "border-white/20 bg-white/5"
-                : "border-border bg-bg-secondary"
-            }`}
-          >
-            {gameToBin.get(pack.gameId) ? (
-              <p className="text-small text-gold">Bin {gameToBin.get(pack.gameId)}</p>
-            ) : null}
-            <p className="text-small opacity-70">Game {pack.game.gameNumber}</p>
-            <h2 className="mt-2 font-serif text-h3">{pack.game.name}</h2>
-            <p className="mt-4 font-serif text-h2">{formatCents(pack.game.priceCents)}</p>
-            {showWinners ? (
-              <p className="mt-2 text-small opacity-70">{line("remaining", pack._count.tickets)}</p>
-            ) : null}
-          </li>
-        ))}
-      </ul>
-
-      {ordered.length === 0 ? (
-        <p className="mt-16 text-h3 opacity-70">{line("none")}</p>
-      ) : null}
+      <footer className="relative z-10 flex shrink-0 items-stretch bg-flag text-white">
+        <div className="relative min-w-0 flex-1 overflow-hidden py-[1.15vh]">
+          {!licensed ? (
+            <div className="tv-marquee flex w-max items-center">
+              <LicenseTrack text={licenseTicker} />
+              <LicenseTrack text={licenseTicker} hidden />
+            </div>
+          ) : null}
+        </div>
+        <p className="flex shrink-0 items-center bg-flag-deep px-[1.4vw] font-mono text-[clamp(0.7rem,1vw,1.05rem)] font-bold tracking-wider">
+          18+
+        </p>
+      </footer>
     </div>
   );
 }

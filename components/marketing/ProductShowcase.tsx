@@ -1,41 +1,84 @@
-/** Stylized product frame — abstract UI, not stock photography */
-export function ProductShowcase() {
+"use client";
+
+import { useEffect, useState } from "react";
+
+const SCANS = [
+  { name: "Lone Star Gold", ticket: "047", price: "$10.00", stock: 128, sold: 34, commission: "$17" },
+  { name: "Triple Cash Bar", ticket: "112", price: "$5.00", stock: 127, sold: 35, commission: "$19" },
+  { name: "Neon Nights", ticket: "008", price: "$2.00", stock: 126, sold: 36, commission: "$22" },
+];
+
+export function ProductShowcase({ className = "" }: { className?: string }) {
+  const [index, setIndex] = useState(0);
+  const scan = SCANS[index];
+
+  useEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) return;
+    const id = window.setInterval(() => {
+      setIndex((value) => (value + 1) % SCANS.length);
+    }, 3200);
+    return () => window.clearInterval(id);
+  }, []);
+
   return (
-    <div className="rounded-lg border border-white/10 bg-[#141416] p-4 sm:p-6">
-      <div className="mb-5 flex items-center justify-between border-b border-white/10 pb-4">
+    <div className={`sheet flex h-full flex-col rounded-lg p-6 ${className}`}>
+      <div className="flex items-center justify-between gap-4 border-b border-dashed border-rule-strong pb-4">
         <div>
-          <p className="text-small uppercase tracking-[0.18em] text-gold">Scan</p>
-          <p className="mt-1 font-serif text-h3 text-bg">Main St Store</p>
+          <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-faint">
+            Scan to sell
+          </p>
+          <p className="wonk mt-1 font-display text-[19px] font-semibold tracking-tight text-ink">
+            Main St Store
+          </p>
         </div>
-        <span className="rounded-lg border border-gold/40 px-3 py-1 text-small text-gold-soft">
+        <span className="inline-flex items-center gap-2 rounded-full bg-money-wash px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-money">
+          <span className="motion-live h-1.5 w-1.5 rounded-full bg-money" aria-hidden />
           Live
         </span>
       </div>
 
-      <div className="rounded-lg border border-white/10 bg-white/[0.03] px-5 py-6">
-        <p className="text-small text-white/50">Last scan</p>
-        <p className="mt-2 font-serif text-h2 text-bg">Morning Cash</p>
-        <div className="mt-4 flex items-end justify-between">
-          <p className="text-body text-white/70">Ticket 047 · $1.00</p>
-          <p className="text-small uppercase tracking-wide text-success">Sold</p>
+      <div className="mt-5 border-l-2 border-l-flag pl-4">
+        <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-faint">
+          Last scan
+        </p>
+        <p className="wonk mt-1.5 font-display text-[24px] font-semibold tracking-tight text-ink">
+          {scan.name}
+        </p>
+        <div className="mt-2 flex items-end justify-between gap-4">
+          <p className="font-mono text-[13px] tabular-nums text-ink-soft">
+            Ticket {scan.ticket} ·{" "}
+            <span className="font-bold text-ink">{scan.price}</span>
+          </p>
+          <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-money">
+            Sold
+          </p>
         </div>
       </div>
 
-      <div className="mt-4 grid grid-cols-3 gap-3">
+      <dl className="mt-5 grid grid-cols-3 overflow-hidden rounded-lg">
         {[
-          ["In stock", "128"],
-          ["Sold today", "34"],
-          ["Commission", "$17"],
-        ].map(([label, value]) => (
+          ["In stock", scan.stock],
+          ["Sold today", scan.sold],
+          ["Commission", scan.commission],
+        ].map(([label, value], i) => (
           <div
-            key={label}
-            className="rounded-lg border border-white/10 px-3 py-4"
+            key={String(label)}
+            className={`well px-4 py-3.5 ${
+              i > 0 ? "border-l border-dashed border-rule-strong" : ""
+            }`}
           >
-            <p className="text-small text-white/45">{label}</p>
-            <p className="mt-2 font-serif text-h3 text-bg">{value}</p>
+            <dt className="text-[11px] text-ink-faint">{label}</dt>
+            <dd className="mt-1.5 font-mono text-[19px] font-bold tabular-nums text-ink">
+              {value}
+            </dd>
           </div>
         ))}
-      </div>
+      </dl>
+
+      <p className="mt-auto pt-4 text-[13px] text-ink-faint">
+        Any USB or Bluetooth scanner · already-sold tickets blocked
+      </p>
     </div>
   );
 }

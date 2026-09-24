@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { DashboardPage } from "@/components/dashboard/DashboardPage";
 import { getPermissionContext } from "@/lib/permissions";
 import { asDate, requirePrisma } from "@/lib/prisma";
 
@@ -108,59 +109,104 @@ export default async function AlertsPage() {
       }));
 
   return (
-    <div>
-      <h1 className="font-serif text-h2 font-semibold">Alerts</h1>
-      <p className="mt-2 text-body text-ink-soft">
-        Reorder by remaining tickets and sell-through. Overdue games are still on
-        the counter after their official close date. Scan flags compare cashiers at
-        the same store — not game odds.
-      </p>
-
-      <section className="mt-10">
-        <h2 className="font-serif text-h3">Low stock</h2>
-        <p className="mt-1 text-small text-ink-soft">Threshold: {threshold} tickets</p>
-        <ul className="mt-4 divide-y divide-border rounded-lg border border-border">
-          {lowStock.length === 0 ? (
-            <li className="px-4 py-3 text-ink-soft">No packs below threshold.</li>
-          ) : (
-            lowStock.map((row) => (
-              <li key={row.id} className="px-4 py-3">
-                {row.gameName} · {row.locationName} · {row.remaining} left · {row.soldLast7Days} sold / 7d · ~{row.daysOfStock} days of stock
-              </li>
-            ))
-          )}
-        </ul>
+    <DashboardPage
+      title="Alerts"
+      description="Reorder by remaining tickets and sell-through. Overdue games are still on the counter after their official close date. Scan flags compare cashiers at the same store — not game odds."
+    >
+      <section>
+        <div className="mb-3 flex items-baseline justify-between gap-4">
+          <h2 className="font-display text-base font-semibold text-ink">Low stock</h2>
+          <p className="text-small text-ink-faint">Threshold: {threshold} tickets</p>
+        </div>
+        <div className="overflow-hidden rounded-lg border border-border bg-sheet">
+          <table>
+            <thead className="border-b border-border bg-paper-2/60">
+              <tr>
+                <th>Game</th>
+                <th>Location</th>
+                <th className="num">Left</th>
+                <th className="num">Sold / 7d</th>
+                <th className="num">Days of stock</th>
+              </tr>
+            </thead>
+            <tbody>
+              {lowStock.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="text-ink-soft">No packs below threshold.</td>
+                </tr>
+              ) : (
+                lowStock.map((row) => (
+                  <tr key={row.id} className="border-b border-border last:border-b-0">
+                    <td>{row.gameName}</td>
+                    <td>{row.locationName}</td>
+                    <td className="num">{row.remaining}</td>
+                    <td className="num">{row.soldLast7Days}</td>
+                    <td className="num">{row.daysOfStock}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </section>
 
-      <section className="mt-10">
-        <h2 className="font-serif text-h3">Past official close date</h2>
-        <ul className="mt-4 divide-y divide-border rounded-lg border border-border">
-          {overdue.length === 0 ? (
-            <li className="px-4 py-3 text-ink-soft">No overdue active games.</li>
-          ) : (
-            overdue.map((row) => (
-              <li key={row.id} className="px-4 py-3">
-                {row.gameName} · {row.locationName} · closed {row.close}
-              </li>
-            ))
-          )}
-        </ul>
+      <section className="mt-8">
+        <h2 className="mb-3 font-display text-base font-semibold text-ink">Past official close date</h2>
+        <div className="overflow-hidden rounded-lg border border-border bg-sheet">
+          <table>
+            <thead className="border-b border-border bg-paper-2/60">
+              <tr>
+                <th>Game</th>
+                <th>Location</th>
+                <th>Closed</th>
+              </tr>
+            </thead>
+            <tbody>
+              {overdue.length === 0 ? (
+                <tr>
+                  <td colSpan={3} className="text-ink-soft">No overdue active games.</td>
+                </tr>
+              ) : (
+                overdue.map((row) => (
+                  <tr key={row.id} className="border-b border-border last:border-b-0">
+                    <td>{row.gameName}</td>
+                    <td>{row.locationName}</td>
+                    <td>{row.close}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </section>
 
-      <section className="mt-10">
-        <h2 className="font-serif text-h3">Scan volume flags</h2>
-        <ul className="mt-4 divide-y divide-border rounded-lg border border-border">
-          {anomalies.length === 0 ? (
-            <li className="px-4 py-3 text-ink-soft">No unusual scan volumes this week.</li>
-          ) : (
-            anomalies.map((row) => (
-              <li key={row.id} className="px-4 py-3">
-                {row.name} scanned {row.scans} tickets in 7 days (well above store average).
-              </li>
-            ))
-          )}
-        </ul>
+      <section className="mt-8">
+        <h2 className="mb-3 font-display text-base font-semibold text-ink">Scan volume flags</h2>
+        <div className="overflow-hidden rounded-lg border border-border bg-sheet">
+          <table>
+            <thead className="border-b border-border bg-paper-2/60">
+              <tr>
+                <th>Cashier</th>
+                <th className="num">Scans / 7d</th>
+              </tr>
+            </thead>
+            <tbody>
+              {anomalies.length === 0 ? (
+                <tr>
+                  <td colSpan={2} className="text-ink-soft">No unusual scan volumes this week.</td>
+                </tr>
+              ) : (
+                anomalies.map((row) => (
+                  <tr key={row.id} className="border-b border-border last:border-b-0">
+                    <td>{row.name}</td>
+                    <td className="num">{row.scans}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </section>
-    </div>
+    </DashboardPage>
   );
 }

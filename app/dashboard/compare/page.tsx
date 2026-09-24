@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { DashboardPage } from "@/components/dashboard/DashboardPage";
 import { formatCents } from "@/lib/format";
 import { getPermissionContext } from "@/lib/permissions";
 import { requirePrisma } from "@/lib/prisma";
@@ -29,18 +30,18 @@ export default async function ComparePage() {
   const byId = new Map(grouped.map((row) => [row.locationId, row]));
 
   return (
-    <div>
-      <h1 className="font-serif text-h2 font-semibold">Location comparison</h1>
-      <p className="mt-2 text-body text-ink-soft">Last 30 days of sales by store.</p>
-      <div className="mt-10 overflow-hidden rounded-lg border border-border">
-        <table className="w-full text-left">
-          <thead className="border-b border-border bg-bg-secondary">
+    <DashboardPage
+      title="Location comparison"
+      description="Last 30 days of sales by store."
+    >
+      <div className="overflow-hidden rounded-lg border border-border bg-sheet">
+        <table>
+          <thead className="border-b border-border bg-paper-2/60">
             <tr>
-              {["Location", "Tickets", "Sales", "Commission"].map((h) => (
-                <th key={h} className="px-4 py-3 text-small font-medium text-ink-soft">
-                  {h}
-                </th>
-              ))}
+              <th>Location</th>
+              <th className="num">Tickets</th>
+              <th className="num">Sales</th>
+              <th className="num">Commission</th>
             </tr>
           </thead>
           <tbody>
@@ -48,18 +49,16 @@ export default async function ComparePage() {
               const row = byId.get(location.id);
               return (
                 <tr key={location.id} className="border-b border-border last:border-b-0">
-                  <td className="px-4 py-3">{location.name}</td>
-                  <td className="px-4 py-3">{row?._count ?? 0}</td>
-                  <td className="px-4 py-3">{formatCents(row?._sum.priceCents ?? 0)}</td>
-                  <td className="px-4 py-3">
-                    {formatCents(row?._sum.commissionEarnedCents ?? 0)}
-                  </td>
+                  <td>{location.name}</td>
+                  <td className="num">{row?._count ?? 0}</td>
+                  <td className="num">{formatCents(row?._sum.priceCents ?? 0)}</td>
+                  <td className="num">{formatCents(row?._sum.commissionEarnedCents ?? 0)}</td>
                 </tr>
               );
             })}
           </tbody>
         </table>
       </div>
-    </div>
+    </DashboardPage>
   );
 }

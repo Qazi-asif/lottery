@@ -8,19 +8,25 @@ const ALLOWED = new Set([
   "instore-display.png",
   "laptop-dashboard.png",
   "geometric-panel.png",
+  "hero-vivid.png",
+  "scan-vivid.png",
+  "dashboard-vivid.png",
+  "display-vivid.png",
 ]);
 
+const GENERATED_ASSET_DIRS = [
+  "e-lottery-lottery",
+  "c-Users-hp-Desktop-Lottery",
+];
+
 async function resolveAsset(file: string) {
+  const home = process.env.USERPROFILE ?? process.env.HOME ?? "";
+
   const candidates = [
     path.join(process.cwd(), "public", "marketing", file),
     path.join(process.cwd(), "assets", file),
-    path.join(
-      process.env.USERPROFILE ?? "",
-      ".cursor",
-      "projects",
-      "c-Users-hp-Desktop-Lottery",
-      "assets",
-      file,
+    ...GENERATED_ASSET_DIRS.map((dir) =>
+      path.join(home, ".cursor", "projects", dir, "assets", file),
     ),
   ];
 

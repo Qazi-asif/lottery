@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { DashboardNotice, DashboardPage } from "@/components/dashboard/DashboardPage";
 
 type PackRow = {
   id: string;
@@ -81,77 +82,78 @@ export function InventoryManager({
   }
 
   return (
-    <div>
-      <h1 className="font-serif text-h2 font-semibold">Inventory</h1>
-      <p className="mt-2 text-body text-ink-soft">
-        Receive a pack, then activate it to generate every ticket barcode at once.
-      </p>
-
+    <DashboardPage
+      title="Inventory"
+      description="Receive a pack, then activate it to generate every ticket barcode at once."
+    >
       <form
         onSubmit={receivePack}
-        className="mt-8 grid gap-4 rounded-lg border border-border bg-bg-secondary p-6 md:grid-cols-4"
+        className="grid items-end gap-3 rounded-lg border border-border bg-sheet p-5 md:grid-cols-4"
       >
-        <select name="locationId" required className="rounded-lg border border-border bg-bg px-3 py-2">
-          {locations.map((location) => (
-            <option key={location.id} value={location.id}>
-              {location.name}
-            </option>
-          ))}
-        </select>
-        <select name="gameId" required className="rounded-lg border border-border bg-bg px-3 py-2">
-          {games.map((game) => (
-            <option key={game.id} value={game.id}>
-              {game.gameNumber} · {game.name}
-            </option>
-          ))}
-        </select>
-        <input
-          name="packNumber"
-          required
-          placeholder="Pack number"
-          className="rounded-lg border border-border bg-bg px-3 py-2"
-        />
+        <label>
+          Location
+          <select name="locationId" required className="mt-1.5 w-full">
+            {locations.map((location) => (
+              <option key={location.id} value={location.id}>
+                {location.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Game
+          <select name="gameId" required className="mt-1.5 w-full">
+            {games.map((game) => (
+              <option key={game.id} value={game.id}>
+                {game.gameNumber} · {game.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Pack number
+          <input name="packNumber" required placeholder="Pack number" className="mt-1.5 w-full" />
+        </label>
         <button
           type="submit"
-          className="rounded-lg border-2 border-transparent bg-ink px-4 py-2 text-bg hover:border-gold"
+          className="inline-flex h-10 items-center justify-center rounded-md bg-ink px-4 text-small font-medium text-paper hover:bg-ink-deep"
         >
           Receive pack
         </button>
       </form>
 
-      {error ? <p className="mt-4 text-small text-error">{error}</p> : null}
+      {error ? <DashboardNotice>{error}</DashboardNotice> : null}
 
-      <div className="mt-10 overflow-hidden rounded-lg border border-border">
-        <table className="w-full text-left">
-          <thead className="border-b border-border bg-bg-secondary">
+      <div className="mt-8 overflow-hidden rounded-lg border border-border bg-sheet">
+        <table>
+          <thead className="border-b border-border bg-paper-2/60">
             <tr>
-              {["Pack", "Game", "Location", "Status", "Remaining", ""].map((h) => (
-                <th key={h} className="px-4 py-3 text-small font-medium text-ink-soft">
-                  {h}
-                </th>
-              ))}
+              <th>Pack</th>
+              <th>Game</th>
+              <th>Location</th>
+              <th>Status</th>
+              <th className="num">Remaining</th>
+              <th />
             </tr>
           </thead>
           <tbody>
             {packs.map((pack) => (
               <tr key={pack.id} className="border-b border-border last:border-b-0">
-                <td className="px-4 py-4">{pack.packNumber}</td>
-                <td className="px-4 py-4">
+                <td className="font-mono text-small">{pack.packNumber}</td>
+                <td>
                   {pack.game.gameNumber} · {pack.game.name}
                 </td>
-                <td className="px-4 py-4">{pack.location.name}</td>
-                <td className="px-4 py-4">{pack.status}</td>
-                <td className="px-4 py-4">
-                  {pack.status === "received"
-                    ? pack.ticketCount
-                    : pack.remainingTickets}
+                <td>{pack.location.name}</td>
+                <td>{pack.status}</td>
+                <td className="num">
+                  {pack.status === "received" ? pack.ticketCount : pack.remainingTickets}
                 </td>
-                <td className="px-4 py-4">
+                <td className="text-right">
                   {pack.status === "received" ? (
                     <button
                       type="button"
                       onClick={() => activate(pack.id)}
-                      className="text-small text-ink underline decoration-gold underline-offset-4"
+                      className="text-small font-medium text-ink underline underline-offset-4"
                     >
                       Activate
                     </button>
@@ -159,14 +161,14 @@ export function InventoryManager({
                     <Link
                       href={`/dashboard/inventory/packs/${pack.id}`}
                       prefetch
-                      className="text-small text-ink underline decoration-gold underline-offset-4"
+                      className="text-small font-medium text-ink underline underline-offset-4"
                     >
                       View
                     </Link>
                   )}
                   {canTransfer && pack.status !== "closed" ? (
                     <select
-                      className="mt-2 block rounded-lg border border-border bg-bg px-2 py-1 text-small"
+                      className="mt-2 block w-full"
                       defaultValue=""
                       onChange={(event) => {
                         if (event.target.value) {
@@ -191,6 +193,6 @@ export function InventoryManager({
           </tbody>
         </table>
       </div>
-    </div>
+    </DashboardPage>
   );
 }

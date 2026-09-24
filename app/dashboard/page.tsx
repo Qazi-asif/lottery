@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { DashboardPage } from "@/components/dashboard/DashboardPage";
 import { formatCents } from "@/lib/format";
 import { getPermissionContext } from "@/lib/permissions";
 import { requirePrisma } from "@/lib/prisma";
@@ -35,39 +36,49 @@ export default async function DashboardHomePage() {
     }),
   ]);
 
-  return (
-    <div>
-      <h1 className="font-serif text-h2 font-semibold">Overview</h1>
-      <p className="mt-2 text-body text-ink-soft">
-        Inventory, sales, and display for your locations.
-      </p>
+  const counts = [
+    ["Locations", String(locationCount)],
+    ["Active packs", String(packCount)],
+    ["Tickets sold", String(sales._count)],
+  ];
+  const money = [
+    ["Gross sales", formatCents(sales._sum.priceCents ?? 0)],
+    ["Commission earned", formatCents(sales._sum.commissionEarnedCents ?? 0)],
+  ];
 
-      <div className="mt-10 grid gap-6 md:grid-cols-3">
-        {[
-          ["Locations", String(locationCount)],
-          ["Active packs", String(packCount)],
-          ["Tickets sold", String(sales._count)],
-          ["Gross sales", formatCents(sales._sum.priceCents ?? 0)],
-          ["Commission earned", formatCents(sales._sum.commissionEarnedCents ?? 0)],
-        ].map(([label, value]) => (
-          <div
-            key={label}
-            className="rounded-lg border border-border bg-bg-secondary p-6"
-          >
-            <p className="text-small uppercase tracking-wide text-ink-soft">{label}</p>
-            <p className="mt-3 font-serif text-h3 text-ink">{value}</p>
+  return (
+    <DashboardPage
+      title="Overview"
+      description="Inventory, sales, and display for your locations."
+      actions={
+        <Link
+          href="/dashboard/scan"
+          className="inline-flex h-10 items-center rounded-md bg-ink px-4 text-small font-medium text-paper hover:bg-ink-deep"
+        >
+          Open scan
+        </Link>
+      }
+    >
+      <div className="grid gap-4 sm:grid-cols-3">
+        {counts.map(([label, value]) => (
+          <div key={label} className="rounded-lg border border-border bg-sheet px-5 py-4">
+            <p className="text-small text-ink-soft">{label}</p>
+            <p className="mt-2 font-mono text-[1.5rem] font-semibold tabular-nums tracking-tight text-ink">
+              {value}
+            </p>
           </div>
         ))}
       </div>
-
-      <div className="mt-10">
-        <Link
-          href="/dashboard/scan"
-          className="rounded-lg border-2 border-transparent bg-ink px-6 py-3 text-body font-medium text-bg transition-colors hover:border-gold"
-        >
-          Open scan-to-sell
-        </Link>
+      <div className="mt-4 grid gap-4 sm:grid-cols-2">
+        {money.map(([label, value]) => (
+          <div key={label} className="rounded-lg border border-border bg-sheet px-5 py-4">
+            <p className="text-small text-ink-soft">{label}</p>
+            <p className="mt-2 font-mono text-[1.5rem] font-semibold tabular-nums tracking-tight text-ink">
+              {value}
+            </p>
+          </div>
+        ))}
       </div>
-    </div>
+    </DashboardPage>
   );
 }

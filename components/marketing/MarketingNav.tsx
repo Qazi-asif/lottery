@@ -1,52 +1,41 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Logo } from "@/components/marketing/Logo";
-import { Button } from "@/components/marketing/Button";
-
-const links = [
-  { href: "/features", label: "Features" },
-  { href: "/pricing", label: "Pricing" },
-];
+import { AnnouncementBar } from "@/components/marketing/AnnouncementBar";
+import { MarketingNavLinks } from "@/components/marketing/MarketingNavLinks";
 
 export function MarketingNav() {
-  const pathname = usePathname();
+  /**
+   * The bar carries no rule or shadow while it is sitting in the hero — the
+   * separation is only needed once content starts passing underneath it.
+   */
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-bg">
-      <div className="mx-auto flex max-w-marketing items-center justify-between px-6 py-5">
-        <Logo />
-
-        <nav className="flex items-center gap-8" aria-label="Main">
-          {links.map((link) => {
-            const active =
-              pathname === link.href || pathname.startsWith(link.href);
-
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`relative pb-1 text-body text-ink transition-colors after:absolute after:bottom-0 after:left-0 after:h-px after:bg-gold after:transition-all after:duration-200 hover:after:w-full ${
-                  active ? "after:w-full" : "after:w-0"
-                }`}
-              >
-                {link.label}
-              </Link>
-            );
-          })}
-        </nav>
-
-        <div className="flex items-center gap-5">
-          <Link
-            href="/login"
-            className="hidden text-body text-ink-soft transition-colors hover:text-ink sm:inline"
-          >
-            Sign in
-          </Link>
-          <Button href="/signup" className="px-5 py-2.5 text-small">
-            Get started
-          </Button>
+    <header className="sticky top-0 z-50">
+      <AnnouncementBar />
+      <div
+        className={`relative bg-paper/90 backdrop-blur-md transition-shadow duration-200 ${
+          scrolled
+            ? "border-b border-rule shadow-[0_6px_20px_-16px_rgb(58_40_16/0.5)]"
+            : "border-b border-transparent"
+        }`}
+      >
+        <div
+          className={`mx-auto flex max-w-marketing items-center justify-between px-6 transition-all duration-200 ${
+            scrolled ? "h-14" : "h-[4.5rem]"
+          }`}
+        >
+          <Logo />
+          <MarketingNavLinks />
         </div>
       </div>
     </header>

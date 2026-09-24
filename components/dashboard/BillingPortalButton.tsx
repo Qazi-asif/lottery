@@ -21,7 +21,7 @@ export function BillingPortalButton() {
       <button
         type="button"
         onClick={openPortal}
-        className="rounded-lg border-2 border-transparent bg-ink px-6 py-3 text-bg hover:border-gold"
+        className="inline-flex h-10 items-center rounded-md bg-ink px-4 text-small font-medium text-paper hover:bg-ink-deep"
       >
         Manage billing
       </button>
