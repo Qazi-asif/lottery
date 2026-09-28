@@ -30,7 +30,7 @@ Copy `.env.example` to `.env`. Fill these from the dashboard.
 
 | Env var | Dashboard connection | Port | Use |
 |---|---|---|---|
-| `DATABASE_URL` | **Session** pooler | `5432` | Next.js / Prisma Client. Add `?sslmode=require`. Do not use transaction/6543 with Prisma — it is much slower. |
+| `DATABASE_URL` | **Transaction** pooler | `6543` | Next.js / Prisma Client on Vercel. Add `?sslmode=require&pgbouncer=true&connection_limit=1`. Session mode (`5432`) caps at 15 clients and serverless login 500s with `EMAXCONNSESSION`. |
 | `DIRECT_URL` | **Session** pooler (or Direct) | `5432` | `prisma migrate` and `prisma db seed`. Add `?sslmode=require` |
 
 User in the URI looks like `postgres.PROJECT_REF` (pooler) or `postgres` (direct).
@@ -38,7 +38,7 @@ User in the URI looks like `postgres.PROJECT_REF` (pooler) or `postgres` (direct
 Example:
 
 ```
-DATABASE_URL="postgresql://postgres.abcdefghijklmnop:YOUR_DB_PASSWORD@aws-0-us-east-1.pooler.supabase.com:5432/postgres?sslmode=require"
+DATABASE_URL="postgresql://postgres.abcdefghijklmnop:YOUR_DB_PASSWORD@aws-0-us-east-1.pooler.supabase.com:6543/postgres?sslmode=require&pgbouncer=true&connection_limit=1"
 DIRECT_URL="postgresql://postgres.abcdefghijklmnop:YOUR_DB_PASSWORD@aws-0-us-east-1.pooler.supabase.com:5432/postgres?sslmode=require"
 ```
 

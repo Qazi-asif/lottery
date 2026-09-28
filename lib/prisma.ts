@@ -16,6 +16,21 @@ export function getDatabaseUrl(): string | undefined {
   return url;
 }
 
+/** Prisma query string extras. Do not log the returned URL (password). */
+export function withPrismaUrlParams(url: string): string {
+  let next = url;
+  if (!/[?&]connection_limit=/.test(next)) {
+    next += (next.includes("?") ? "&" : "?") + "connection_limit=1";
+  }
+  if (!/[?&]pool_timeout=/.test(next)) {
+    next += (next.includes("?") ? "&" : "?") + "pool_timeout=10";
+  }
+  if (/:(6543)\//.test(next) && !/[?&]pgbouncer=/.test(next)) {
+    next += (next.includes("?") ? "&" : "?") + "pgbouncer=true";
+  }
+  return next;
+}
+
 export function asAppDb(client: object): AppDb {
   return client as unknown as AppDb;
 }
@@ -47,10 +62,12 @@ export function getPrisma(): AppDb | null {
   }
 
   if (!globalForPrisma.prisma) {
-    process.env.DATABASE_URL = url;
+    const prismaUrl = withPrismaUrlParams(url);
+    process.env.DATABASE_URL = prismaUrl;
     try {
       globalForPrisma.prisma = asAppDb(
         new PrismaClient({
+          datasources: { db: { url: prismaUrl } },
           log:
             process.env.NODE_ENV === "development"
               ? ["error", "warn"]

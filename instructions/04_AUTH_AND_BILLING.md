@@ -66,8 +66,8 @@ assumes exists at `/dashboard/billing`.
 ## Environment variables (define in `.env`, never commit)
 
 ```
-DATABASE_URL=          # Supabase session pooler (port 5432) + sslmode=require
-DIRECT_URL=            # Same session/direct string for Prisma migrate
+DATABASE_URL=          # Supabase transaction pooler (port 6543) + pgbouncer=true + connection_limit=1
+DIRECT_URL=            # Session/direct string (port 5432) for Prisma migrate
 NEXTAUTH_SECRET=
 NEXTAUTH_URL=
 STRIPE_SECRET_KEY=

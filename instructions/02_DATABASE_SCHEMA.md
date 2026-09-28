@@ -260,7 +260,8 @@ datasource db {
 ```
 
 `binaryTargets` includes the Vercel Linux query engine (`rhel-openssl-3.0.x`) plus
-`native` for local machines. `DIRECT_URL` is the Supabase direct (non-pooler)
-connection. If it is unset at runtime, the app copies `DATABASE_URL` into
-`DIRECT_URL` before constructing `PrismaClient` so a missing preview env var
-cannot crash Server Components.
+`native` for local machines. `DIRECT_URL` is the Supabase session/direct connection (port 5432) used for
+migrations. `DATABASE_URL` for Vercel must be the transaction pooler (port 6543)
+with `pgbouncer=true` and `connection_limit=1`. If `DIRECT_URL` is unset at
+runtime, the app copies `DATABASE_URL` into `DIRECT_URL` before constructing
+`PrismaClient`.
