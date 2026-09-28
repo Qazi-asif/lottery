@@ -32,58 +32,58 @@ const pillars: {
 }[] = [
   {
     index: "01",
-    title: "Inventory you can trust",
+    title: "Track what is available",
     description:
-      "Receive a pack, activate once, and every ticket barcode is generated for you. Live counts at every location — no clipboards, no guessing at close.",
+      "Keep ticket information organized and easy to review — live counts at every location, no clipboards at close.",
     tone: "inventory",
     hue: "crimson",
     tilt: "-rotate-[0.7deg]",
   },
   {
     index: "02",
-    title: "Commission that settles itself",
+    title: "See what is moving",
     description:
-      "Every scan writes a sale with the commission locked in at that moment. Month-end matches the register because nothing was reconstructed later.",
+      "Identify sales activity without digging through scattered records. Every sale is logged the moment it happens.",
     tone: "inventory",
-    hue: "gold",
+    hue: "crimson",
     invert: true,
     tilt: "rotate-[0.5deg]",
   },
   {
     index: "03",
-    title: "A board that sells for you",
+    title: "Keep displays current",
     description:
-      "Swap plastic dispensers for a clean digital board of games, prices, and what's nearly gone. English, Spanish, or both.",
+      "Put relevant ticket information in front of customers. Prices, hot games, and what's nearly gone update as you sell.",
     tone: "display",
-    hue: "emerald",
+    hue: "crimson",
     tilt: "-rotate-[0.3deg]",
   },
   {
     index: "04",
-    title: "Shifts that reconcile",
+    title: "Reduce manual work",
     description:
-      "Open and close a shift in seconds. Cash, scans, and payouts line up, and you see the gap the moment it appears — not next week.",
+      "Spend less time maintaining paper lists and manual updates. Open and close a shift in seconds.",
     tone: "operations",
-    hue: "navy",
+    hue: "crimson",
     invert: true,
     tilt: "rotate-[0.6deg]",
   },
   {
     index: "05",
-    title: "Roles that protect you",
+    title: "Compare store activity",
     description:
-      "Cashiers get the scan screen and nothing else. Managers get their stores. You get billing, team, and every report.",
+      "Understand performance across products or locations. One account, many stores, side-by-side reports.",
     tone: "operations",
-    hue: "violet",
+    hue: "crimson",
     tilt: "-rotate-[0.5deg]",
   },
   {
     index: "06",
-    title: "Low-stock alerts",
+    title: "Act on better information",
     description:
-      "Find out a hot $10 game is down to its last few tickets while you can still reorder, instead of when a customer asks.",
+      "Turn everyday sales data into practical next steps — low stock, what's selling, and when to reorder.",
     tone: "operations",
-    hue: "teal",
+    hue: "crimson",
     invert: true,
     tilt: "rotate-[0.4deg]",
   },
@@ -99,41 +99,106 @@ const TICKER = SAMPLE_GAMES.slice(0, 8).map(
 
 const FAQS: FaqItem[] = [
   {
-    question: "Do I have to buy your hardware?",
+    question: "What is ScratchCrest?",
     answer:
-      "No. Use any TV for the display page and any USB or Bluetooth barcode scanner at the register. We don't sell refurbished computers or Fire Stick kits, and there's nothing to ship.",
+      "ScratchCrest is software for Texas lottery retailers. It gives you a live scratch-ticket board on any TV, a touch-screen smart POS at the counter, and inventory, sales, and commission in one login. We do not sell hardware kits, computers, or Fire Sticks.",
   },
   {
-    question: "How fast can I go live?",
+    question: "How does ScratchCrest work?",
     answer:
-      "Sign up, pay on Stripe Checkout, then set your password from a one-time secure link. Add a location, receive a pack, activate it, and start scanning. Most stores are running the same day — no install appointment.",
+      "You receive a pack in the dashboard, activate it, and every ticket is tracked. Cashiers sell from a touch grid: tap a game, set quantity, confirm. The sale is recorded, stock drops, and the TV board updates. Owners and managers see reports. Cashiers only see Sell.",
+  },
+  {
+    question: "Is this just a TV screen?",
+    answer:
+      "No. A display can show information. ScratchCrest also runs the counter: ticket-level inventory, a smart POS, commission locked in at sale time, shifts, alerts, and roles. The wall and the register stay in sync.",
+  },
+  {
+    question: "Do cashiers scan barcodes?",
+    answer:
+      "No. ScratchCrest is a touch-display smart POS, not a scan-to-sell system. The cashier taps a live game, chooses how many tickets, and confirms. The same ticket still cannot sell twice.",
+  },
+  {
+    question: "Do I need special hardware?",
+    answer:
+      "No. Use any TV that can open a web page for the in-store board, and a touch screen or tablet for the POS. We don't sell refurbished PCs, Fire Stick kits, or anything to ship. Hosting and updates are included in the plan.",
+  },
+  {
+    question: "How do I put the board on my TV?",
+    answer:
+      "Each store gets a display URL. Open it in the TV's browser (or any device plugged into HDMI). Pick a mode, English and/or Spanish, and landscape or portrait. Counts update as you sell. No special media player is required.",
   },
   {
     question: "Will the TV show official lottery artwork?",
     answer:
-      "Not by default. The display renders in a generic, plain-text mode until your account has artwork licensing approved. That's a legal requirement rather than a missing feature, and the display mode you pick controls the look in the meantime.",
+      "Not by default. The board runs in generic, plain-text mode until your account has artwork licensing approved. That is a legal requirement. Game names on the marketing preview are samples, not official titles.",
+  },
+  {
+    question: "How do packs and inventory work?",
+    answer:
+      "A pack is one book of tickets for one game at one store. Receive it when it arrives, then activate it. Activation puts the game on the Sell grid and on the TV. Remaining counts are live. You can transfer a pack to another store when a game runs hot.",
+  },
+  {
+    question: "Can the same ticket sell twice?",
+    answer:
+      "No. Inventory is ticket-level. Once a ticket is sold, it is locked. A second sale of that ticket is rejected in the database, not only on the screen.",
+  },
+  {
+    question: "What does a cashier actually do?",
+    answer:
+      "They open Sell, tap a game, set quantity (it starts at zero until they pick one), and confirm. They do not see billing, team, or owner reports.",
   },
   {
     question: "Can my cashiers see my numbers?",
     answer:
-      "No. Cashiers only get the scan-to-sell screen. Location managers see inventory and reports for the stores you assign them. Only you as owner see billing, the team, and every location.",
+      "No. Cashiers only get the Sell screen. Location managers see inventory and reports for the stores you assign them. Only you as owner see billing, the team, and every location.",
   },
   {
-    question: "What if I run more than one store?",
+    question: "Can I manage more than one store?",
     answer:
-      "One account covers all of them. Each location gets its own display, its own inventory, and its own reports, and you can compare them side by side or move a pack between stores with a transfer.",
+      "Yes. One account covers all of them. Each location gets its own display, inventory, and reports. You can compare stores side by side. Multi-location is a plan feature, not a per-store surcharge — Smart and Premium include it.",
+  },
+  {
+    question: "What shows up in sales and reports?",
+    answer:
+      "Every sale logs when it happened, the game, pack, store, tickets, price, commission, and who sold it. You can filter by store and date. Commission is stored at sale time, so a later plan change never rewrites history. Shifts let you open and close the drawer against those sales.",
+  },
+  {
+    question: "What about winning tickets I cash for a customer?",
+    answer:
+      "That is a prize payout, not a sale. ScratchCrest records payouts separately so you do not mix cashing a winner with selling a ticket. Cashing bonus is stored on the payout.",
+  },
+  {
+    question: "How do I get started?",
+    answer:
+      "Pick a plan, pay on Stripe Checkout (we never see your card number), then set your password from a one-time link in email. Add a location, receive a pack, activate it, and open Sell. There is no install visit.",
   },
   {
     question: "Is there a contract?",
     answer:
-      "No. It's a month-to-month subscription you can cancel from the Stripe customer portal at any time. Annual billing is available if you'd rather pay less per month.",
+      "No. It is month-to-month. Cancel any time from the Stripe customer portal and you keep access through the end of the paid period. Annual billing is available if you would rather pay less per month.",
+  },
+  {
+    question: "Can I change plans later?",
+    answer:
+      "Yes, from the Stripe portal. Proration is handled there. Features follow flags on the plan — what a tier includes can change in billing without a sales call.",
+  },
+  {
+    question: "How does the $50 referral work?",
+    answer:
+      "Share your referral with another retailer. When they subscribe, credit posts to both accounts. You can track referrals from the dashboard.",
+  },
+  {
+    question: "Do you guarantee 30% more sales?",
+    answer:
+      "No. We do not publish a sales-lift percentage until we have verified evidence. ScratchCrest is built to make the wall clearer and the counter faster. Results depend on your store, traffic, and game mix.",
   },
 ];
 
 const HERO_METRICS = [
-  { value: "$0", label: "Hardware to buy", fill: "bg-foil text-ink" },
-  { value: "20 min", label: "To go live", fill: "bg-flag text-white" },
-  { value: "1 scan", label: "Per sale", fill: "bg-money text-white" },
+  { value: "Live", label: "Ticket board", fill: "bg-[#f11112] text-white" },
+  { value: "Touch", label: "Smart POS", fill: "bg-black text-white ring-1 ring-[#f11112]" },
+  { value: "$0", label: "Hardware kit", fill: "bg-[#f11112] text-white" },
 ];
 
 export default function HomePage() {
@@ -141,11 +206,15 @@ export default function HomePage() {
     <>
       {/* ---------------- Hero ---------------- */}
       <section className="relative overflow-hidden">
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 h-[32rem] bg-[radial-gradient(ellipse_at_top,_rgba(241,17,18,0.32),_transparent_58%)]"
+          aria-hidden
+        />
         <FloatTickets />
         <div className="relative mx-auto max-w-marketing px-6 pb-16 pt-14 lg:pb-20 lg:pt-20">
           <div className="grid items-center gap-12 [&>*]:min-w-0 lg:grid-cols-[0.95fr_1.05fr]">
             <div>
-              <span className="inline-flex items-center gap-2 rounded-full bg-flag px-3 py-1.5 text-white shadow-[0_8px_20px_-8px_rgb(240_61_20/0.7)]">
+              <span className="inline-flex items-center gap-2 rounded-full bg-[#f11112] px-3 py-1.5 text-white">
                 <span
                   className="motion-live h-1.5 w-1.5 rounded-full bg-white"
                   aria-hidden
@@ -156,30 +225,31 @@ export default function HomePage() {
               </span>
 
               <h1 className="wonk mt-6 font-display text-hero font-semibold leading-[0.98] tracking-[-0.025em] text-ink">
-                Sell up to{" "}
-                {/* The claim gets the pen mark — the one drawn element on the page. */}
-                <span className="relative inline-block whitespace-nowrap text-flag">
-                  30% more
-                  <Underline className="absolute -bottom-1 left-0 h-[0.34em] w-full text-foil" />
-                </span>{" "}
-                scratch tickets.
+                Turn your scratch ticket wall into a{" "}
+                <span className="relative inline-block whitespace-nowrap text-[#f11112]">
+                  smarter sales tool.
+                  <Underline className="absolute -bottom-1 left-0 h-[0.34em] w-full text-[#f11112]" />
+                </span>
               </h1>
 
               <p className="mt-6 max-w-xl text-[17.5px] leading-relaxed text-ink-soft">
-                Turn any TV in your store into a live scratch-game board, sell a
-                ticket with one scan, and watch your commission land in real time.
-                Set it up yourself in about 20 minutes — no hardware kit, no sales
-                call.
+                ScratchCrest helps lottery retailers organize, promote, and monitor
+                scratch ticket inventory from one clear digital workspace. Give
+                customers better visibility, help staff make faster decisions, and
+                keep your ticket wall working harder.
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Button href="/signup">Start free</Button>
-                <Button href="/pricing" variant="secondary">
-                  See plans &amp; pricing
+                <Button href="#display">View the live board</Button>
+                <Button
+                  href="#how-it-works"
+                  variant="secondary"
+                  className="border-[#f11112] bg-black text-white hover:border-[#f11112] hover:bg-[#f11112] hover:text-white"
+                >
+                  See how it works
                 </Button>
               </div>
 
-              {/* Three torn-off stubs, each carrying one figure. */}
               <ul className="mt-9 grid gap-3 sm:grid-cols-3">
                 {HERO_METRICS.map((item) => (
                   <li
@@ -204,41 +274,33 @@ export default function HomePage() {
             </div>
 
             <div>
-              {/* 9 keeps the board's height close to the copy beside it; 12 left
-                  the column overhanging the headline by most of a row. */}
               <TicketWall count={9} />
               <p className="mt-4 text-center font-mono text-[10px] uppercase tracking-[0.18em] text-ink-faint">
-                Live preview — the pack that goes on your TV
+                Live preview — the board customers see on your TV
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ---------------- Ticker crawl ---------------- */}
       <Marquee items={TICKER} className="py-3.5" />
 
       <ProofBar />
 
-      {/* ---------------- Scratch reveal ---------------- */}
+      {/* ---------------- Buyer wall / core problem ---------------- */}
       <section className="bg-bronze py-16 sm:py-20">
         <div className="mx-auto max-w-marketing px-6">
           <div className="grid items-center gap-12 lg:grid-cols-[1fr_0.85fr]">
             <Reveal>
               <SectionHeading
                 tone="paper"
-                eyebrow="The part nobody shows you"
-                title="A busier wall is worth a number. Here's the number."
-                description="Most display vendors sell you a screen and stop there. The reason to put one up is what it does to the 5% you keep on every scratch ticket that leaves the store."
+                eyebrow="The counter problem"
+                title="A busy ticket wall should give you more than a busy counter."
+                description="When dozens of scratch games compete for attention, it is easy to lose track of what is moving, what needs attention, and what customers are actually choosing. ScratchCrest turns that clutter into a clear, organized view so retailers can see the bigger picture at a glance."
               />
-              <p className="mt-6 max-w-lg text-[14.5px] leading-relaxed text-paper-2/70">
-                The panel on the right is one store's month at{" "}
-                <span className="font-mono font-semibold tabular-nums text-foil-light">
-                  $600
-                </span>{" "}
-                a day in scratch sales, with the lift our pilot stores reported.
-                Scratch it off, then run your own numbers further down the page.
-              </p>
+              <div className="mt-8">
+                <Button href="#inventory">See your inventory clearly</Button>
+              </div>
             </Reveal>
 
             <Reveal delay={90} variant="scale">
@@ -247,18 +309,15 @@ export default function HomePage() {
                 tone="paper"
                 className="mx-auto max-w-sm"
               >
-                {/* Under the latex. Every figure here is the same arithmetic the
-                    calculator below runs: $600/day → $18,000/mo, a 15% lift adds
-                    $2,700 in sales, which is $135 of commission at 5%. */}
-                <div className="flex aspect-[5/3] flex-col justify-center bg-ink px-7 py-6 text-center">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-paper-2/50">
-                    Extra scratch sales / month
+                <div className="flex aspect-[5/3] flex-col justify-center bg-ink-deep px-7 py-6 text-center">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink-faint">
+                    What the wall should tell you
                   </p>
-                  <p className="mt-2 font-mono text-[clamp(2.25rem,5vw,3.25rem)] font-bold leading-none tracking-[-0.04em] tabular-nums text-foil-light">
-                    +$2,700
+                  <p className="mt-3 font-display text-[clamp(1.35rem,3vw,1.85rem)] font-semibold leading-snug tracking-tight text-white">
+                    What is on the wall. What is left. What to restock.
                   </p>
-                  <p className="mt-4 border-t border-dashed border-white/15 pt-3 font-mono text-[11px] tabular-nums text-paper-2/65">
-                    ≈ +$135 commission · +$86 after a $49 plan
+                  <p className="mt-4 border-t border-dashed border-white/15 pt-3 font-mono text-[11px] text-ink-soft">
+                    Demo preview — not a sales-lift claim
                   </p>
                 </div>
               </ScratchCard>
@@ -269,14 +328,14 @@ export default function HomePage() {
 
       <StatsBar />
 
-      {/* ---------------- Pillars ---------------- */}
+      {/* ---------------- Six tasks ---------------- */}
       <section className="bg-paper py-20 sm:py-24">
         <div className="mx-auto max-w-marketing px-6">
           <Reveal>
             <SectionHeading
               eyebrow="Everything in one account"
-              title="Six jobs your store does badly on paper."
-              description="ScratchCrest isn't a screen with a subscription attached. It's the software that runs the lottery side of your counter."
+              title="Six tasks ScratchCrest makes easier."
+              description="ScratchCrest is not just a screen. It is a smarter way to manage and present scratch ticket inventory."
               align="center"
               className="mb-14"
             />
@@ -289,18 +348,22 @@ export default function HomePage() {
               </Reveal>
             ))}
           </div>
+
+          <div className="mt-12 flex justify-center">
+            <Button href="/features">Explore features</Button>
+          </div>
         </div>
       </section>
 
       {/* ---------------- Display modes ---------------- */}
-      <section id="display" className="bg-ink py-20 sm:py-24">
+      <section id="display" className="scroll-mt-24 bg-ink-deep py-20 sm:py-24">
         <div className="mx-auto max-w-marketing px-6">
           <Reveal>
             <SectionHeading
               tone="paper"
-              eyebrow="Pick your mode"
-              title="Three display modes. One URL. Any TV in the store."
-              description="Choose a mode, a language, and landscape or portrait, then open the display link on the TV you already own. Prices, hot games, and what's nearly sold out update themselves as your team scans."
+              eyebrow="In-store display"
+              title="One system. Multiple displays. One clear view."
+              description="Run ScratchCrest on the TV you already own. Open a browser, pick a mode, language, and layout. Highlight available tickets and give customers a cleaner way to browse what is on offer. Official Texas Lottery artwork stays off until your account is licensed."
               className="mb-12"
             />
           </Reveal>
@@ -309,21 +372,21 @@ export default function HomePage() {
             <ThemeGallery surface="ink" />
           </Reveal>
 
-          <p className="mt-8 max-w-2xl text-[13px] leading-relaxed text-paper-2/45">
-            Game names shown here are our own. Official Texas Lottery artwork only
-            appears once your account has licensing approved.
+          <p className="mt-8 max-w-2xl text-[13px] leading-relaxed text-ink-faint">
+            Game names shown here are our own. Any modern TV or display that can
+            open a web page can run the board — no special media player required.
           </p>
         </div>
       </section>
 
-      {/* ---------------- Scan ---------------- */}
-      <section id="inventory" className="bg-paper py-20 sm:py-24">
+      {/* ---------------- Smart POS ---------------- */}
+      <section id="inventory" className="scroll-mt-24 bg-paper py-20 sm:py-24">
         <div className="mx-auto max-w-marketing px-6">
           <Reveal>
             <SectionHeading
-              eyebrow="At the register"
-              title="One scan. One second. Sale recorded."
-              description="Any USB or Bluetooth wedge scanner types the barcode and hits Enter. ScratchCrest confirms the sale, writes the commission, drops the count on the TV, and refuses to sell the same ticket twice."
+              eyebrow="At the counter"
+              title="From ticket selection to sale record — without the extra steps."
+              description="Keep the customer journey simple. Tap a game on the smart POS, choose quantity, and confirm. ScratchCrest records the sale, drops the count, updates the TV, and blocks the same ticket from selling twice."
             />
           </Reveal>
 
@@ -331,7 +394,7 @@ export default function HomePage() {
             <Reveal className="h-full">
               <PhotoFrame
                 file="scan-vivid.png"
-                alt="Barcode scanner and tablet confirming a ticket sale"
+                alt="Touch-screen smart POS at a store counter"
                 tilt="-rotate-[0.6deg]"
                 className="h-full"
               />
@@ -343,9 +406,9 @@ export default function HomePage() {
 
           <dl className="mt-8 grid gap-4 sm:grid-cols-3">
             {[
-              ["Locked rows", "A second scan of the same ticket is rejected at the database, not just in the UI.", "bg-flag"],
-              ["Commission at sale time", "The rate is stored on the sale, so a later plan change never rewrites history.", "bg-foil"],
-              ["Resilient to bad Wi-Fi", "Scans queue and confirm — a flaky store connection doesn't lose a sale.", "bg-money"],
+              ["Ticket selection", "Cashiers tap a live game on the touch grid instead of hunting through bins and paper lists.", "bg-[#f11112]"],
+              ["Sale recorded", "Commission is locked in at sale time, so a later plan change never rewrites history.", "bg-[#f11112]"],
+              ["Board stays current", "The customer-facing TV follows the POS — prices, stock, and almost-gone games update themselves.", "bg-[#f11112]"],
             ].map(([title, body, rule], i) => (
               <Reveal key={title} delay={i * 70}>
                 <div className="sheet h-full rounded-lg p-5">
@@ -360,6 +423,10 @@ export default function HomePage() {
               </Reveal>
             ))}
           </dl>
+
+          <div className="mt-10">
+            <Button href="#how-it-works">See the workflow</Button>
+          </div>
         </div>
       </section>
 
@@ -367,14 +434,14 @@ export default function HomePage() {
 
       <CompareSection />
 
-      {/* ---------------- Calculator ---------------- */}
-      <section className="bg-paper py-20 sm:py-24">
+      {/* ---------------- Store insight ---------------- */}
+      <section id="reporting" className="scroll-mt-24 bg-paper py-20 sm:py-24">
         <div className="mx-auto max-w-marketing px-6">
           <Reveal>
             <SectionHeading
-              eyebrow="Run the numbers"
-              title="What is a busier ticket wall actually worth to you?"
-              description="Your commission is 5% of scratch sales. Move the sliders to see what a lift on that number looks like next to the price of the software."
+              eyebrow="Store insight"
+              title="Turn daily ticket activity into useful store insight."
+              description="See the information behind your scratch ticket sales in a format that is easy to understand. The estimator below is labeled demo data — move the sliders to model commission next to plan cost. It is not a published sales-lift claim."
               align="center"
               className="mb-14"
             />
@@ -392,8 +459,9 @@ export default function HomePage() {
         <div className="mx-auto max-w-marketing px-6">
           <Reveal>
             <SectionHeading
-              eyebrow="In the store"
-              title="The screen does the talking. You keep the ledger."
+              eyebrow="See it in the store"
+              title="See ScratchCrest in action."
+              description="Explore the different ways ScratchCrest can support the modern lottery counter — from customer-facing displays to store-level monitoring and performance views."
               align="center"
               className="mb-14"
             />
@@ -403,41 +471,51 @@ export default function HomePage() {
             <Reveal>
               <PhotoFrame
                 file="display-vivid.png"
-                alt="Digital signage screens beside a store checkout"
-                caption="Display — bilingual, license-safe"
+                alt="Customer-facing digital ticket board in a store"
+                caption="Customer display"
                 tilt="-rotate-[1.2deg]"
               />
             </Reveal>
             <Reveal delay={80}>
               <PhotoFrame
-                file="hero-vivid.png"
-                alt="Wall-mounted digital lottery board above a store counter"
-                caption="Counter — the board customers point at"
+                file="dashboard-vivid.png"
+                alt="Store dashboard showing inventory and performance"
+                caption="Store dashboard"
                 tilt="rotate-[0.8deg]"
               />
             </Reveal>
             <Reveal delay={160}>
               <PhotoFrame
-                file="dashboard-vivid.png"
-                alt="Back-office monitor showing inventory and commission analytics"
-                caption="Office — owners see the business"
+                file="hero-vivid.png"
+                alt="Sales and inventory view at the lottery counter"
+                caption="Sales & inventory view"
                 tilt="-rotate-[0.5deg]"
               />
             </Reveal>
+          </div>
+
+          <div className="mt-12 flex justify-center">
+            <Button href="/features">Explore the platform</Button>
           </div>
         </div>
       </section>
 
       {/* ---------------- FAQ ---------------- */}
-      <section className="bg-paper py-20 sm:py-24">
+      <section id="faq" className="scroll-mt-24 bg-paper py-20 sm:py-24">
         <div className="mx-auto max-w-marketing px-6">
           <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr]">
             <Reveal>
               <SectionHeading
                 eyebrow="Questions"
-                title="Straight answers before you pay."
-                description="Nothing here needs a phone call to explain."
+                title="Questions? Start here."
+                description="A full Q&A on the product as it works today — touch POS, live board, inventory, roles, and billing."
               />
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <Button href="/signup">Get a demo</Button>
+                <Button href="/signup" variant="secondary">
+                  Contact ScratchCrest
+                </Button>
+              </div>
             </Reveal>
             <Reveal delay={80}>
               <FaqAccordion items={FAQS} />

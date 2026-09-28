@@ -41,14 +41,14 @@ const HUES: Record<
   navy: {
     stub: "bg-navy",
     index: "text-navy",
-    invert: "bg-navy text-paper",
-    invertIndex: "text-paper/70",
+    invert: "bg-navy text-white",
+    invertIndex: "text-white/70",
   },
   violet: {
     stub: "bg-violet",
     index: "text-violet",
-    invert: "bg-violet text-paper",
-    invertIndex: "text-paper/70",
+    invert: "bg-violet text-white",
+    invertIndex: "text-white/70",
   },
   teal: {
     stub: "bg-teal",

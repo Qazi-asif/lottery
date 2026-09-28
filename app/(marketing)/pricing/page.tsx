@@ -24,7 +24,7 @@ const FAQS: FaqItem[] = [
   {
     question: "Is there anything else to buy?",
     answer:
-      "No. Bring a TV for the display and any USB or Bluetooth barcode scanner for the register. We don't sell refurbished computers, Fire Sticks, or non-refundable kits, and hosting and updates are included in the plan.",
+      "No. Bring a TV for the display and a touch screen or tablet for the smart POS. We don't sell refurbished computers, Fire Sticks, or non-refundable kits, and hosting and updates are included in the plan.",
   },
   {
     question: "Can I change plans later?",
@@ -52,7 +52,7 @@ const ASSURANCES = [
   {
     index: "01",
     title: "No kit",
-    copy: "Bring your TV and a USB scanner. We never sell you a computer.",
+    copy: "Bring your TV and a touch screen. We never sell you a computer.",
     fill: "bg-money text-white",
   },
   {
@@ -65,7 +65,7 @@ const ASSURANCES = [
     index: "03",
     title: "Most stores pick Smart",
     copy: "Display, multi-location, shifts, and pack transfer in one tier.",
-    fill: "bg-foil text-ink",
+    fill: "bg-flag text-white",
   },
 ];
 
@@ -99,7 +99,7 @@ export default async function PricingPage() {
             Four tiers.{" "}
             <span className="relative inline-block whitespace-nowrap text-flag">
               No kit in the mail.
-              <Underline className="absolute -bottom-1 left-0 h-[0.3em] w-full text-foil" />
+              <Underline className="absolute -bottom-1 left-0 h-[0.3em] w-full text-flag" />
             </span>{" "}
             Live this afternoon.
           </h1>
@@ -225,7 +225,7 @@ export default async function PricingPage() {
                 ))}
               </ul>
               <Button href="/signup" className="mt-9">
-                Start free
+                Book a demo
               </Button>
             </Reveal>
           </div>

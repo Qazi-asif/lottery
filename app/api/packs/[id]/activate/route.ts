@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { Prisma } from "@prisma/client";
 import { ticketBarcodeValue } from "@/lib/barcode";
 import { ApiError, apiErrorResponse, jsonOk } from "@/lib/api-error";
 import {
@@ -40,6 +41,17 @@ export async function POST(
       );
     }
 
+    const existingForPack = await db.ticket.count({
+      where: { packId: pack.id },
+    });
+    if (existingForPack > 0) {
+      const activated = await db.pack.update({
+        where: { id: pack.id },
+        data: { status: "activated", activatedAt: new Date() },
+      });
+      return jsonOk({ pack: activated, ticketsCreated: 0 });
+    }
+
     const tickets = Array.from({ length: pack.ticketCount }, (_, index) => {
       const ticketNumber = index + 1;
       return {
@@ -54,16 +66,43 @@ export async function POST(
       };
     });
 
-    const activated = await db.$transaction(async (tx) => {
-      await tx.ticket.createMany({ data: tickets });
-      return tx.pack.update({
-        where: { id: pack.id },
-        data: { status: "activated", activatedAt: new Date() },
-      });
+    const clash = await db.ticket.findFirst({
+      where: { barcodeValue: { in: tickets.map((row) => row.barcodeValue) } },
+      select: { barcodeValue: true },
     });
+    if (clash) {
+      throw new ApiError(
+        "VALIDATION_ERROR",
+        `Pack number ${pack.packNumber} is already used for ${pack.game.gameNumber}. Receive this pack again with a different pack number.`,
+        409,
+      );
+    }
+
+    const activated = await db.$transaction(
+      async (tx) => {
+        await tx.ticket.createMany({ data: tickets });
+        return tx.pack.update({
+          where: { id: pack.id },
+          data: { status: "activated", activatedAt: new Date() },
+        });
+      },
+      { maxWait: 10_000, timeout: 20_000 },
+    );
 
     return jsonOk({ pack: activated, ticketsCreated: tickets.length });
   } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      return apiErrorResponse(
+        new ApiError(
+          "VALIDATION_ERROR",
+          "This pack number already has tickets for that game. Enter a different pack number.",
+          409,
+        ),
+      );
+    }
     return apiErrorResponse(error);
   }
 }

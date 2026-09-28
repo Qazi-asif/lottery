@@ -1,0 +1,215 @@
+SCRATCHCREST
+Website Content Rewrite + Screenshot Mapping
+A section-by-section content handoff based on the supplied homepage screenshot and reference sites.
+
+How to Use This Document
+Every section page pairs the exact corresponding crop from the current ScratchCrest homepage on the left with proposed replacement copy on the right. This lets you see immediately where each piece of content belongs.
+Reference Sites
+Lottery Display: https://lotterydisplay.com/
+Texas Lottery: https://www.texaslottery.com/
+The references were used for information architecture and topic coverage. The ScratchCrest copy is original.
+Important: figures visible in the screenshot such as 30%, 1.2s and $135 should remain demo placeholders until ScratchCrest has verified evidence or approved case-study data.
+
+01 — HERO / ABOVE THE FOLD
+SCREENSHOT SECTION  Screenshot section: “Sell up to 30% more scratch tickets.”
+EXISTING WEBSITE
+
+
+REWRITTEN HEADLINE
+Turn Your Scratch Ticket Wall Into a Smarter Sales Tool.
+REWRITTEN COPY
+ScratchCrest helps lottery retailers organize, promote, and monitor scratch ticket inventory from one clear digital workspace. Give customers better visibility, help staff make faster decisions, and keep your ticket wall working harder.
+CTA BUTTONS
+View the Live Board  |  See How It Works
+CONTENT / DESIGN NOTE
+Primary message: ScratchCrest is not just a screen. It is a smarter way to manage and present scratch ticket inventory.
+
+02 — TRUST / VALUE STRIP
+SCREENSHOT SECTION  Screenshot section: short benefit labels directly below the hero.
+EXISTING WEBSITE
+
+
+REWRITTEN HEADLINE
+Built for Faster Decisions. Designed for Better Visibility.
+REWRITTEN COPY
+Live ticket information • Clear inventory visibility • Simple store management • Actionable sales insights
+CONTENT / DESIGN NOTE
+Keep this strip very short. It should communicate four benefits before the visitor starts scrolling.
+
+03 — BUYER WALL / CORE PROBLEM
+SCREENSHOT SECTION  Screenshot section: “A busier wall is worth a number. Here’s the number.”
+EXISTING WEBSITE
+
+
+REWRITTEN HEADLINE
+A Busy Ticket Wall Should Give You More Than a Busy Counter.
+REWRITTEN COPY
+When dozens of scratch games compete for attention, it is easy to lose track of what is moving, what needs attention, and what customers are actually choosing. ScratchCrest turns that clutter into a clear, organized view so retailers can see the bigger picture at a glance.
+CTA BUTTONS
+See Your Inventory Clearly
+CONTENT / DESIGN NOTE
+This replaces the vague sales promise with a concrete retailer problem: visibility and decision-making.
+
+04 — KEY METRICS / PROOF STRIP
+SCREENSHOT SECTION  Screenshot section: “30% / 1.2s / 100% / $0” metrics.
+EXISTING WEBSITE
+
+
+REWRITTEN HEADLINE
+The Numbers That Matter at the Counter.
+REWRITTEN COPY
+Use verified ScratchCrest metrics here once available. Recommended metric labels:
+CTA BUTTONS
+Sales lift  |  Average update time  |  Inventory visibility  |  Setup cost / starting cost
+CONTENT / DESIGN NOTE
+Do not publish the screenshot's numerical values until they are verified. This section works best as four compact proof points.
+
+05 — SIX JOBS / FEATURE GRID
+SCREENSHOT SECTION  Screenshot section: “Six jobs your store does badly on paper.”
+EXISTING WEBSITE
+
+
+REWRITTEN HEADLINE
+Six Tasks ScratchCrest Makes Easier.
+REWRITTEN COPY
+1. Track what is available — Keep ticket information organized and easy to review.2. See what is moving — Identify sales activity without digging through scattered records.3. Keep displays current — Put relevant ticket information in front of customers.4. Reduce manual work — Spend less time maintaining paper lists and manual updates.5. Compare store activity — Understand performance across products or locations.6. Act on better information — Turn everyday sales data into practical next steps.
+CTA BUTTONS
+Explore Features
+CONTENT / DESIGN NOTE
+This is the main feature section. Use six cards with short titles and one-sentence explanations.
+
+06 — DISPLAY MODES / PRODUCT EXPERIENCE
+SCREENSHOT SECTION  Screenshot section: “Three display modes. One URL. Any TV in the store.”
+EXISTING WEBSITE
+
+
+REWRITTEN HEADLINE
+One System. Multiple Displays. One Clear View.
+REWRITTEN COPY
+Run the ScratchCrest experience on the screens that fit your store. Highlight available tickets, surface important information, and give customers a cleaner way to browse what is on offer.
+CTA BUTTONS
+Explore Display Options  |  View a Sample Board
+CONTENT / DESIGN NOTE
+Avoid overpromising device compatibility unless technically confirmed. If the product supports any-TV/browser deployment, state that explicitly in final technical copy.
+
+07 — SALE / SCAN FLOW
+SCREENSHOT SECTION  Screenshot section: “One scan. One second. Sale recorded.”
+EXISTING WEBSITE
+
+
+REWRITTEN HEADLINE
+From Ticket Selection to Sale Record — Without the Extra Steps.
+REWRITTEN COPY
+Keep the customer journey simple. Capture the relevant ticket activity, record the sale, and keep the information available for review. ScratchCrest is designed to make everyday tracking feel like part of the normal checkout flow.
+CTA BUTTONS
+See the Workflow
+CONTENT / DESIGN NOTE
+The screenshot strongly suggests a scan-to-record workflow. Keep the final wording aligned with the actual product implementation.
+
+08 — LIVE ACTIVITY / TIMELINE
+SCREENSHOT SECTION  Screenshot section: “Live before the afternoon rush. Nothing gets missed on you.”
+EXISTING WEBSITE
+
+
+REWRITTEN HEADLINE
+Know What Is Happening Before the Rush Starts.
+REWRITTEN COPY
+ScratchCrest brings important ticket activity into one live view, helping your team stay aware of changes throughout the day. Check the board, spot what needs attention, and keep the store ready for the next customer.
+CTA BUTTONS
+See Live Activity
+CONTENT / DESIGN NOTE
+Use a 4-step timeline visually: Update → Review → Act → Record.
+
+09 — COMPARISON / RETAILER CONTROL
+SCREENSHOT SECTION  Screenshot section: “They sell you a television. We run your counter.”
+EXISTING WEBSITE
+
+
+REWRITTEN HEADLINE
+More Than a Screen. A Smarter Retail Workflow.
+REWRITTEN COPY
+A display can show information. ScratchCrest is built to help you use it. Bring visibility, ticket activity, and store-level insights together so your team can spend less time checking and more time serving customers.
+CONTENT / DESIGN NOTE
+Recommended comparison rows: Display only / Live information / Sales tracking / Inventory visibility / Reporting / Store management.
+
+10 — STORE PERFORMANCE / DASHBOARD
+SCREENSHOT SECTION  Screenshot section: dashboard showing sales, costs and a positive result.
+EXISTING WEBSITE
+
+
+REWRITTEN HEADLINE
+Turn Daily Ticket Activity Into Useful Store Insight.
+REWRITTEN COPY
+See the information behind your scratch ticket sales in a format that is easy to understand. Review activity, identify patterns, and use real store data to make better inventory and merchandising decisions.
+CTA BUTTONS
+View a Sample Report
+CONTENT / DESIGN NOTE
+Use real dashboard screenshots here. Replace the '$135' and other sample figures with clearly labeled demo data or verified customer data.
+
+11 — SOCIAL PROOF / RETAILER QUOTES
+SCREENSHOT SECTION  Screenshot section: “Retailers stopped guessing which games were actually selling.”
+EXISTING WEBSITE
+
+
+REWRITTEN HEADLINE
+Less Guesswork. More Visibility.
+REWRITTEN COPY
+Give retailers a place to share what changed after using ScratchCrest. Focus testimonials on measurable operational improvements such as easier tracking, faster decisions, clearer displays, and better visibility.
+CTA BUTTONS
+Read Retailer Stories
+CONTENT / DESIGN NOTE
+Use real testimonials with retailer name, store type, location, and date where permission is available. Do not invent testimonials.
+
+12 — PRODUCT / USE-CASE GALLERY
+SCREENSHOT SECTION  Screenshot section: three visual cards/screenshots.
+EXISTING WEBSITE
+
+
+REWRITTEN HEADLINE
+See ScratchCrest in Action.
+REWRITTEN COPY
+Explore the different ways ScratchCrest can support the modern lottery counter — from customer-facing displays to store-level monitoring and performance views.
+CTA BUTTONS
+Explore the Platform
+CONTENT / DESIGN NOTE
+Use three visuals: Customer Display / Store Dashboard / Sales & Inventory View.
+
+13 — FAQ
+SCREENSHOT SECTION  Screenshot section: “Straight answers before you pay.”
+EXISTING WEBSITE
+
+
+REWRITTEN HEADLINE
+Questions? Start Here.
+REWRITTEN COPY
+What is ScratchCrest?ScratchCrest is a digital platform designed to help lottery retailers present, organize, and monitor scratch ticket activity.How does ScratchCrest work?It brings relevant ticket and store information into a clear digital experience for customers and staff.Do I need special hardware?Use the final answer only after confirming the supported hardware and setup requirements.Can I manage more than one store?If multi-store management is supported, explain how locations, users, and permissions are handled.Can I see sales or inventory information?If these features are part of the product, explain exactly which information is tracked and how reports are accessed.How do I get started?Start with a demo or setup consultation so the ScratchCrest team can understand your store and recommend the right configuration.
+CTA BUTTONS
+Get a Demo  |  Contact ScratchCrest
+CONTENT / DESIGN NOTE
+The FAQ should answer real buying questions. Replace conditional wording with verified product specifications before launch.
+
+14 — FINAL CTA
+SCREENSHOT SECTION  Screenshot section: “Put a live board on the wall overnight.”
+EXISTING WEBSITE
+
+
+REWRITTEN HEADLINE
+Put a Smarter Scratch Ticket Experience on Your Wall.
+REWRITTEN COPY
+Give your customers a clearer view of what is available — and give your team better information to work with. Start with ScratchCrest and build a more organized, more visible lottery counter.
+CTA BUTTONS
+Book a Demo  |  See ScratchCrest in Action
+CONTENT / DESIGN NOTE
+Keep this CTA strong but factual. Avoid repeating the 30% claim unless it is supported by evidence.
+
+15 — FOOTER
+SCREENSHOT SECTION  Screenshot section: dark footer with navigation.
+EXISTING WEBSITE
+
+
+REWRITTEN HEADLINE
+ScratchCrestSmarter visibility for scratch ticket retailers.
+REWRITTEN COPY
+Suggested footer navigation:Product — Features — How It Works — Displays — Reporting — FAQCompany — About — Contact — Support — Privacy — TermsCTA: Book a Demo
+CONTENT / DESIGN NOTE
+Add the actual company address, email, phone number, legal links, social links, and support details once confirmed.

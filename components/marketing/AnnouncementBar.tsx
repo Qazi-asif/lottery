@@ -28,7 +28,7 @@ export function AnnouncementBar() {
           Refer a store — you both get{" "}
           <span className="font-mono font-semibold tabular-nums">$50</span>
           <span className="hidden sm:inline">
-            . No hardware kit, live in under 20 minutes.
+            . Touch POS and a live board. No hardware kit.
           </span>
         </p>
 
@@ -36,7 +36,7 @@ export function AnnouncementBar() {
           href="/signup"
           className="hidden shrink-0 font-mono text-[11px] font-semibold uppercase tracking-[0.16em] underline decoration-white/40 underline-offset-4 transition-colors hover:decoration-white sm:inline-block"
         >
-          Start free
+          Book a demo
         </Link>
 
         <button

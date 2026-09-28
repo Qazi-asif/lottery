@@ -16,7 +16,7 @@ import { Underline } from "@/components/marketing/Underline";
 export const metadata: Metadata = {
   title: "Features",
   description:
-    "Inventory, scan-to-sell, commission, shifts, alerts, bilingual in-store display, and role-based access for Texas lottery retailers.",
+    "Inventory, touch POS, commission, shifts, alerts, bilingual in-store display, and role-based access for Texas lottery retailers.",
 };
 
 type Feature = {
@@ -41,9 +41,9 @@ const coreFeatures: Feature[] = [
   },
   {
     index: "02",
-    title: "Built for a wedge scanner",
+    title: "Built for a touch POS",
     description:
-      "USB and Bluetooth scanners type a barcode and press Enter. A locked database row stops the same ticket from selling twice.",
+      "Tap a game, set quantity, confirm. A locked database row stops the same ticket from selling twice.",
     tone: "inventory",
     hue: "gold",
     invert: true,
@@ -81,7 +81,7 @@ const coreFeatures: Feature[] = [
     index: "06",
     title: "Access that matches the job",
     description:
-      "Owners handle billing and the team. Managers run inventory and reports. Cashiers stay on the scan screen and see nothing else.",
+      "Owners handle billing and the team. Managers run inventory and reports. Cashiers stay on the Sell screen and see nothing else.",
     tone: "operations",
     hue: "teal",
     invert: true,
@@ -104,7 +104,7 @@ const operations: Feature[] = [
     index: "08",
     title: "Before the bin is empty",
     description:
-      "Low stock based on real sell-through, games past their official close date, and unusual scan patterns by employee.",
+      "Low stock based on real sell-through, games past their official close date, and unusual sell volume by employee.",
     tone: "operations",
     hue: "gold",
     tilt: "rotate-[0.4deg]",
@@ -143,17 +143,17 @@ export default function FeaturesPage() {
                 Built around the{" "}
                 <span className="relative inline-block whitespace-nowrap text-flag">
                   path of a pack
-                  <Underline className="absolute -bottom-1 left-0 h-[0.3em] w-full text-foil" />
+                  <Underline className="absolute -bottom-1 left-0 h-[0.3em] w-full text-flag" />
                 </span>{" "}
                 — not a wall of tickets.
               </h1>
               <p className="mt-6 max-w-xl text-[17.5px] leading-relaxed text-ink-soft">
                 From the delivery at your back door to the commission report you
-                run at month-end. One system, the scanner you already own, and no
-                extra box from us.
+                run at month-end. One system, a touch POS at the counter, a live
+                board on any TV, and no extra box from us.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Button href="/signup">Start free</Button>
+                <Button href="/signup">Book a demo</Button>
                 <Button href="/pricing" variant="secondary">
                   Compare plans
                 </Button>
@@ -177,7 +177,7 @@ export default function FeaturesPage() {
               <SectionHeading
                 eyebrow="Inventory"
                 title="See what's left without opening a drawer."
-                description="Activate a pack once and every barcode is generated. Counts fall as cashiers scan, across every location on the account. Move a pack to the store that needs it with a transfer."
+                description="Activate a pack once and every ticket is tracked. Counts fall as cashiers sell, across every location on the account. Move a pack to the store that needs it with a transfer."
               />
             </Reveal>
             <Reveal delay={90}>
@@ -216,7 +216,7 @@ export default function FeaturesPage() {
       </section>
 
       {/* ---------------- Display ---------------- */}
-      <section id="display" className="scroll-mt-24 bg-ink py-20 sm:py-24">
+      <section id="display" className="scroll-mt-24 bg-ink-deep py-20 sm:py-24">
         <div className="mx-auto max-w-marketing px-6">
           <Reveal>
             <SectionHeading

@@ -26,7 +26,7 @@ export function ProductShowcase({ className = "" }: { className?: string }) {
       <div className="flex items-center justify-between gap-4 border-b border-dashed border-rule-strong pb-4">
         <div>
           <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-faint">
-            Scan to sell
+            Smart POS
           </p>
           <p className="wonk mt-1 font-display text-[19px] font-semibold tracking-tight text-ink">
             Main St Store
@@ -40,7 +40,7 @@ export function ProductShowcase({ className = "" }: { className?: string }) {
 
       <div className="mt-5 border-l-2 border-l-flag pl-4">
         <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-faint">
-          Last scan
+          Last sale
         </p>
         <p className="wonk mt-1.5 font-display text-[24px] font-semibold tracking-tight text-ink">
           {scan.name}
@@ -77,7 +77,7 @@ export function ProductShowcase({ className = "" }: { className?: string }) {
       </dl>
 
       <p className="mt-auto pt-4 text-[13px] text-ink-faint">
-        Any USB or Bluetooth scanner · already-sold tickets blocked
+        Tap a game on the grid · already-sold tickets blocked
       </p>
     </div>
   );

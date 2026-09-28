@@ -54,7 +54,7 @@ function Track({
             {item}
           </span>
           <span
-            className="mx-6 h-1.5 w-1.5 rotate-45 bg-foil-light"
+            className="mx-6 h-1.5 w-1.5 rotate-45 bg-black"
             aria-hidden
           />
         </li>

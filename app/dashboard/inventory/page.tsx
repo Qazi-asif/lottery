@@ -7,7 +7,7 @@ export default async function InventoryPage() {
   const ctx = await getPermissionContext();
   if (!ctx) redirect("/login");
   if (ctx.billingRestricted) redirect("/dashboard/billing");
-  if (ctx.role === "cashier") redirect("/dashboard/scan");
+  if (ctx.role === "cashier") redirect("/dashboard/sell");
   if (!ctx.features.inventory) redirect("/dashboard");
 
   const db = requirePrisma();

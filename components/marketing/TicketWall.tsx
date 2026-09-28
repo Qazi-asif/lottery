@@ -1,10 +1,17 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { priceFace, type DisplayThemeId } from "@/lib/display-style";
+import type { DisplayThemeId } from "@/lib/display-style";
 import { JackpotTicker } from "@/components/marketing/JackpotTicker";
 import { SAMPLE_GAMES, SAMPLE_JACKPOTS } from "@/lib/marketing/display-themes";
 import { formatCents } from "@/lib/format";
+
+/** Landing-only faces: red or black. Does not change the live TV board. */
+function landingFace(index: number): string {
+  return index % 2 === 0
+    ? "bg-[#f11112] text-white"
+    : "bg-black text-white ring-1 ring-[#f11112]";
+}
 
 type TicketWallProps = {
   themeId?: DisplayThemeId;
@@ -38,7 +45,7 @@ const TILT = [
 ];
 
 export function TicketWall({
-  themeId = "plain",
+  themeId: _themeId = "plain",
   count = 12,
   lang = "en",
   layout = "landscape",
@@ -46,8 +53,6 @@ export function TicketWall({
 }: TicketWallProps) {
   const games = useMemo(() => SAMPLE_GAMES.slice(0, count), [count]);
   const [spotlight, setSpotlight] = useState(0);
-  const contrast = themeId === "high_contrast";
-  const night = themeId === "night";
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -67,9 +72,7 @@ export function TicketWall({
       className={`sheet lift min-w-0 rounded-lg p-2.5 pb-3 transition-transform hover:rotate-0 -rotate-[0.4deg] ${className}`}
     >
       <div
-        className={`rounded-md px-4 py-4 ${
-          night ? "bg-paper-3" : "bg-paper-2"
-        }`}
+        className="rounded-md bg-black px-4 py-4 ring-1 ring-[#f11112]/40"
       >
         <div className="flex flex-wrap items-end justify-between gap-3 border-b border-dashed border-rule-strong pb-3">
           <div className="min-w-0">
@@ -111,9 +114,8 @@ export function TicketWall({
             return (
               <article
                 key={game.gameNumber}
-                className={`ticket relative flex flex-col rounded-md px-2.5 py-2.5 transition-transform duration-300 ${priceFace(
-                  game.priceCents,
-                  themeId,
+                className={`ticket relative flex flex-col rounded-md px-2.5 py-2.5 transition-transform duration-300 ${landingFace(
+                  i,
                 )} ${TILT[i % TILT.length]} ${
                   active ? "z-10 scale-[1.04] rotate-0" : ""
                 }`}
@@ -176,8 +178,8 @@ export function TicketWall({
         <div className="mt-3 flex items-center justify-between gap-4 border-t border-dashed border-rule-strong pt-3">
           <p className="truncate font-mono text-[10px] uppercase tracking-wider text-ink-faint">
             {lang === "es"
-              ? "Se actualiza al escanear"
-              : "Updates automatically as you scan"}
+              ? "Se actualiza al vender"
+              : "Updates automatically as you sell"}
           </p>
           <p className="shrink-0 font-mono text-[10px] font-bold tracking-wider text-ink-faint">
             18+

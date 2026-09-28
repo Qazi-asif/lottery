@@ -75,6 +75,10 @@ Tenants never write to this table — it's maintained by platform admins.
 Auth: `tenant_owner`, `location_manager`.
 - Body: `{ locationId, gameId, packNumber }`
 - Action: creates pack row with `status: 'received'`, `ticket_count` copied from `games.tickets_per_pack`.
+- Rejects `VALIDATION_ERROR` (409) if this tenant already has the same
+  `gameId` + `packNumber`. Ticket barcodes are
+  `game_number + pack_number + ticket_number` and `barcode_value` is unique,
+  so a reused pack number cannot be activated.
 
 ### `POST /api/packs/[id]/activate`
 Auth: `tenant_owner`, `location_manager`.
@@ -82,6 +86,10 @@ Auth: `tenant_owner`, `location_manager`.
   `tickets` rows 1..ticket_count with computed `barcode_value` for each. This is the
   "no manual per-ticket entry" mechanism described in the product discussion — do not
   build a UI for entering individual tickets by hand.
+- If tickets for this pack already exist, only the pack status is updated
+  (idempotent retry).
+- Rejects `VALIDATION_ERROR` (409) if any computed `barcode_value` already
+  belongs to another pack (duplicate pack number for that game).
 
 ### `POST /api/packs/[id]/transfer`
 Auth: `tenant_owner`, `location_manager`. Gated by `plan.features.pack_transfer`.
@@ -105,6 +113,23 @@ Auth: `cashier` and above.
   4. Insert a `sales` row with price/commission snapshot from current `settings`.
   5. If pack's remaining `in_stock` count hits 0, set pack `status: 'closed'`.
 - Returns: `{ ticket, sale, gameName, price }` for UI confirmation.
+
+### `POST /api/tickets/quick-sale`
+Auth: `cashier` and above. Gated by `inventory`.
+- Body: `{ locationId, gameId, quantity }`
+- `quantity` is an integer from 1 to 100.
+- Action:
+  1. In one transaction, lock the next `quantity` `in_stock` tickets for that
+     game at that location from `activated` packs only. Order is pack
+     `activated_at` ascending, then `ticket_number` ascending (the open pack
+     sequence). Reject a cross-location or cross-tenant match.
+  2. If fewer than `quantity` tickets are available, return 409
+     `INSUFFICIENT_STOCK` and sell nothing.
+  3. For each locked ticket, apply the same write as `POST /api/tickets/scan`:
+     mark sold, insert a `sales` row with price/commission snapshot from
+     `settings`, close the pack if remaining `in_stock` hits 0.
+- Returns: `{ gameName, priceCents, quantity, totalCents, remaining, tickets }`
+  where `tickets` is the sold sequence (`ticketNumber`, `barcodeValue`).
 
 ### `POST /api/payouts`
 Auth: `cashier` and above.

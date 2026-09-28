@@ -162,6 +162,130 @@ h3 {
   background-repeat: repeat;
 }
 
+/* Marketing landing: black canvas, red accent. Dashboard/auth keep paper tokens.
+   Scoped so `bg-paper` / `text-ink` flip without touching /dashboard. */
+.mkt {
+  --color-paper: #000000;
+  --color-paper-2: #0a0a0a;
+  --color-paper-3: #111111;
+  --color-sheet: #0a0a0a;
+  --color-ink: #ffffff;
+  --color-ink-deep: #000000;
+  --color-ink-soft: rgb(255 255 255 / 0.72);
+  --color-ink-faint: rgb(255 255 255 / 0.45);
+  --color-rule: #2a2a2a;
+  --color-rule-strong: #3a3a3a;
+  --color-flag: #f11112;
+  --color-flag-deep: #c10e0f;
+  --color-flag-wash: #1a0000;
+  --color-foil: #f11112;
+  --color-foil-light: #f11112;
+  --color-bronze: #000000;
+  --color-money: #f11112;
+  --color-money-wash: #1a0000;
+  --color-navy: #f11112;
+  --color-violet: #f11112;
+  --color-teal: #f11112;
+  --color-bg: #000000;
+  --shadow-modal: 0 24px 64px -24px rgb(0 0 0 / 0.75);
+  color: var(--color-ink);
+  background-color: var(--color-paper);
+}
+
+.mkt.paper-grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
+}
+
+.mkt .sheet,
+.mkt .receipt {
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.04),
+    0 18px 40px -22px rgb(0 0 0 / 0.75);
+}
+
+.mkt .ticket {
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.06),
+    0 18px 40px -18px rgb(241 17 18 / 0.28);
+}
+
+.mkt .well {
+  box-shadow: inset 0 2px 4px -2px rgb(0 0 0 / 0.45);
+}
+
+.mkt input[type="range"]::-webkit-slider-thumb,
+.mkt input[type="range"]::-moz-range-thumb {
+  background: var(--color-flag);
+  border-color: var(--color-sheet);
+  box-shadow: 0 2px 8px rgb(241 17 18 / 0.35);
+}
+
+/* Tailwind may inline theme hexes; re-apply .mkt tokens so type stays readable. */
+.mkt .text-ink { color: var(--color-ink); }
+.mkt .text-ink-soft { color: var(--color-ink-soft); }
+.mkt .text-ink-faint { color: var(--color-ink-faint); }
+.mkt .text-ink-deep { color: var(--color-ink-deep); }
+.mkt .text-paper { color: var(--color-paper); }
+.mkt .text-paper-2 { color: var(--color-paper-2); }
+.mkt .text-flag,
+.mkt .text-flag-deep,
+.mkt .text-foil,
+.mkt .text-foil-light,
+.mkt .text-money,
+.mkt .text-navy,
+.mkt .text-violet,
+.mkt .text-teal { color: #f11112; }
+.mkt .hover\:text-ink:hover { color: var(--color-ink); }
+.mkt .hover\:text-flag:hover { color: var(--color-flag); }
+.mkt .group:hover .group-hover\:text-flag { color: var(--color-flag); }
+.mkt .group:hover .group-hover\:text-ink { color: var(--color-ink); }
+.mkt .bg-paper { background-color: var(--color-paper); }
+.mkt .bg-paper-2 { background-color: var(--color-paper-2); }
+.mkt .bg-paper-3 { background-color: var(--color-paper-3); }
+.mkt .bg-sheet { background-color: var(--color-sheet); }
+.mkt .bg-ink { background-color: var(--color-ink-deep); }
+.mkt .bg-ink-deep { background-color: var(--color-ink-deep); }
+.mkt .bg-flag,
+.mkt .bg-flag-deep,
+.mkt .bg-foil,
+.mkt .bg-money,
+.mkt .bg-navy,
+.mkt .bg-violet,
+.mkt .bg-teal { background-color: #f11112; }
+.mkt .bg-flag-wash,
+.mkt .bg-money-wash { background-color: #1a0000; }
+.mkt .bg-bronze { background-color: var(--color-bronze); }
+.mkt .bg-paper\/90 { background-color: rgb(0 0 0 / 0.9); }
+.mkt .bg-paper\/60 { background-color: rgb(0 0 0 / 0.6); }
+.mkt .bg-flag\/20,
+.mkt .bg-foil\/15 { background-color: rgb(241 17 18 / 0.2); }
+.mkt .hover\:bg-paper-2:hover,
+.mkt .hover\:bg-paper-2\/60:hover { background-color: var(--color-paper-2); }
+.mkt .border-l-flag { border-left-color: #f11112; }
+.mkt .ring-paper { --tw-ring-color: #000000; }
+.mkt .decoration-flag { text-decoration-color: #f11112; }
+.mkt .bg-foil-light { background-color: #f11112; }
+.mkt .text-rule,
+.mkt .text-rule-strong { color: var(--color-rule-strong); }
+.mkt .border-rule,
+.mkt .md\:border-rule,
+.mkt .lg\:border-rule { border-color: var(--color-rule); }
+.mkt .border-rule-strong,
+.mkt .md\:border-rule-strong,
+.mkt .lg\:border-rule-strong,
+.mkt .sm\:border-rule-strong { border-color: var(--color-rule-strong); }
+.mkt [class*="border-rule-strong"] { border-color: var(--color-rule-strong); }
+.mkt [class*="border-rule"]:not([class*="border-rule-strong"]) { border-color: var(--color-rule); }
+.mkt .border-flag,
+.mkt .border-t-flag { border-color: var(--color-flag); }
+.mkt .border-t-flag { border-top-color: #f11112; }
+.mkt .from-flag {
+  --tw-gradient-from: #f11112 var(--tw-gradient-from-position);
+}
+.mkt .divide-rule-strong > :not(:last-child) {
+  border-color: var(--color-rule-strong);
+}
+
 /* Halftone dot screen. Kraft bands only — it fights body copy anywhere else. */
 .dots {
   background-image: radial-gradient(

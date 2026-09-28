@@ -54,7 +54,7 @@ export function MarketingNavLinks() {
             already sets inline-flex, which would win over the display utility. */}
         <span className="hidden sm:block">
           <Button href="/signup" className="px-5 py-2.5 text-sm">
-            Start free
+            Book a demo
           </Button>
         </span>
         <button
@@ -75,7 +75,7 @@ export function MarketingNavLinks() {
 
       {open ? (
         <nav
-          className="absolute left-0 right-0 top-full border-b border-rule bg-paper px-6 py-5 shadow-[0_18px_40px_-24px_rgb(58_40_16/0.4)] md:hidden"
+          className="absolute left-0 right-0 top-full border-b border-[#f11112]/30 bg-black px-6 py-5 shadow-[0_18px_40px_-24px_rgb(0_0_0/0.8)] md:hidden"
           aria-label="Mobile"
         >
           <div className="mx-auto flex max-w-marketing flex-col gap-1">
@@ -97,7 +97,7 @@ export function MarketingNavLinks() {
               Sign in
             </Link>
             <Button href="/signup" className="mt-3 w-full">
-              Start free
+              Book a demo
             </Button>
           </div>
         </nav>

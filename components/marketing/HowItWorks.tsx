@@ -3,50 +3,53 @@ import { Reveal } from "@/components/marketing/Reveal";
 const STEPS = [
   {
     index: "01",
-    title: "Pick a plan",
-    body: "Lite through Premium, paid on Stripe Checkout. Card details never touch our servers.",
+    title: "Update",
+    body: "Receive a pack, activate it, and ticket counts go live on the POS and the TV.",
     disc: "bg-flag text-white",
   },
   {
     index: "02",
-    title: "Set your password",
-    body: "A one-time secure link lands in your inbox. Nothing is ever emailed in plaintext.",
-    disc: "bg-foil text-ink",
+    title: "Review",
+    body: "See what is on the wall, what is left, and what needs attention before the rush.",
+    disc: "bg-flag text-white",
   },
   {
     index: "03",
-    title: "Receive a pack",
-    body: "Activate once. Every ticket barcode is generated for you and counts stay live as they sell.",
-    disc: "bg-money text-white",
+    title: "Act",
+    body: "Tap a game on the smart POS, set quantity, and confirm. The sale is recorded immediately.",
+    disc: "bg-flag text-white",
   },
   {
     index: "04",
-    title: "Scan and go live",
-    body: "Your scanner sells the ticket. Open the display URL on any TV and the board comes up.",
-    disc: "bg-navy text-white",
+    title: "Record",
+    body: "Commission, stock, and the customer board stay in sync — ready for the next customer.",
+    disc: "bg-flag text-white",
   },
 ];
 
 export function HowItWorks() {
   return (
-    <section className="bg-paper py-20 sm:py-24">
+    <section id="how-it-works" className="scroll-mt-24 bg-paper py-20 sm:py-24">
       <div className="mx-auto max-w-marketing px-6">
         <Reveal>
           <p className="flex items-center gap-3">
             <span className="h-0.5 w-6 bg-flag" aria-hidden />
             <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-flag">
-              Signup to first scan
+              Live activity
             </span>
           </p>
           <h2 className="wonk mt-4 max-w-2xl font-display text-h2 font-semibold tracking-[-0.02em] text-ink">
-            Live before the afternoon rush. Nothing gets mailed to you.
+            Know what is happening before the rush starts.
           </h2>
+          <p className="mt-4 max-w-2xl text-[17px] leading-relaxed text-ink-soft">
+            ScratchCrest brings important ticket activity into one live view,
+            helping your team stay aware of changes throughout the day. Check the
+            board, spot what needs attention, and keep the store ready for the
+            next customer.
+          </p>
         </Reveal>
 
         <div className="relative mt-14">
-          {/* The connector, not four boxes in a row. It draws itself left to
-              right behind the discs; the discs sit on the paper colour so the
-              rule appears to pass through them. */}
           <Reveal
             variant="mask"
             className="absolute left-0 right-0 top-6 hidden lg:block"

@@ -1,8 +1,8 @@
 const ITEMS = [
-  ["No hardware kit", "Use the TV and scanner you own", "bg-foil"],
-  ["Live in 20 minutes", "Stripe checkout, no sales call", "bg-flag"],
-  ["Ticket-level stock", "The same ticket can't sell twice", "bg-money"],
-  ["Texas-ready", "English / Spanish display", "bg-navy"],
+  ["Live ticket information", "Games, prices, and counts on the wall", "bg-flag"],
+  ["Clear inventory visibility", "Ticket-level stock at every store", "bg-flag"],
+  ["Simple store management", "Touch POS, shifts, and roles", "bg-flag"],
+  ["Actionable sales insights", "What moved, what to restock", "bg-flag"],
 ];
 
 export function ProofBar() {
@@ -12,8 +12,6 @@ export function ProofBar() {
         {ITEMS.map(([label, detail, dot], i) => (
           <div
             key={label}
-            // Dashed cell dividers rather than borders on boxes: the row reads as
-            // one printed strip with columns, not four cards.
             className={`flex gap-3 md:pl-6 ${
               i > 0 ? "md:border-l md:border-dashed md:border-rule-strong" : ""
             }`}

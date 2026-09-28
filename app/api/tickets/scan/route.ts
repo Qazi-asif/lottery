@@ -8,6 +8,7 @@ import {
   requireRoleAtLeast,
 } from "@/lib/permissions";
 import { requirePrisma } from "@/lib/prisma";
+import { closePackIfEmpty, recordTicketSale } from "@/lib/sell-tickets";
 
 export async function POST(request: NextRequest) {
   try {
@@ -74,41 +75,16 @@ export async function POST(request: NextRequest) {
         where: { tenantId: ctx.tenantId },
       });
       const commissionRate = settings ? Number(settings.commissionRate) : 0.05;
-      const commissionEarnedCents = Math.round(row.price_cents * commissionRate);
       const soldAt = new Date();
 
-      const ticket = await tx.ticket.update({
-        where: { id: row.id },
-        data: {
-          status: "sold",
-          soldAt,
-          soldByUserId: ctx.userId,
-        },
-      });
-
-      const sale = await tx.sale.create({
-        data: {
-          tenantId: ctx.tenantId,
-          locationId,
-          ticketId: ticket.id,
-          gameId: row.game_id,
-          priceCents: row.price_cents,
-          commissionRate,
-          commissionEarnedCents,
-          soldByUserId: ctx.userId,
-          soldAt,
-        },
-      });
-
-      const remaining = await tx.ticket.count({
-        where: { packId: row.pack_id, status: "in_stock" },
-      });
-      if (remaining === 0) {
-        await tx.pack.update({
-          where: { id: row.pack_id },
-          data: { status: "closed", closedAt: soldAt },
-        });
-      }
+      const { ticket, sale } = await recordTicketSale(
+        tx,
+        row,
+        { tenantId: ctx.tenantId, userId: ctx.userId, locationId },
+        commissionRate,
+        soldAt,
+      );
+      await closePackIfEmpty(tx, row.pack_id, soldAt);
 
       return {
         ticket,

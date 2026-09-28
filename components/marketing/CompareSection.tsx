@@ -2,34 +2,34 @@ import { Reveal } from "@/components/marketing/Reveal";
 
 const ROWS = [
   {
-    label: "How you start",
-    them: "Fill a form. Wait for a sales call. Send photos of your boxes.",
-    us: "Pick a plan, pay on Stripe, set a password. Scanning today.",
-  },
-  {
-    label: "Hardware",
-    them: "Refurbished PC or Fire Stick kit. TV not included. Not refundable.",
-    us: "The TV and scanner you already own. No kit, no remote-login box.",
-  },
-  {
-    label: "What the screen does",
+    label: "Display only",
     them: "A ticket wall. Inventory and theft tools cost extra or are “coming soon.”",
-    us: "Display plus ticket-level inventory, commission, shifts, alerts, and roles.",
+    us: "A live board plus the counter workflow behind it.",
   },
   {
-    label: "Double-sell protection",
+    label: "Live information",
+    them: "Static lists, bins, and a screen that does not know what sold.",
+    us: "Games, prices, and remaining tickets update as you sell.",
+  },
+  {
+    label: "Sales tracking",
     them: "Sales tracking, if your plan includes it.",
-    us: "Every barcode is unique and a locked database row blocks the second scan.",
+    us: "Every sale logs game, pack, store, tickets, price, and commission.",
   },
   {
-    label: "Your team",
-    them: "Add managers to stores.",
-    us: "Owner, location manager, cashier — each sees only their job.",
+    label: "Inventory visibility",
+    them: "Clipboards and guessing at close.",
+    us: "Ticket-level stock. The same ticket cannot sell twice.",
   },
   {
-    label: "Language",
-    them: "English-first storefront.",
-    us: "English, Spanish, or both on the in-store display.",
+    label: "Reporting",
+    them: "Reconstruct the month from paper.",
+    us: "Shifts, alerts, and commission that already match the register.",
+  },
+  {
+    label: "Store management",
+    them: "Hardware kit, a sales call, and a screen on the wall.",
+    us: "Touch POS, roles, and multi-store control in one login. No kit.",
   },
 ];
 
@@ -78,11 +78,13 @@ export function CompareSection() {
               </span>
             </p>
             <h2 className="wonk mt-4 font-display text-h2 font-semibold tracking-[-0.02em] text-ink">
-              They sell you a television. We run your counter.
+              More than a screen. A smarter retail workflow.
             </h2>
             <p className="mt-4 text-[17px] leading-relaxed text-ink-soft">
-              Digital lottery screens are everywhere now. An operating system for
-              packs, tickets, people, and money is not.
+              A display can show information. ScratchCrest is built to help you
+              use it. Bring visibility, ticket activity, and store-level insights
+              together so your team can spend less time checking and more time
+              serving customers.
             </p>
           </div>
         </Reveal>

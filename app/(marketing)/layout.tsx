@@ -5,11 +5,11 @@ import { StickyCta } from "@/components/marketing/StickyCta";
 
 export const metadata: Metadata = {
   title: {
-    default: "ScratchCrest — Sell more scratch tickets",
+    default: "ScratchCrest — Smarter visibility for scratch ticket retailers",
     template: "%s · ScratchCrest",
   },
   description:
-    "Turn any TV into a live scratch-game display, scan to sell in one second, and see your commission the moment it's earned. No hardware kit.",
+    "Organize, present, and monitor scratch ticket inventory. A live board on any TV and a touch-screen smart POS — no hardware kit.",
 };
 
 export default function MarketingLayout({
@@ -18,9 +18,7 @@ export default function MarketingLayout({
   children: React.ReactNode;
 }) {
   return (
-    // `paper-grain` puts the tooth of uncoated stock under the whole site. It is
-    // a background-image, so it composes with bg-paper rather than overlaying.
-    <div className="paper-grain flex min-h-screen flex-col bg-paper text-ink">
+    <div className="mkt paper-grain flex min-h-screen flex-col bg-paper text-ink">
       <MarketingNav />
       <main className="flex-1">{children}</main>
       <MarketingFooter />

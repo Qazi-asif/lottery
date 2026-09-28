@@ -23,9 +23,9 @@ export function MarketingNav() {
     <header className="sticky top-0 z-50">
       <AnnouncementBar />
       <div
-        className={`relative bg-paper/90 backdrop-blur-md transition-shadow duration-200 ${
+        className={`relative bg-black/90 backdrop-blur-md transition-shadow duration-200 ${
           scrolled
-            ? "border-b border-rule shadow-[0_6px_20px_-16px_rgb(58_40_16/0.5)]"
+            ? "border-b border-[#f11112]/30 shadow-[0_6px_20px_-16px_rgb(0_0_0/0.8)]"
             : "border-b border-transparent"
         }`}
       >

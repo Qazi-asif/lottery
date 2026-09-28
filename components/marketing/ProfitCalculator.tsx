@@ -173,7 +173,7 @@ export function ProfitCalculator({ planPriceCents = 4900 }: { planPriceCents?: n
               [
                 `Extra sales @ ${liftPercent}%`,
                 `+${formatCents(result.addedSalesCents)}`,
-                "text-foil",
+                "text-flag",
               ],
             ].map(([label, value, tone]) => (
               <div key={label} className="flex items-baseline justify-between gap-4">
@@ -229,7 +229,7 @@ export function ProfitCalculator({ planPriceCents = 4900 }: { planPriceCents?: n
         <TearEdge className="block h-2.5 w-full text-sheet" />
 
         <Button href="/signup" className="mt-6 w-full">
-          Start free — see it on your TV
+          Book a demo — see it on your TV
         </Button>
       </div>
     </div>

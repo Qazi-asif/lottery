@@ -10,7 +10,7 @@ export default async function PackDetailPage({
 }) {
   const ctx = await getPermissionContext();
   if (!ctx) redirect("/login");
-  if (ctx.role === "cashier") redirect("/dashboard/scan");
+  if (ctx.role === "cashier") redirect("/dashboard/sell");
 
   const { packId } = await params;
   const db = requirePrisma();

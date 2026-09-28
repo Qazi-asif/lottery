@@ -11,7 +11,7 @@ const TIER_COPY: Record<
 > = {
   Lite: {
     description:
-      "Single-location inventory and scan-to-sell for retailers getting started.",
+      "Single-location inventory and a touch POS for retailers getting started.",
   },
   Essential: {
     description:
@@ -60,7 +60,7 @@ export function PricingGrid({ plans }: PricingGridProps) {
               aria-pressed={billing === option}
               className={`rounded-full px-6 py-2 text-[13.5px] font-medium capitalize transition-colors ${
                 billing === option
-                  ? "bg-ink text-paper"
+                  ? "bg-flag text-white"
                   : "text-ink-soft hover:text-ink"
               }`}
             >

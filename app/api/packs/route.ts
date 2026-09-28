@@ -91,6 +91,17 @@ export async function POST(request: NextRequest) {
       throw new ApiError("VALIDATION_ERROR", "Game is not available", 400);
     }
 
+    const duplicate = await db.pack.findFirst({
+      where: { tenantId: ctx.tenantId, gameId, packNumber },
+    });
+    if (duplicate) {
+      throw new ApiError(
+        "VALIDATION_ERROR",
+        `Pack number ${packNumber} is already used for ${game.gameNumber}. Enter a different pack number.`,
+        409,
+      );
+    }
+
     const pack = await db.pack.create({
       data: {
         tenantId: ctx.tenantId,

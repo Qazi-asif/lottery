@@ -37,8 +37,8 @@ export function ThemeGallery({
                   active
                     ? "sheet border-l-flag"
                     : dark
-                      ? "border-l-white/20 bg-white/5 hover:bg-white/10"
-                      : "border-l-rule-strong bg-paper/60 hover:bg-sheet"
+                      ? "border-l-[#f11112]/40 bg-black hover:bg-[#f11112]/10"
+                      : "border-l-[#f11112]/25 bg-black hover:bg-[#111111]"
                 }`}
               >
                 <span className="flex items-center justify-between gap-3">
@@ -47,7 +47,7 @@ export function ThemeGallery({
                       active
                         ? "text-ink"
                         : dark
-                          ? "text-paper-2/80"
+                          ? "text-ink-soft"
                           : "text-ink-soft"
                     }`}
                   >
@@ -61,7 +61,7 @@ export function ThemeGallery({
                 </span>
                 <span
                   className={`mt-1.5 hidden text-[13px] leading-relaxed lg:block ${
-                    dark && !active ? "text-paper-2/55" : "text-ink-soft"
+                    dark && !active ? "text-ink-faint" : "text-ink-soft"
                   }`}
                 >
                   {mode.blurb}
@@ -128,7 +128,7 @@ function Segmented({
     <div className="flex items-center justify-between gap-3">
       <span
         className={`font-mono text-[10px] font-semibold uppercase tracking-[0.16em] ${
-          tone === "paper" ? "text-paper-2/55" : "text-ink-faint"
+          "text-ink-faint"
         }`}
       >
         {label}
@@ -146,7 +146,7 @@ function Segmented({
             aria-pressed={value === option.value}
             className={`rounded-full px-3.5 py-1.5 text-[12.5px] font-medium transition-colors ${
               value === option.value
-                ? "bg-ink text-paper"
+                ? "bg-flag text-white"
                 : "text-ink-soft hover:text-ink"
             }`}
           >

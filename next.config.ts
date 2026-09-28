@@ -17,6 +17,7 @@ const nextConfig: NextConfig = {
       { source: "/features\\.", destination: "/features", permanent: false },
       { source: "/pricing\\.", destination: "/pricing", permanent: false },
       { source: "/dashboard\\.", destination: "/dashboard", permanent: false },
+      { source: "/dashboard/scan", destination: "/dashboard/sell", permanent: false },
     ];
   },
 };

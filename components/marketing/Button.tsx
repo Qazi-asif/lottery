@@ -18,15 +18,13 @@ const base =
 const variants: Record<ButtonVariant, string> = {
   /** Vermilion is the page's only loud fill, and this is where it belongs. */
   primary:
-    "bg-flag text-white shadow-[0_2px_6px_rgb(174_44_12/0.28)] hover:-translate-y-0.5 hover:bg-flag-deep hover:shadow-[0_8px_20px_-6px_rgb(174_44_12/0.45)]",
+    "bg-[#f11112] text-white hover:-translate-y-0.5 hover:bg-[#c10e0f]",
   secondary:
-    "border-2 border-ink/15 bg-sheet text-ink hover:-translate-y-0.5 hover:border-ink/40",
-  /** For the ink CTA and footer blocks, where paper becomes the foreground. */
+    "border-2 border-[#f11112] bg-black text-white hover:-translate-y-0.5 hover:bg-[#f11112] hover:text-white",
   inverse:
-    "bg-paper text-ink hover:-translate-y-0.5 hover:bg-white",
-  ghost: "text-ink hover:bg-ink/[0.06]",
-  /** Gold stays an outline — a large gold fill reads cheap instantly. */
-  gold: "border-2 border-foil/45 text-foil hover:border-foil hover:bg-foil/5",
+    "bg-[#f11112] text-white hover:-translate-y-0.5 hover:bg-[#c10e0f]",
+  ghost: "text-white hover:bg-[#f11112]/15",
+  gold: "border-2 border-[#f11112] text-white hover:bg-[#f11112] hover:text-white",
 };
 
 export function Button({

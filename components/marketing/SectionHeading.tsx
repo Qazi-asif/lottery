@@ -15,11 +15,10 @@ export function SectionHeading({
   title,
   description,
   align = "left",
-  tone = "ink",
+  tone: _tone = "ink",
   className = "",
 }: SectionHeadingProps) {
   const centered = align === "center";
-  const onPaper = tone === "paper";
 
   return (
     <div className={`max-w-3xl ${centered ? "mx-auto text-center" : ""} ${className}`}>
@@ -28,13 +27,11 @@ export function SectionHeading({
           className={`mb-4 flex items-center gap-3 ${centered ? "justify-center" : ""}`}
         >
           <span
-            className={`h-0.5 w-6 shrink-0 ${onPaper ? "bg-foil-light" : "bg-flag"}`}
+            className="h-0.5 w-6 shrink-0 bg-flag"
             aria-hidden
           />
           <span
-            className={`font-mono text-[10px] font-semibold uppercase tracking-[0.2em] ${
-              onPaper ? "text-foil-light" : "text-flag"
-            }`}
+            className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-flag"
           >
             {eyebrow}
           </span>
@@ -42,18 +39,14 @@ export function SectionHeading({
       ) : null}
 
       <h2
-        className={`wonk font-display text-h2 font-semibold tracking-[-0.02em] ${
-          onPaper ? "text-paper" : "text-ink"
-        }`}
+        className={`wonk font-display text-h2 font-semibold tracking-[-0.02em] text-ink`}
       >
         {title}
       </h2>
 
       {description ? (
         <p
-          className={`mt-4 text-[17px] leading-relaxed ${
-            onPaper ? "text-paper-2/75" : "text-ink-soft"
-          } ${centered ? "mx-auto" : ""}`}
+          className={`mt-4 text-[17px] leading-relaxed text-ink-soft ${centered ? "mx-auto" : ""}`}
         >
           {description}
         </p>

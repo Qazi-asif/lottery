@@ -1,0 +1,234 @@
+SCRATCHCREST — TEAM BRIEF
+For content research, copy, and new teammates
+Updated: September 2026
+
+============================================================
+1. WHAT THIS IS (ONE PARAGRAPH)
+============================================================
+
+ScratchCrest is a subscription software product for Texas
+convenience stores and gas stations that sell lottery scratch
+tickets. We do not sell hardware kits, computers, or Fire
+Sticks. The retailer uses a TV they already own plus a
+touch-screen smart POS at the counter.
+
+The product does three jobs in one account:
+  1) Ticket inventory (packs in, tickets out, live counts)
+  2) Selling on a touch display (smart POS — tap a game, set
+     quantity, confirm). This is NOT a barcode-scan checkout.
+  3) A live in-store TV board that shows games, prices, and
+     what is almost gone, so customers can point at the wall.
+
+We are a multi-store SaaS (one retailer can run many locations),
+not a one-off app for a single shop.
+
+
+============================================================
+2. LANGUAGE WE USE NOW (READ THIS FIRST)
+============================================================
+
+Do NOT describe ScratchCrest as a “scan system,” “scan-to-sell,”
+or “one scan per sale.”
+
+That was an earlier idea. The cashier product is now:
+
+  TOUCH DISPLAY  +  SMART POS
+
+Preferred words:
+  - Touch POS / smart POS / touch display at the counter
+  - Tap a game, choose quantity, confirm the sale
+  - Live ticket wall / digital board / in-store TV display
+  - Receive a pack, activate it, sell from the grid
+
+Avoid in new research, ads, blogs, and scripts:
+  - Barcode scanner, USB scanner, wedge scanner
+  - “Scan the ticket,” “one scan,” “scan screen”
+  - Hardware we ship or install
+
+The live marketing site still has leftover “scan” wording in
+places. Treat that as outdated copy to replace, not as the
+product story.
+
+
+============================================================
+3. WHO BUYS IT
+============================================================
+
+Buyer: Texas lottery scratch-ticket retailers
+  (c-stores, gas stations, sometimes multi-store owners)
+
+User at the counter: cashier on a touch screen
+User in the office: owner or store manager
+Customer in the aisle: looks at the TV board, then buys
+
+We sell month-to-month software (Stripe). No contract.
+Refer a store and both sides get $50.
+
+
+============================================================
+4. HOW THE SYSTEM WORKS (STORE DAY)
+============================================================
+
+A. Sign up
+   Owner picks a plan, pays on Stripe, sets a password from
+   a one-time secure link. Adds a store (location).
+
+B. Inventory
+   A physical pack of scratch tickets arrives at the store.
+   Owner/manager RECEIVES the pack in ScratchCrest, then
+   ACTIVATES it. Activation creates every ticket in that pack
+   in the system and puts the game on the sell grid and the TV.
+
+C. Sell (smart POS — this is the counter)
+   Cashier opens Sell. They see a touch grid of live games
+   (price, name, tickets left). They tap a game, set how many
+   tickets (starts at 0 — must pick a quantity), confirm.
+   The sale is recorded, commission is locked in at that
+   moment, stock drops, and the TV board updates.
+
+   Cashiers only get Sell. They do not see billing, team,
+   or owner reports.
+
+D. Customer-facing TV
+   Any TV opens a display URL for that store. Games, prices,
+   hot / almost-gone, English and/or Spanish. Counts move as
+   the POS sells. Official Texas Lottery artwork is OFF by
+   default and only turns on if the account is licensed.
+
+E. After the sale
+   Sales log: when, game, pack, store, ticket, price,
+   commission, who sold it.
+   Shifts: open/close, cash vs sales vs payouts.
+   Alerts: low stock, games that should have closed, unusual
+   sell volume.
+   Multi-store owners can compare locations and transfer a
+   pack between stores.
+
+F. Prize payouts
+   Separate from a sale: cashing a winning ticket for a
+   customer (cashing bonus). Do not mix this up with “we sold
+   a ticket.”
+
+
+============================================================
+5. WHAT THE LANDING PAGE IS TRYING TO SAY
+============================================================
+
+The public site (home, Features, Pricing) is aimed at Texas
+retailers. Visual style: black + red (#F11112). Dashboard
+stays cream paper — do not mix those looks in brand writeups.
+
+Core promise on the home page:
+  “Sell up to 30% more scratch tickets.”
+
+Supporting story:
+  - Put a live scratch-game board on any store TV
+  - Sell from the counter in seconds (now: touch POS)
+  - Commission lands in real time
+  - About 20 minutes to go live, no hardware kit, no sales call
+  - $0 hardware to buy
+
+Proof points the page repeats:
+  - No kit — use the TV you own
+  - Live in ~20 minutes
+  - Ticket-level stock (the same ticket cannot sell twice)
+  - Texas-ready (English / Spanish display)
+  - Month-to-month, cancel in Stripe
+  - Refer a store, both get $50
+
+Six product pillars the home page lists:
+  1. Inventory you can trust (receive → activate → live counts)
+  2. Commission that settles itself (locked at sale time)
+  3. A board that sells for you (digital ticket wall)
+  4. Shifts that reconcile
+  5. Roles that protect the owner (cashier vs manager vs owner)
+  6. Low-stock alerts
+
+How-it-works the page currently walks:
+  Pick a plan → set password → receive a pack → go live
+
+FAQs the page answers (rewrite scanner mentions):
+  - No hardware to buy from us
+  - Same-day go-live, no install visit
+  - TV is generic/plain-text until artwork is licensed
+  - Cashiers cannot see owner numbers
+  - One account, many stores
+  - No long contract
+
+Pricing story:
+  Software-only plans (Lite / Essential / Smart / Premium).
+  Features are gated by plan flags, not by hardcoding a plan
+  name. Smart is positioned as the common pick (display,
+  multi-location, shifts, pack transfer).
+
+Calculator on the site:
+  5% commission on scratch sales. A busier wall is worth
+  extra commission minus the monthly plan. Use as a story
+  device — do not invent new lift % without a source.
+
+Claims to treat carefully in research:
+  “30% more” and “20 minutes” are marketing claims from
+  pilots / positioning. Do not present them as audited
+  Texas Lottery statistics. Game names on the landing
+  preview are invented samples, not official game titles.
+
+
+============================================================
+6. ROLES (WHO SEES WHAT)
+============================================================
+
+Owner          All stores, billing, team, every report
+Manager        Inventory and reports for assigned stores
+Cashier        Touch POS Sell screen only
+Platform admin Internal only — never a customer role
+
+
+============================================================
+7. RULES FOR CONTENT AND RESEARCH
+============================================================
+
+- Audience is Texas lottery retailers, 18+ only.
+- Do not use official Texas Lottery logos, game art, or
+  trademarked ticket faces unless we say the account is
+  artwork-licensed. Default story: plain-text digital board.
+- Never describe us collecting card numbers. Payments are
+  Stripe Checkout only.
+- Never describe emailing a plaintext password.
+- Money in the product is cents (internal). In copy, use
+  normal dollars.
+- Do not promise we pick “lucky” games or beat the lottery.
+  We track stock, sales, and commission.
+
+Useful research angles:
+  Why plastic dispensers fail / why a live wall sells more
+  Touch POS vs old clipboard inventory
+  Multi-store owners comparing locations
+  Shift close and theft / double-sell protection
+  English + Spanish on a store TV
+  Software-only vs companies that sell a hardware kit
+
+
+============================================================
+8. GLOSSARY (USE THESE WORDS)
+============================================================
+
+Tenant     The retailer account (the business)
+Location   One physical store
+Game       A scratch game (name, price, top prize)
+Pack       One book/brick of tickets for a game, at a store
+Ticket     One ticket inside a pack
+Sale       Tickets sold on the touch POS (not a prize cash-out)
+Payout     Cashing a winner for a customer
+Commission What the store earns on a sale (typically 5%)
+Display    The TV page customers look at
+Sell / POS The cashier touch grid
+
+
+============================================================
+9. ONE-LINE PITCH YOU CAN HAND TO ANYONE
+============================================================
+
+ScratchCrest is software for Texas scratch-ticket stores:
+a touch-screen smart POS at the counter and a live ticket
+board on any TV — inventory, sales, and commission in one
+login, no hardware kit.

@@ -26,7 +26,7 @@ export function JackpotTicker({
           <span className="truncate font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-faint">
             {jackpot.game}
           </span>
-          <span className="font-mono text-sm font-bold tabular-nums text-foil">
+          <span className="font-mono text-sm font-bold tabular-nums text-white">
             {formatJackpot(jackpot.amountCents)}
           </span>
           <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">

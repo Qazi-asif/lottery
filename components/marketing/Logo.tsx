@@ -32,7 +32,7 @@ function TicketMark() {
         strokeDasharray="2.5 3"
         strokeLinecap="round"
       />
-      <polygon points={starPoints(20.5, 16, 6)} fill="#F2D08A" />
+      <polygon points={starPoints(20.5, 16, 6)} fill="white" />
     </svg>
   );
 }
@@ -50,7 +50,7 @@ export function Logo({
       <TicketMark />
       <span
         className={`wonk font-display text-[19px] font-semibold tracking-tight ${
-          tone === "paper" ? "text-paper" : "text-ink"
+          "text-ink"
         }`}
       >
         Scratch<span className="text-flag">Crest</span>

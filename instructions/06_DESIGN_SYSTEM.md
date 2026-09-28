@@ -1,12 +1,10 @@
 # Design System — ScratchCrest
 
-> **Revision note:** this file replaces three earlier directions — the "vivid
-> launch" look (electric gradients, radial glow meshes), the flat slate-card
-> revision, and the all-dark "retail hardware" revision that followed it.
->
-> Every one of those put the marketing site on a dark canvas, and every one of
-> them ended up reading as a template: uniform dark boxes, one accent colour,
-> no texture, no voice. The brand is now **printed paper and one real screen**.
+> **Revision note:** Dashboard and auth stay on the paper palette below. The
+> marketing site (`app/(marketing)`) is **black + `#F11112` only** — remapped
+> in `.mkt` (`globals.css`). No orange (`#E10600` / `#F03D14`), cream, gold,
+> green, navy, or teal on landing chrome. White is type/icons on black, not a
+> fill. The in-store `/display` route and dashboard are unchanged.
 
 ## Brand feel
 
@@ -16,18 +14,20 @@ ink-black type in a serif with actual character, a single loud vermilion, and
 gold reserved for money. Texture is real: grain in the stock, halftone dots,
 perforation lines, torn receipt edges.
 
-The page walks **bright to dark on purpose**: cream hero, vermilion ticker,
-bronze scratch band, cream features, ink display section, cream operations,
-ink CTA, near-black footer. The in-store TV board is the same printed-ticket
-object as the marketing preview — cream stock, kraft tray, full-bleed faces —
-not a second dark product.
+The marketing landing is **black + `#F11112`**: black sections, true-red fills,
+white type. The dashboard stays cream paper. The in-store TV board is its own
+route and is not restyled here.
 
 The test for any new element: **would a designer have drawn this, or did a
 utility-class default produce it?** If the answer is the second one, it goes.
 
 ## Two palettes, on purpose
 
-### Paper — marketing site, dashboard, auth
+### Paper — dashboard and auth
+
+Marketing landing remaps these tokens inside `.mkt` to black / off-white / red.
+Do not change the root values here to restyle the landing — that would recast
+the dashboard.
 
 | Token | Hex | Usage |
 |---|---|---|

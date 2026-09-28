@@ -8,15 +8,15 @@ import { TicketWall } from "@/components/marketing/TicketWall";
  */
 export function MarketingCta({
   eyebrow = "Now launching in Texas",
-  title = "Put a live board on the wall tonight.",
-  description = "Pick a plan, pay through Stripe, and open the display URL on any TV in the store. No refurbished PC, no Fire Stick, no waiting on a sales visit.",
+  title = "Put a smarter scratch ticket experience on your wall.",
+  description = "Give your customers a clearer view of what is available — and give your team better information to work with. Start with ScratchCrest and build a more organized, more visible lottery counter.",
 }: {
   eyebrow?: string;
   title?: string;
   description?: string;
 }) {
   return (
-    <section className="hatch relative overflow-hidden bg-ink px-6 py-20 sm:py-24">
+    <section className="hatch relative overflow-hidden bg-ink-deep px-6 py-20 sm:py-24">
       <div
         className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-flag/20 blur-3xl"
         aria-hidden
@@ -30,25 +30,25 @@ export function MarketingCta({
           <div>
             <p className="flex items-center gap-3">
               <span className="h-0.5 w-6 bg-flag" aria-hidden />
-              <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-foil-light">
+              <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-flag">
                 {eyebrow}
               </span>
             </p>
-            <h2 className="wonk mt-4 font-display text-h2 font-semibold tracking-[-0.02em] text-paper">
+            <h2 className="wonk mt-4 font-display text-h2 font-semibold tracking-[-0.02em] text-ink">
               {title}
             </h2>
-            <p className="mt-5 max-w-xl text-[17px] leading-relaxed text-paper-2/75">
+            <p className="mt-5 max-w-xl text-[17px] leading-relaxed text-ink-soft">
               {description}
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <Button href="/signup">Start free</Button>
-              <Button href="/pricing" variant="inverse">
-                Compare plans
+              <Button href="/signup">Book a demo</Button>
+              <Button href="#display" variant="inverse">
+                See ScratchCrest in action
               </Button>
             </div>
-            <p className="mt-6 text-[13px] text-paper-2/55">
+            <p className="mt-6 text-[13px] text-ink-faint">
               Cancel anytime · Refer a store and you both get{" "}
-              <span className="font-mono tabular-nums text-foil-light">$50</span>
+              <span className="font-mono tabular-nums text-flag">$50</span>
             </p>
           </div>
 

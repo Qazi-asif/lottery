@@ -112,7 +112,12 @@ export function InventoryManager({
         </label>
         <label>
           Pack number
-          <input name="packNumber" required placeholder="Pack number" className="mt-1.5 w-full" />
+          <input
+            name="packNumber"
+            required
+            placeholder="Unique per game"
+            className="mt-1.5 w-full"
+          />
         </label>
         <button
           type="submit"

@@ -19,7 +19,7 @@ export default async function ShiftsPage() {
   const ctx = await getPermissionContext();
   if (!ctx) redirect("/login");
   if (ctx.billingRestricted) redirect("/dashboard/billing");
-  if (ctx.role === "cashier") redirect("/dashboard/scan");
+  if (ctx.role === "cashier") redirect("/dashboard/sell");
   if (!ctx.features.cash_reconciliation) redirect("/dashboard");
 
   const db = requirePrisma();

@@ -9,7 +9,7 @@ export default async function DashboardHomePage() {
   const ctx = await getPermissionContext();
   if (!ctx) redirect("/login");
   if (ctx.billingRestricted) redirect("/dashboard/billing");
-  if (ctx.role === "cashier") redirect("/dashboard/scan");
+  if (ctx.role === "cashier") redirect("/dashboard/sell");
 
   const db = requirePrisma();
   const [locationCount, packCount, sales] = await Promise.all([
@@ -52,10 +52,10 @@ export default async function DashboardHomePage() {
       description="Inventory, sales, and display for your locations."
       actions={
         <Link
-          href="/dashboard/scan"
+          href="/dashboard/sell"
           className="inline-flex h-10 items-center rounded-md bg-ink px-4 text-small font-medium text-paper hover:bg-ink-deep"
         >
-          Open scan
+          Open sell
         </Link>
       }
     >

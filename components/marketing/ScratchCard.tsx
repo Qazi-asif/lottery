@@ -59,16 +59,16 @@ export function ScratchCard({
     ctx.globalCompositeOperation = "source-over";
     ctx.clearRect(0, 0, width, height);
 
-    // Brushed metal: diagonal value ramp, then streaks, then speckle.
+    // Landing latex is red-on-black only — no silver/gray third color.
     const metal = ctx.createLinearGradient(0, 0, width, height);
-    metal.addColorStop(0, "#cfd2d7");
-    metal.addColorStop(0.35, "#a8adb5");
-    metal.addColorStop(0.6, "#c4c8ce");
-    metal.addColorStop(1, "#9aa0a8");
+    metal.addColorStop(0, "#f11112");
+    metal.addColorStop(0.35, "#b00d0e");
+    metal.addColorStop(0.6, "#f11112");
+    metal.addColorStop(1, "#7a090a");
     ctx.fillStyle = metal;
     ctx.fillRect(0, 0, width, height);
 
-    ctx.strokeStyle = "rgba(255,255,255,0.22)";
+    ctx.strokeStyle = "rgba(0,0,0,0.28)";
     ctx.lineWidth = 1;
     for (let x = -height; x < width; x += 7) {
       ctx.beginPath();
@@ -79,11 +79,11 @@ export function ScratchCard({
 
     for (let i = 0; i < width * height * 0.04; i++) {
       ctx.fillStyle =
-        Math.random() > 0.5 ? "rgba(255,255,255,0.3)" : "rgba(80,84,90,0.24)";
+        Math.random() > 0.5 ? "rgba(0,0,0,0.35)" : "rgba(241,17,18,0.22)";
       ctx.fillRect(Math.random() * width, Math.random() * height, 1, 1);
     }
 
-    ctx.fillStyle = "rgba(38,40,44,0.62)";
+    ctx.fillStyle = "rgba(0,0,0,0.72)";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     if ("letterSpacing" in ctx) {
@@ -216,7 +216,7 @@ export function ScratchCard({
       <div className="mt-3 flex h-6 items-center justify-between gap-4">
         <p
           className={`font-mono text-[10px] uppercase tracking-[0.18em] ${
-            tone === "paper" ? "text-paper-2/50" : "text-ink-faint"
+            "text-ink-faint"
           }`}
         >
           {revealed ? "Illustrative — your numbers will differ" : "Drag across the panel"}
