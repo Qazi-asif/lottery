@@ -5,7 +5,7 @@ import { decode } from "next-auth/jwt";
 import type { UserRole } from "@prisma/client";
 import { ApiError } from "@/lib/api-error";
 import { parsePlanFeatures, type PlanFeatures } from "@/lib/plan-features";
-import { requirePrisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 import { sessionCookieName } from "@/lib/session-cookie";
 
 export type PermissionContext = {
@@ -62,31 +62,39 @@ async function readSessionUser() {
 }
 
 async function loadPermissionRow(userId: string): Promise<PermissionContext | null> {
-  const db = requirePrisma();
-  const user = await db.user.findUnique({
-    where: { id: userId },
-    select: {
-      id: true,
-      tenantId: true,
-      email: true,
-      name: true,
-      role: true,
-      userLocations: { select: { locationId: true } },
-      tenant: {
-        select: {
-          stripeCustomerId: true,
-          subscriptions: {
-            orderBy: { createdAt: "desc" },
-            take: 1,
-            select: {
-              status: true,
-              plan: { select: { features: true } },
+  const db = getPrisma();
+  if (!db) return null;
+
+  let user;
+  try {
+    user = await db.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        tenantId: true,
+        email: true,
+        name: true,
+        role: true,
+        userLocations: { select: { locationId: true } },
+        tenant: {
+          select: {
+            stripeCustomerId: true,
+            subscriptions: {
+              orderBy: { createdAt: "desc" },
+              take: 1,
+              select: {
+                status: true,
+                plan: { select: { features: true } },
+              },
             },
           },
         },
       },
-    },
-  });
+    });
+  } catch (error) {
+    console.error("Failed to load permission row:", error);
+    return null;
+  }
 
   if (!user) return null;
 

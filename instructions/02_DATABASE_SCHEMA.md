@@ -243,3 +243,24 @@ Closed packs cannot be transferred. After transfer, `packs.location_id` is the d
   `location_id`) — this is intentional, for query simplicity and to make the
   multi-tenancy filter in `01_ARCHITECTURE.md` a single, consistent `WHERE tenant_id = ?`
   everywhere.
+
+## Prisma client (must match `prisma/schema.prisma`)
+
+```
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+```
+
+`binaryTargets` includes the Vercel Linux query engine (`rhel-openssl-3.0.x`) plus
+`native` for local machines. `DIRECT_URL` is the Supabase direct (non-pooler)
+connection. If it is unset at runtime, the app copies `DATABASE_URL` into
+`DIRECT_URL` before constructing `PrismaClient` so a missing preview env var
+cannot crash Server Components.

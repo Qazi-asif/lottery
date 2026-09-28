@@ -42,16 +42,25 @@ export function getPrisma(): AppDb | null {
   const url = getDatabaseUrl();
   if (!url) return null;
 
+  if (!process.env.DIRECT_URL?.trim()) {
+    process.env.DIRECT_URL = url;
+  }
+
   if (!globalForPrisma.prisma) {
     process.env.DATABASE_URL = url;
-    globalForPrisma.prisma = asAppDb(
-      new PrismaClient({
-        log:
-          process.env.NODE_ENV === "development"
-            ? ["error", "warn"]
-            : ["error"],
-      }),
-    );
+    try {
+      globalForPrisma.prisma = asAppDb(
+        new PrismaClient({
+          log:
+            process.env.NODE_ENV === "development"
+              ? ["error", "warn"]
+              : ["error"],
+        }),
+      );
+    } catch (error) {
+      console.error("Prisma client failed to start:", error);
+      return null;
+    }
   }
 
   return globalForPrisma.prisma;

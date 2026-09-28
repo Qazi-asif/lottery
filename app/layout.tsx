@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 
 /**
@@ -36,6 +35,8 @@ const fraunces = Fraunces({
   variable: "--font-fraunces",
   subsets: ["latin"],
   display: "swap",
+  adjustFontFallback: true,
+  fallback: ["Georgia", "Times New Roman", "serif"],
   axes: ["SOFT", "WONK", "opsz"],
 });
 
@@ -72,12 +73,9 @@ export default function RootLayout({
         className={`${fraunces.variable} ${inter.variable} ${mono.variable} antialiased`}
         suppressHydrationWarning
       >
-        <Script
-          id="strip-extension-attrs"
-          strategy="beforeInteractive"
-        >
-          {STRIP_EXTENSION_ATTRS}
-        </Script>
+        <script
+          dangerouslySetInnerHTML={{ __html: STRIP_EXTENSION_ATTRS }}
+        />
         {children}
       </body>
     </html>
