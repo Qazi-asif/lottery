@@ -1,5 +1,4 @@
 import { cache } from "react";
-import { unstable_cache } from "next/cache";
 import { cookies } from "next/headers";
 import { decode } from "next-auth/jwt";
 import type { UserRole } from "@prisma/client";
@@ -93,7 +92,7 @@ async function loadPermissionRow(userId: string): Promise<PermissionContext | nu
     });
   } catch (error) {
     console.error("Failed to load permission row:", error);
-    return null;
+    throw error;
   }
 
   if (!user) return null;
@@ -121,25 +120,19 @@ async function loadPermissionRow(userId: string): Promise<PermissionContext | nu
     };
   } catch (error) {
     console.error("Failed to parse permission row:", error);
-    return null;
+    throw error;
   }
 }
 
-function getCachedPermissionRow(userId: string) {
-  return unstable_cache(
-    () => loadPermissionRow(userId),
-    ["permission-row", userId],
-    { revalidate: 60, tags: [`permission-${userId}`] },
-  )();
-}
-
-/** Deduped per RSC request so layout + page share one session/DB round-trip. */
+/** Deduped per RSC request so layout + page share one session/DB round-trip.
+ * Do not use unstable_cache here: a failed DB lookup would cache `null` and
+ * bounce a valid session back to /login for a minute. */
 export const getPermissionContext = cache(
   async (): Promise<PermissionContext | null> => {
     const sessionUser = await readSessionUser();
     if (!sessionUser?.id || !sessionUser.tenantId) return null;
 
-    const ctx = await getCachedPermissionRow(sessionUser.id);
+    const ctx = await loadPermissionRow(sessionUser.id);
     if (!ctx || ctx.tenantId !== sessionUser.tenantId) return null;
     return ctx;
   },

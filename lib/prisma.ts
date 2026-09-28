@@ -25,6 +25,7 @@ export function withPrismaUrlParams(url: string): string {
   // (P2024). Five is still small enough for the transaction pooler.
   params.set("connection_limit", "5");
   params.set("pool_timeout", "20");
+  params.set("connect_timeout", "15");
   if (/:6543\b/.test(base) || params.get("pgbouncer") === "true") {
     params.set("pgbouncer", "true");
   }

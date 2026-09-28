@@ -62,14 +62,6 @@ export async function applySessionCookie(
   const token = await encodeSessionToken(user);
   const name = sessionCookieName();
   response.cookies.set(name, token, cookieOptions);
-
-  // Next 15: cookies() is async; mutating it can also apply Set-Cookie.
-  try {
-    const jar = await cookies();
-    jar.set(name, token, cookieOptions);
-  } catch {
-    // Response cookie is sufficient for the browser; ignore read-only stores.
-  }
 }
 
 export async function createSessionCookie(user: {
