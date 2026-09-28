@@ -5,7 +5,7 @@ import {
   requireFeature,
   requireRoleAtLeast,
 } from "@/lib/permissions";
-import { asDate, loose, requirePrisma } from "@/lib/prisma";
+import { asDate, requirePrisma } from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
   try {
@@ -41,11 +41,11 @@ export async function GET(request: NextRequest) {
         locationId: true,
         gameId: true,
         game: {
-          select: loose({
+          select: {
             name: true,
             gameNumber: true,
             officialCloseAt: true,
-          }),
+          },
         },
         location: { select: { name: true } },
         _count: { select: { tickets: { where: { status: "in_stock" } } } },

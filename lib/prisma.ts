@@ -36,7 +36,7 @@ export function asAppDb(client: object): AppDb {
   return client as unknown as AppDb;
 }
 
-export function loose(value: object): object {
+export function loose<T extends object>(value: T): T {
   return value;
 }
 
