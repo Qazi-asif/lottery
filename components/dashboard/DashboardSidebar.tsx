@@ -33,7 +33,9 @@ export function DashboardSidebar({
   const pathname = usePathname();
 
   const visible = (item: NavItem) => {
-    if (billingRestricted) return item.href === "/dashboard/billing";
+    if (billingRestricted) {
+      return item.href === "/dashboard/billing" || item.href === "/dashboard/help";
+    }
     if (!item.roles.includes(role)) return false;
     if (item.feature && !features[item.feature]) return false;
     return true;

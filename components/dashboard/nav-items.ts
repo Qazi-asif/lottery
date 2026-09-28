@@ -3,7 +3,7 @@ import type { PlanFeatures } from "@/lib/plan-features";
 
 export type NavIcon =
   | "overview"
-  | "scan"
+  | "sell"
   | "inventory"
   | "sales"
   | "alerts"
@@ -12,7 +12,8 @@ export type NavIcon =
   | "display"
   | "team"
   | "settings"
-  | "billing";
+  | "billing"
+  | "help";
 
 export type NavItem = {
   href: string;
@@ -34,7 +35,13 @@ export const NAV_GROUPS: NavGroup[] = [
     label: "Work",
     items: [
       { href: "/dashboard", label: "Overview", icon: "overview", roles: ["tenant_owner", "location_manager"] },
-      { href: "/dashboard/scan", label: "Scan", icon: "scan", roles: ["tenant_owner", "location_manager", "cashier"] },
+      { href: "/dashboard/sell", label: "Sell", icon: "sell", roles: ["tenant_owner", "location_manager", "cashier"] },
+      {
+        href: "/dashboard/help",
+        label: "Help",
+        icon: "help",
+        roles: ["tenant_owner", "location_manager", "cashier"],
+      },
       {
         href: "/dashboard/inventory",
         label: "Inventory",
