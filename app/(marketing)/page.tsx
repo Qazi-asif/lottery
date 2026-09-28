@@ -393,7 +393,7 @@ export default function HomePage() {
           <div className="mt-10 grid items-stretch gap-6 lg:grid-cols-2">
             <Reveal className="h-full">
               <PhotoFrame
-                file="scan-vivid.png"
+                file="scan-register.png"
                 alt="Touch-screen smart POS at a store counter"
                 tilt="-rotate-[0.6deg]"
                 className="h-full"
@@ -470,7 +470,7 @@ export default function HomePage() {
           <div className="grid gap-8 md:grid-cols-3">
             <Reveal>
               <PhotoFrame
-                file="display-vivid.png"
+                file="instore-display.png"
                 alt="Customer-facing digital ticket board in a store"
                 caption="Customer display"
                 tilt="-rotate-[1.2deg]"
@@ -478,7 +478,7 @@ export default function HomePage() {
             </Reveal>
             <Reveal delay={80}>
               <PhotoFrame
-                file="dashboard-vivid.png"
+                file="laptop-dashboard.png"
                 alt="Store dashboard showing inventory and performance"
                 caption="Store dashboard"
                 tilt="rotate-[0.8deg]"
@@ -486,7 +486,7 @@ export default function HomePage() {
             </Reveal>
             <Reveal delay={160}>
               <PhotoFrame
-                file="hero-vivid.png"
+                file="store-counter.png"
                 alt="Sales and inventory view at the lottery counter"
                 caption="Sales & inventory view"
                 tilt="-rotate-[0.5deg]"

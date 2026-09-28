@@ -185,7 +185,7 @@ export default async function PricingPage() {
           <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
             <Reveal>
               <PhotoFrame
-                file="dashboard-vivid.png"
+                file="laptop-dashboard.png"
                 alt="Billing and operations dashboard on a monitor"
                 tilt="-rotate-[0.8deg]"
               />

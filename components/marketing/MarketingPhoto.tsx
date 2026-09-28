@@ -14,7 +14,7 @@ export function MarketingPhoto({
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={`/api/marketing/${file}`}
+      src={`/marketing/${file}`}
       alt={alt}
       className={`h-full w-full object-cover ${className}`}
       {...(priority ? { fetchPriority: "high" as const } : {})}

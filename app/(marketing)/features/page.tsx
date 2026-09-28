@@ -182,7 +182,7 @@ export default function FeaturesPage() {
             </Reveal>
             <Reveal delay={90}>
               <PhotoFrame
-                file="dashboard-vivid.png"
+                file="laptop-dashboard.png"
                 alt="Inventory and commission dashboard on a monitor"
                 tilt="rotate-[0.7deg]"
               />
@@ -235,7 +235,7 @@ export default function FeaturesPage() {
           <div className="mt-12 grid gap-8 md:grid-cols-2">
             <Reveal>
               <PhotoFrame
-                file="display-vivid.png"
+                file="instore-display.png"
                 alt="Tall digital signage screens beside a store checkout"
                 caption="Portrait screens beside the register"
                 tilt="-rotate-[0.9deg]"
@@ -243,7 +243,7 @@ export default function FeaturesPage() {
             </Reveal>
             <Reveal delay={80}>
               <PhotoFrame
-                file="hero-vivid.png"
+                file="store-counter.png"
                 alt="Wall-mounted digital lottery board above a store counter"
                 caption="One big board above the counter"
                 tilt="rotate-[0.6deg]"
