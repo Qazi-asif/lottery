@@ -3,23 +3,7 @@ import { PrismaClient } from "@prisma/client";
 
 loadEnvConfig(process.cwd());
 
-type LooseModel = {
-  findMany: (args?: unknown) => Promise<unknown>;
-  findFirst: (args?: unknown) => Promise<unknown>;
-  findUnique: (args?: unknown) => Promise<unknown>;
-  create: (args?: unknown) => Promise<unknown>;
-  update: (args?: unknown) => Promise<unknown>;
-  updateMany: (args?: unknown) => Promise<unknown>;
-};
-
-export type AppDb = Omit<
-  PrismaClient,
-  "referral" | "packTransfer" | "shiftReconciliation"
-> & {
-  referral: LooseModel;
-  packTransfer: LooseModel;
-  shiftReconciliation: LooseModel;
-};
+export type AppDb = PrismaClient;
 
 const globalForPrisma = globalThis as unknown as {
   prisma: AppDb | undefined;
