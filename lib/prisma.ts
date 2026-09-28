@@ -18,17 +18,18 @@ export function getDatabaseUrl(): string | undefined {
 
 /** Prisma query string extras. Do not log the returned URL (password). */
 export function withPrismaUrlParams(url: string): string {
-  let next = url;
-  if (!/[?&]connection_limit=/.test(next)) {
-    next += (next.includes("?") ? "&" : "?") + "connection_limit=1";
+  const qIndex = url.indexOf("?");
+  const base = qIndex === -1 ? url : url.slice(0, qIndex);
+  const params = new URLSearchParams(qIndex === -1 ? "" : url.slice(qIndex + 1));
+  // Dashboard layout + page fire several queries at once. A pool of 1 times out
+  // (P2024). Five is still small enough for the transaction pooler.
+  params.set("connection_limit", "5");
+  params.set("pool_timeout", "20");
+  if (/:6543\b/.test(base) || params.get("pgbouncer") === "true") {
+    params.set("pgbouncer", "true");
   }
-  if (!/[?&]pool_timeout=/.test(next)) {
-    next += (next.includes("?") ? "&" : "?") + "pool_timeout=10";
-  }
-  if (/:(6543)\//.test(next) && !/[?&]pgbouncer=/.test(next)) {
-    next += (next.includes("?") ? "&" : "?") + "pgbouncer=true";
-  }
-  return next;
+  const query = params.toString();
+  return query ? `${base}?${query}` : base;
 }
 
 export function asAppDb(client: object): AppDb {
