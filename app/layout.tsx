@@ -3,41 +3,15 @@ import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
 /**
- * ColorZilla and similar extensions stamp attributes onto <body> before
- * hydration. Next's overlay still reports that even with
- * suppressHydrationWarning, so strip the known attrs before React runs.
- */
-const STRIP_EXTENSION_ATTRS = `(function () {
-  var attrs = ["cz-shortcut-listen"];
-  function strip(node) {
-    if (!node || !node.removeAttribute) return;
-    for (var i = 0; i < attrs.length; i++) node.removeAttribute(attrs[i]);
-  }
-  function sweep() {
-    strip(document.documentElement);
-    strip(document.body);
-  }
-  sweep();
-  new MutationObserver(sweep).observe(document.documentElement, {
-    attributes: true,
-    subtree: true,
-    attributeFilter: attrs,
-  });
-})();`;
-
-/**
- * Fraunces is the brand voice — a high-contrast serif whose `WONK` axis swaps in
- * angled, irregular terminals. Those three axes are loaded on purpose: the
- * `.wonk` class in globals.css dials them in on display-size lines, which is
- * what keeps headlines from reading like a default UI font.
+ * Variable-font `axes` (SOFT / WONK / opsz) are omitted on purpose: Next's
+ * Google font loader has been throwing in Vercel production RSC when those
+ * extra files are requested. `.wonk` in globals.css still sets
+ * font-variation-settings; browsers ignore axes the loaded file does not have.
  */
 const fraunces = Fraunces({
   variable: "--font-fraunces",
   subsets: ["latin"],
   display: "swap",
-  adjustFontFallback: true,
-  fallback: ["Georgia", "Times New Roman", "serif"],
-  axes: ["SOFT", "WONK", "opsz"],
 });
 
 const inter = Inter({
@@ -73,9 +47,6 @@ export default function RootLayout({
         className={`${fraunces.variable} ${inter.variable} ${mono.variable} antialiased`}
         suppressHydrationWarning
       >
-        <script
-          dangerouslySetInnerHTML={{ __html: STRIP_EXTENSION_ATTRS }}
-        />
         {children}
       </body>
     </html>

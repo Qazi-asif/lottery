@@ -98,26 +98,31 @@ async function loadPermissionRow(userId: string): Promise<PermissionContext | nu
 
   if (!user) return null;
 
-  const subscription = user.tenant.subscriptions[0];
-  const features = parsePlanFeatures(subscription?.plan.features);
-  const subscriptionStatus = subscription?.status ?? "canceled";
+  try {
+    const subscription = user.tenant.subscriptions[0];
+    const features = parsePlanFeatures(subscription?.plan.features);
+    const subscriptionStatus = subscription?.status ?? "canceled";
 
-  return {
-    userId: user.id,
-    tenantId: user.tenantId,
-    email: user.email,
-    name: user.name,
-    role: user.role,
-    locationIds:
-      user.role === "tenant_owner"
-        ? null
-        : user.userLocations.map((row) => row.locationId),
-    features,
-    subscriptionStatus,
-    stripeCustomerId: user.tenant.stripeCustomerId,
-    billingRestricted:
-      subscriptionStatus === "past_due" || subscriptionStatus === "canceled",
-  };
+    return {
+      userId: user.id,
+      tenantId: user.tenantId,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      locationIds:
+        user.role === "tenant_owner"
+          ? null
+          : user.userLocations.map((row) => row.locationId),
+      features,
+      subscriptionStatus,
+      stripeCustomerId: user.tenant.stripeCustomerId,
+      billingRestricted:
+        subscriptionStatus === "past_due" || subscriptionStatus === "canceled",
+    };
+  } catch (error) {
+    console.error("Failed to parse permission row:", error);
+    return null;
+  }
 }
 
 function getCachedPermissionRow(userId: string) {

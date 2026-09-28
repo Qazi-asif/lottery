@@ -21,7 +21,10 @@ export const FEATURE_LABELS: Record<keyof PlanFeatures, string> = {
 };
 
 export function parsePlanFeatures(features: unknown): PlanFeatures {
-  const f = features as Partial<PlanFeatures>;
+  const f =
+    features && typeof features === "object" && !Array.isArray(features)
+      ? (features as Partial<PlanFeatures>)
+      : {};
   return {
     inventory: f.inventory ?? false,
     display: f.display ?? false,

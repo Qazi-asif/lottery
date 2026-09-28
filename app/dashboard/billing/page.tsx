@@ -2,19 +2,26 @@ import { redirect } from "next/navigation";
 import { BillingPortalButton } from "@/components/dashboard/BillingPortalButton";
 import { DashboardPage } from "@/components/dashboard/DashboardPage";
 import { getPermissionContext } from "@/lib/permissions";
-import { requirePrisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 
 export default async function BillingPage() {
   const ctx = await getPermissionContext();
   if (!ctx) redirect("/login");
   if (ctx.role !== "tenant_owner") redirect("/dashboard");
 
-  const db = requirePrisma();
-  const subscription = await db.subscription.findFirst({
-    where: { tenantId: ctx.tenantId },
-    orderBy: { createdAt: "desc" },
-    include: { plan: { select: { name: true } } },
-  });
+  const db = getPrisma();
+  if (!db) redirect("/login");
+
+  const subscription = await db.subscription
+    .findFirst({
+      where: { tenantId: ctx.tenantId },
+      orderBy: { createdAt: "desc" },
+      include: { plan: { select: { name: true } } },
+    })
+    .catch((error) => {
+      console.error("Billing page query failed:", error);
+      return null;
+    });
 
   return (
     <DashboardPage
