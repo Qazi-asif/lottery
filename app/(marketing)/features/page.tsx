@@ -176,7 +176,7 @@ export default function FeaturesPage() {
             <Reveal>
               <SectionHeading
                 eyebrow="Inventory"
-                title="See what's left without opening a drawer."
+                title="See what is left without opening a drawer."
                 description="Activate a pack once and every ticket is tracked. Counts fall as cashiers sell, across every location on the account. Move a pack to the store that needs it with a transfer."
               />
             </Reveal>

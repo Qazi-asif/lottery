@@ -4,12 +4,12 @@ import { PrismaClient } from "@prisma/client";
 loadEnvConfig(process.cwd());
 
 type LooseModel = {
-  findMany: (args?: unknown) => Promise<any>;
-  findFirst: (args?: unknown) => Promise<any>;
-  findUnique: (args?: unknown) => Promise<any>;
-  create: (args?: unknown) => Promise<any>;
-  update: (args?: unknown) => Promise<any>;
-  updateMany: (args?: unknown) => Promise<any>;
+  findMany: (args?: unknown) => Promise<unknown>;
+  findFirst: (args?: unknown) => Promise<unknown>;
+  findUnique: (args?: unknown) => Promise<unknown>;
+  create: (args?: unknown) => Promise<unknown>;
+  update: (args?: unknown) => Promise<unknown>;
+  updateMany: (args?: unknown) => Promise<unknown>;
 };
 
 export type AppDb = Omit<
@@ -36,7 +36,7 @@ export function asAppDb(client: object): AppDb {
   return client as unknown as AppDb;
 }
 
-export function loose(value: object): any {
+export function loose(value: object): object {
   return value;
 }
 

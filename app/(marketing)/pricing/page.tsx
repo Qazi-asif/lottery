@@ -106,7 +106,7 @@ export default async function PricingPage() {
           <p className="mx-auto mt-6 max-w-2xl text-[17.5px] leading-relaxed text-ink-soft">
             Their $25 screen still wants a $150–$500 box. Ours runs on the TV in
             your break room. Hosting and updates are included, and what you can use
-            is a flag on the plan — upgrade from billing whenever you're ready.
+            is a flag on the plan — upgrade from billing whenever you are ready.
           </p>
         </div>
       </section>
